@@ -1,6 +1,2 @@
-[setup]
+[phases.setup]
 aptPkgs = ["supervisor"]
-
-[build]
-builder = "nixpacks"
-buildCommand = "npm run build"
