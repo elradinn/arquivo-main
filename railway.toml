@@ -1,4 +1,6 @@
+[setup]
+aptPkgs = ["supervisor"]
+
 [build]
 builder = "nixpacks"
 buildCommand = "npm run build"
-aptPkgs = ["supervisor"]
