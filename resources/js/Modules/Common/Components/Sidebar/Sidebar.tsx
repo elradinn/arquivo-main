@@ -11,7 +11,6 @@ import {
 } from "@mantine/core";
 import {
     IconTrash,
-    IconFolderFilled,
     IconLayoutDashboard,
     IconPlus,
     IconDotsVertical,
@@ -40,10 +39,12 @@ const Sidebar: React.FC = () => {
     const { workspaces } = usePage<{ workspaces: WorkspaceLinksData[] }>().props;
     const { openModal } = useModalStore();
 
+    const currentPath = window.location.pathname;
+
     const renderNavLinks = NAV_LINKS.map(({ label, icon: Icon, href }) => (
         <Link
             className={classes.link}
-            data-active={route().current(label.toLowerCase()) || undefined}
+            data-active={currentPath === href || undefined}
             href={href}
             key={label}
         >
@@ -52,11 +53,13 @@ const Sidebar: React.FC = () => {
         </Link>
     ));
 
+    console.log(workspaces);
+
     const renderWorkspaceLinks = workspaces.map((workspace) => (
         <div
             className={classes.workspaceLinkWrapper}
             key={workspace.item_id}
-            data-active={route().current("index", workspace.item_id) || undefined}
+            data-active={currentPath === workspace.url || undefined}
         >
             <Link className={classes.workspaceLinkDesign} href={workspace.url}>
                 <div className={classes.workspaceLinkContent}>
@@ -70,6 +73,7 @@ const Sidebar: React.FC = () => {
                         <IconDotsVertical className={classes.settingsIcon} stroke={1.5} />
                     </ActionIcon>
                 </Menu.Target>
+                {/* Add Menu.Items here if needed */}
             </Menu>
         </div>
     ));

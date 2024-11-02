@@ -11,7 +11,7 @@ const ArqFolder = ({ size = 200, ...props }: ArqFolderProps) => {
             <path d="M528 163.561V435.948C528 450.752 515.998 462.754 501.194 462.754H42.8063C28.0016 462.754 16 450.752 16 435.948V190.699C16 175.895 27.962 163.893 42.7667 163.893H178.178C223.749 163.893 217.382 136.752 248.544 136.754C333.567 136.758 449.546 136.756 501.239 136.755C516.044 136.754 528 148.756 528 163.561Z" fill="url(#paint0_linear_42_2038)" />
             <defs>
                 <linearGradient id="paint0_linear_42_2038" x1="528" y1="136.754" x2="27.1538" y2="479.073" gradientUnits="userSpaceOnUse">
-                    <stop offset="1" stop-color="#FFD93F" />
+                    <stop offset="1" stopColor="#FFD93F" />
                 </linearGradient>
             </defs>
         </svg>

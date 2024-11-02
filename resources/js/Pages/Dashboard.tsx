@@ -6,6 +6,7 @@ import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 import { StatCards } from "@/Modules/Common/Components/StatCards/StatCards";
 import { DashboardResource } from "@/Modules/Dashboard/Types/DashboardResource";
 import { IconArrowRight } from "@tabler/icons-react";
+import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
 
 interface DashboardPageProps {
     dashboard: DashboardResource;
@@ -49,13 +50,13 @@ export default function DashboardPage({ dashboard }: DashboardPageProps) {
                                     <Group align="center" gap={12}>
                                         <ItemIcon mime="application/pdf" isFolder={false} />
                                         <span>{name}</span>
-                                        <Text size="xs" color="dimmed">
+                                        <Text size="xs" c="dimmed">
                                             {status}
                                         </Text>
                                     </Group>
                                 ),
                             },
-                            { accessor: "status" },
+                            { accessor: "status", render: ({ status }) => <StateBadge state={status} /> },
                             { accessor: "date_uploaded", title: "Date Uploaded" },
                         ]}
                         records={dashboard.recently_uploaded_documents}
