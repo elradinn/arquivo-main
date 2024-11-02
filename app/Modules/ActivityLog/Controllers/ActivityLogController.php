@@ -7,11 +7,12 @@ use Spatie\Activitylog\Models\Activity;
 use Modules\Common\Controllers\Controller;
 use App\Modules\ActivityLog\Data\ActivityLogResourceData;
 use Illuminate\Http\Request;
+use Inertia\Response;
 use Modules\ActivityLog\Models\ActivityLog;
 
 class ActivityLogController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $search = $request->input('search');
 
