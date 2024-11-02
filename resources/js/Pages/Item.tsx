@@ -20,6 +20,7 @@ import { ItemAncestorsResourceData } from "@/Modules/Item/Types/ItemAncestorsRes
 import { ItemContentsResourceData } from "@/Modules/Item/Types/ItemContentsResourceData";
 import { ItemParentResourceData } from "@/Modules/Item/Types/ItemParentResourceData";
 import SelectMetadataColumnForm from "@/Modules/Common/Components/SelectMetadataColumn/SelectMetadataColumnForm";
+import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
 
 interface ItemPageProps {
     itemParent: ItemParentResourceData;
