@@ -116,16 +116,22 @@ export function StatCards({ dashboard }: StatCardsProps) {
 
   return (
     <div className={classes.root}>
-      <Grid gutter="md" align="stretch">
-        <Grid.Col span={3} className={classes.doubleRow}>
+      <Grid>
+        <Grid.Col
+          span={{ base: 12, lg: 3 }}
+        >
           {totalDocuments && renderCard(totalDocuments, true)}
         </Grid.Col>
-        <Grid.Col span={9}>
-          <SimpleGrid cols={3} spacing="md">
+        <Grid.Col
+          span={{ base: 12, lg: 9 }}
+        >
+          <SimpleGrid
+            cols={{ base: 1, lg: 3 }}
+          >
             {otherStats.map((stat) => renderCard(stat))}
           </SimpleGrid>
         </Grid.Col>
       </Grid>
-    </div>
+    </div >
   );
 }
