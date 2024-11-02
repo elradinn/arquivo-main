@@ -4,7 +4,6 @@ import { Stack, Text, Button, Flex, TextInput, rem } from "@mantine/core";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import NumberingSchemeTable from "@/Modules/NumberingScheme/Components/NumberingSchemeTable";
-import NumberingSchemeForm from "@/Modules/NumberingScheme/Forms/NumberingSchemeForm";
 import { NumberingSchemeResourceData } from "@/Modules/NumberingScheme/Types/NumberingSchemeResourceData";
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
 import { usePaginateDataTable } from "@/Modules/Common/Hooks/use-paginate-datatable";
@@ -73,11 +72,11 @@ export default function NumberingSchemePage({ numberingSchemes, filters }: IProp
                     onSelectedRecordsChange={setSelectedRecord}
                 />
 
-                <NumberingSchemeForm
+                {/* <NumberingSchemeForm
                     isOpened={formOpened}
                     close={closeForm}
                     initialData={editingScheme || undefined}
-                />
+                /> */}
             </Stack>
         </Authenticated>
     );

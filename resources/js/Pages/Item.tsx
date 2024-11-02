@@ -19,7 +19,6 @@ import { useOpenFolder } from "@/Modules/Item/Hooks/use-open-folder";
 import { ItemAncestorsResourceData } from "@/Modules/Item/Types/ItemAncestorsResourceData";
 import { ItemContentsResourceData } from "@/Modules/Item/Types/ItemContentsResourceData";
 import { ItemParentResourceData } from "@/Modules/Item/Types/ItemParentResourceData";
-import Toolbar from "@/Modules/Common/Components/Toolbar/Toolbar";
 import SelectMetadataColumnForm from "@/Modules/Common/Components/SelectMetadataColumn/SelectMetadataColumnForm";
 
 interface ItemPageProps {

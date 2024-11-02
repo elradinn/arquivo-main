@@ -13,7 +13,6 @@ import {
 } from "@mantine/core";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import { IconEdit, IconFile, IconPlus } from "@tabler/icons-react";
-import Toolbar from "@/Modules/Common/Components/Toolbar/Toolbar";
 import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
 import { ItemAncestorsResourceData } from "@/Modules/Item/Types/ItemAncestorsResourceData";
 import ItemBreadcrumbs from "@/Modules/Item/Components/ItemBreadcrumbs";
@@ -49,7 +48,7 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
     };
 
     return (
-        <Authenticated toolbar={<Toolbar page="folder" />}>
+        <Authenticated>
             <Head title="Document Properties" />
             <Stack px={8} py={8} gap={24} w={550} mb={72}>
                 {/* <Box px={8} py={8} mb={48}>

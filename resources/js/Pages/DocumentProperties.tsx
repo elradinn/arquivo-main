@@ -8,7 +8,6 @@ import {
     IconLock,
     IconUpload,
 } from "@tabler/icons-react";
-import Toolbar from "@/Modules/Common/Components/Toolbar/Toolbar";
 import { DataTable } from "mantine-datatable";
 import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
 import { ItemAncestorsResourceData } from "@/Modules/Item/Types/ItemAncestorsResourceData";
@@ -38,7 +37,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
     };
 
     return (
-        <Authenticated toolbar={<Toolbar page="folder" />}>
+        <Authenticated>
             <Head title="Document Properties" />
             <Box px={8} py={8} mb={48}>
                 <ItemBreadcrumbs ancestors={itemAncestors} />
