@@ -1,5 +1,5 @@
 import { Group, Paper, SimpleGrid, Text, Grid } from "@mantine/core";
-import { IconFile } from "@tabler/icons-react";
+import { IconFile, IconCheck, IconX, IconClock, IconMessage, IconMessageCheck, IconMessageX, IconFileX, IconFileCheck, IconFileDescription } from "@tabler/icons-react";
 import { DashboardResource } from "@/Modules/Dashboard/Types/DashboardResource";
 import classes from "./StatCards.module.css";
 import { router } from "@inertiajs/react";
@@ -9,30 +9,30 @@ interface StatCardsProps {
 }
 
 const icons = {
-  review_pending: IconFile,
-  review_accepted: IconFile,
-  review_rejected: IconFile,
+  review_pending: IconMessage,
+  review_accepted: IconMessageCheck,
+  review_rejected: IconMessageX,
   approval_pending: IconFile,
-  approval_accepted: IconFile,
-  approval_rejected: IconFile,
-  total_documents: IconFile,
+  approval_accepted: IconFileCheck,
+  approval_rejected: IconFileX,
+  total_documents: IconFileDescription,
 };
 
 export function StatCards({ dashboard }: StatCardsProps) {
   const data = [
-    {
-      title: "Review Pending",
-      icon: "review_pending",
-      value: dashboard.number_of_review_pending,
-      color: "blue",
-      statusParam: "reviewal_pending",
-    },
     {
       title: "Review Accepted",
       icon: "review_accepted",
       value: dashboard.number_of_review_accepted,
       color: "green",
       statusParam: "reviewal_accepted",
+    },
+    {
+      title: "Review Pending",
+      icon: "review_pending",
+      value: dashboard.number_of_review_pending,
+      color: "yellow",
+      statusParam: "reviewal_pending",
     },
     {
       title: "Review Rejected",
@@ -42,18 +42,18 @@ export function StatCards({ dashboard }: StatCardsProps) {
       statusParam: "reviewal_rejected",
     },
     {
-      title: "Approval Pending",
-      icon: "approval_pending",
-      value: dashboard.number_of_approval_pending,
-      color: "blue",
-      statusParam: "approval_pending",
-    },
-    {
       title: "Approval Accepted",
       icon: "approval_accepted",
       value: dashboard.number_of_approval_accepted,
       color: "green",
       statusParam: "approval_accepted",
+    },
+    {
+      title: "Approval Pending",
+      icon: "approval_pending",
+      value: dashboard.number_of_approval_pending,
+      color: "yellow",
+      statusParam: "approval_pending",
     },
     {
       title: "Approval Rejected",
@@ -66,7 +66,7 @@ export function StatCards({ dashboard }: StatCardsProps) {
       title: "Total Documents",
       icon: "total_documents",
       value: dashboard.number_of_documents,
-      color: "purple",
+      color: "violet",
       statusParam: null,
     },
   ] as const;
@@ -86,29 +86,46 @@ export function StatCards({ dashboard }: StatCardsProps) {
     return (
       <Paper
         withBorder
-        p="md"
+        p="lg"
         radius="md"
         key={stat.title}
         onClick={handleClick}
-        style={{ cursor: stat.statusParam ? "pointer" : "default" }}
+        shadow="xs"
+        style={{
+          cursor: stat.statusParam ? "pointer" : "default",
+        }}
         className={`${classes.card} ${doubleHeight ? classes.doubleHeight : ""}`}
       >
-        <Group justify="space-between">
-          <Text size="sm" color="dimmed" className={classes.title}>
-            {stat.title}
-          </Text>
-          <Icon
-            className={classes.icon}
-            size="1.4rem"
-            stroke={1.5}
-            color={stat.color}
-            height={32}
-            width={32}
-          />
+        <Group justify="left" mb="sm">
+          <div
+            style={{
+              backgroundColor: `var(--mantine-color-${stat.color}-light)`,
+              borderRadius: "50%",
+              padding: "10px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Icon
+              className={classes.icon}
+              size="1.4rem"
+              stroke={1.5}
+              color={`var(--mantine-color-${stat.color}-light-color)`}
+              height={32}
+              width={32}
+            />
+          </div>
         </Group>
 
-        <Group align="flex-end" gap="xs" mt={25}>
-          <Text className={classes.value}>{stat.value}</Text>
+        <Text size="sm" c="dimmed" className={classes.title}>
+          {stat.title}
+        </Text>
+
+        <Group align="center" mt={10}>
+          <Text className={classes.value} size="lg">
+            {stat.value}
+          </Text>
         </Group>
       </Paper>
     );
