@@ -13,3 +13,16 @@
 .icon {
     color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-3));
 }
+
+.doubleHeight {
+    height: 100%; /* Ensures the card takes full height of its container */
+}
+  
+.doubleRow {
+    display: flex;
+    flex-direction: column;
+}
+
+.doubleRow .card {
+    flex: 1; /* Allows the card to expand and fill the available space */
+}
