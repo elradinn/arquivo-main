@@ -1,4 +1,4 @@
-import OfficeLogo from "@/Components/OfficeLogo";
+import OfficeLogo from "@/Modules/Common/Components/OfficeLogo/OfficeLogo";
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { IconPhoto } from "@tabler/icons-react";
 

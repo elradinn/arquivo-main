@@ -1,5 +1,3 @@
-import DeleteFilesButton from "@/Modules/Common/Components/Toolbar/DeleteFiles";
-import DownloadFilesButton from "@/Modules/Common/Components/Toolbar/DownloadFiles";
 import { useDownloadFiles } from "@/Modules/Common/Hooks/use-download-files";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { Button, Group } from "@mantine/core";

@@ -17,7 +17,6 @@ import {
     IconPlus,
     IconTrash,
 } from "@tabler/icons-react";
-import Toolbar from "@/Modules/Common/Components/Toolbar/Toolbar";
 import { FolderResourceData } from "@/Modules/Folder/Types/FolderResourceData";
 import { ItemAncestorsResourceData } from "@/Modules/Item/Types/ItemAncestorsResourceData";
 import ItemBreadcrumbs from "@/Modules/Item/Components/ItemBreadcrumbs";
@@ -29,7 +28,7 @@ interface IProps {
 
 export default function FolderPropertiesPage({ folder, itemAncestors }: IProps) {
     return (
-        <Authenticated toolbar={<Toolbar page="folder" />}>
+        <Authenticated>
             <Head title={folder.name} />
             <Stack px={8} py={8} gap={24} w={550} mb={72}>
                 <ItemBreadcrumbs ancestors={itemAncestors} />

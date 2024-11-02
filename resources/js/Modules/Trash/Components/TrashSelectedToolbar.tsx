@@ -1,5 +1,3 @@
-import PermanentDeleteButton from "@/Modules/Common/Components/Toolbar/PermanentDelete";
-import RestoreFilesButton from "@/Modules/Common/Components/Toolbar/RestoreFiles";
 import { Button, Group } from "@mantine/core";
 import { IconRestore, IconTrash, IconTrashX } from "@tabler/icons-react";
 import PermanentDeleteForm from "../Forms/PermanentDeleteForm";

@@ -92,11 +92,6 @@ class DatabaseSeeder extends Seeder
             owned_by: $testUser1->id
         ));
 
-        $workspace = $createWorkspaceAction->execute(new CreateWorkspaceData(
-            name: 'Test Folder',
-            owned_by: $testUser1->id
-        ));
-
         // Create Folder
         $createFolderAction = app(CreateFolderAction::class);
         $createFolderAction->execute(new CreateFolderData(
