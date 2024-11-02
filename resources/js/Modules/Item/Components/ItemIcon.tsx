@@ -22,6 +22,7 @@ import {
 } from "../Helpers/file-helper";
 import { Indicator } from "@mantine/core";
 import { getColorStatus } from "@/Modules/Common/Helpers/get-color-status";
+import ArqPdf from "@/Modules/Common/Components/IconFiles/ArqPdf";
 
 interface ItemIconProps {
     mime: string;
@@ -36,7 +37,7 @@ const ItemIcon = ({ mime, isFolder, approvalStatus }: ItemIconProps) => {
         } else if (isImage(mime)) {
             return <IconPhoto size={20} />;
         } else if (isPDF(mime)) {
-            return <IconFileTypePdf size={20} />;
+            return <ArqPdf />;
         } else if (isAudio(mime)) {
             return <IconFileMusic size={20} />;
         } else if (isVideo(mime)) {

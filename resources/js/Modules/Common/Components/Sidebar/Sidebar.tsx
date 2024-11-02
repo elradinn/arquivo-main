@@ -21,6 +21,7 @@ import OfficeLogo from "../OfficeLogo/OfficeLogo";
 import { WorkspaceLinksData } from "@/Modules/Workspace/Types/WorkspaceLinksData";
 import WorkspaceForm from "@/Modules/Workspace/Forms/WorkspaceForm";
 import useModalStore from "../../Hooks/use-modal-store";
+import ArqFolder from "../IconFiles/ArqFolder";
 
 const NAV_LINKS = [
     {
@@ -59,7 +60,7 @@ const Sidebar: React.FC = () => {
         >
             <Link className={classes.workspaceLinkDesign} href={workspace.url}>
                 <div className={classes.workspaceLinkContent}>
-                    <IconFolderFilled className={classes.linkIcon} stroke={1.5} />
+                    <ArqFolder className={classes.linkIcon} />
                     <span>{workspace.name}</span>
                 </div>
             </Link>

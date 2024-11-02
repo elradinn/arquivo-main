@@ -8,10 +8,6 @@
     align-items: center;
 }
 
-.icon {
-    color: var(--mantine-color-blue-light-color);
-}
-
 .doubleHeight {
     height: 100%;
 }
@@ -26,4 +22,5 @@
 
 .title {
     margin-top: 10px;
+    font-weight: 500;
 }

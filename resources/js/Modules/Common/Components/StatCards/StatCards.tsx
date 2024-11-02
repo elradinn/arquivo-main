@@ -110,7 +110,6 @@ export function StatCards({ dashboard }: StatCardsProps) {
             <Icon
               className={classes.icon}
               size="1.4rem"
-              stroke={1.5}
               color={`var(--mantine-color-${stat.color}-light-color)`}
               height={32}
               width={32}
