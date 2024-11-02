@@ -28,7 +28,6 @@ class GenerateReportAction
             ->with('document')
             ->get();
 
-        Log::info($itemContents);
 
         $folder = ItemParentResourceData::fromModel($item);
 

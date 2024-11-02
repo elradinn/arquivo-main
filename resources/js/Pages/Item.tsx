@@ -43,8 +43,6 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents }: It
         },
     }));
 
-    console.log(itemContents);
-
     const metadataColumns: DataTableColumn<ItemContentsResourceData>[] = [
         {
             accessor: "name",

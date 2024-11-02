@@ -24,8 +24,6 @@ const AddRequiredMetadataModal: React.FC<AddRequiredMetadataModalProps> = ({ fol
         }
     };
 
-    console.log(metadataList);
-
     const options = metadataList.map((meta) => (
         <Combobox.Option value={meta.id.toString()} key={meta.id}>
             {meta.name}

@@ -16,8 +16,6 @@ export function useAddRequiredMetadata({ folderId, close }: IProps) {
     const handleAddMetadata = (metadataId: number) => {
         data.metadata_id = metadataId;
 
-        console.log(data);
-
         post(route("folder.updateRequiredMetadata", folderId), {
             onSuccess: () => {
                 close();

@@ -38,8 +38,6 @@ class WorkflowController extends Controller
     {
         $workflow = $this->createWorkflowAction->execute($data);
 
-        dd($workflow);
-
         return redirect()->back();
     }
 
