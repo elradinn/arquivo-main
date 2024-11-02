@@ -1,5 +1,0 @@
-[phases.build]
-providers = ["...", "supervisor"]
-
-[build]
-command = "nixpacks build"
