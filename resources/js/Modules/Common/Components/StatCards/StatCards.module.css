@@ -1,7 +1,5 @@
 .value {
-    font-size: rem(24px);
-    font-weight: 700;
-    line-height: 1;
+    font-size: 1.5rem;
 }
 
 .diff {
@@ -10,6 +8,19 @@
     align-items: center;
 }
 
-.icon {
-    color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-3));
+.doubleHeight {
+    height: 100%;
+}
+
+.card {
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.title {
+    margin-top: 10px;
+    font-weight: 500;
 }

@@ -6,7 +6,7 @@ interface StateBadgeProps {
 }
 
 const StateBadge: React.FC<StateBadgeProps> = ({ state }) => {
-    return <Badge color={getColorStatus(state)} variant="light">{state}</Badge>;
+    return <Badge color={getColorStatus(state)} variant="light">{state ?? "None"}</Badge>;
 };
 
 export default StateBadge;

@@ -9,5 +9,7 @@ export const getColorStatus = (state: string | undefined) => {
         case "Reviewal Rejected":
         case "Approval Rejected":
             return "red";
+        default:
+            return "gray";
     }
 };

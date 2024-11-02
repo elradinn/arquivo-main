@@ -25,6 +25,9 @@ import {
 } from "@/Modules/Item/Helpers/file-helper";
 import { Group } from "@mantine/core";
 import { getColorStatus } from "@/Modules/Common/Helpers/get-color-status";
+import ArqPdf from "../IconFiles/ArqPdf";
+import ArqDefault from "../IconFiles/ArqDefault";
+import ArqFolder from "../IconFiles/ArqFolder";
 
 interface ItemIconProps {
     mime: string;
@@ -36,11 +39,11 @@ interface ItemIconProps {
 export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, approvalStatus, missingRequiredMetadata }) => {
     const renderIcon = () => {
         if (isFolder) {
-            return <IconFolder size={20} fill="orange" color="orange" />;
+            return <ArqFolder size={32} />;
         } else if (isImage(mime)) {
             return <IconPhoto size={20} />;
         } else if (isPDF(mime)) {
-            return <IconFileTypePdf size={20} />;
+            return <ArqPdf size={32} />;
         } else if (isAudio(mime)) {
             return <IconFileMusic size={20} />;
         } else if (isVideo(mime)) {
@@ -54,7 +57,7 @@ export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, approvalStat
         } else if (isText(mime)) {
             return <IconFileText size={20} />;
         }
-        return <IconFile size={20} />;
+        return <ArqDefault size={32} />;
     };
 
     const indicatorColor = getColorStatus(approvalStatus);

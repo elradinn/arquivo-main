@@ -25,6 +25,7 @@ import { DashboardMetadataResourceData } from "@/Modules/Dashboard/Types/Dashboa
 import { ItemContentsResourceData } from "@/Modules/Item/Types/ItemContentsResourceData";
 import { DatePickerInput } from "@mantine/dates";
 import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
+import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
 
 interface DashboardReportProps {
     documents: PaginationData<ItemContentsResourceData>;
@@ -157,12 +158,11 @@ export default function DashboardReportPage({
                         columns={[
                             {
                                 accessor: "name",
-                                render: ({ mime, type, name, status, missing_required_metadata }) => (
+                                render: ({ mime, type, name, missing_required_metadata }) => (
                                     <Group align="center" gap={12}>
                                         <ItemIcon
                                             mime={mime ?? ""}
                                             isFolder={type === "folder"}
-                                            approvalStatus={status}
                                             missingRequiredMetadata={missing_required_metadata}
                                         />
                                         <span>{name}</span>
@@ -170,6 +170,10 @@ export default function DashboardReportPage({
                                 ),
                             },
                             { accessor: "updated_at", title: "Last Modified" },
+                            {
+                                accessor: "status",
+                                render: ({ status }) => <StateBadge state={status} />,
+                            },
                             // Dynamic columns based on selected metadata
                             ...selectedMetadata.map((meta) => ({
                                 accessor: `metadata_${meta.id}`,
