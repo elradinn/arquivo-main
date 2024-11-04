@@ -1,15 +1,15 @@
-// @ts-nocheck
 import { useState } from "react";
-import { FileData } from "@/Modules/Common/Types/types";
+import { ItemContentsResourceData } from "@/Modules/Item/Types/ItemContentsResourceData";   
 
 export function useSelectItems() {
-    const [selectedRecord, setSelectedRecord] = useState<FileData[]>([]);
+    const [selectedRecord, setSelectedRecord] = useState<ItemContentsResourceData[]>([]);
 
-    const extractIds = (records: FileData[]): string[] => {
+    const extractIds = (records: ItemContentsResourceData[]): string[] => {
         return records.map((record) => record.id);
     };
 
     const ids = extractIds(selectedRecord);
+    console.log(ids);
 
     return { selectedRecord, setSelectedRecord, ids };
 }

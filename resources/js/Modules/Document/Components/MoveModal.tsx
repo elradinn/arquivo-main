@@ -8,14 +8,15 @@ import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 
 interface MoveModalProps {
     selectedDocumentIds: string[];
+    setSelectedRecord: (record: any[]) => void;
 }
 
-const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds }) => {
+const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds, setSelectedRecord }) => {
     const { modals, closeModal } = useModalStore();
     const isOpen = modals["moveModal"];
     const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
     const { data, loading, error } = useShowItems(currentFolderId, isOpen);
-    const { setData, moveDocuments, processing } = useMoveDocuments();
+    const { data: moveData, setData, moveDocuments, processing } = useMoveDocuments({ setSelectedRecord });
 
     const handleFolderClick = (folderId: string) => {
         setCurrentFolderId(folderId);
@@ -38,10 +39,9 @@ const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds }) => {
             return;
         }
 
-        setData({
-            ids: selectedDocumentIds,
-            destination_folder_id: currentFolderId,
-        });
+        moveData.ids = selectedDocumentIds;
+        moveData.destination_folder_id = currentFolderId;
+
         moveDocuments();
         closeModal("moveModal");
     };

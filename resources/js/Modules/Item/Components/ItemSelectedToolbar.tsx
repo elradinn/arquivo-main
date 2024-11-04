@@ -50,7 +50,7 @@ const SelectedItemToolbar: React.FC<IProps> = ({ setSelectedRecord, selectedIds,
             </Button>
 
             <DeleteFilesForm selectedIds={selectedIds} setSelectedRecord={setSelectedRecord} />
-            <MoveModal selectedDocumentIds={selectedIds} />
+            <MoveModal selectedDocumentIds={selectedIds} setSelectedRecord={setSelectedRecord} />
         </Group>
     );
 };
