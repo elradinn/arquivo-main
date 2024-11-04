@@ -29,7 +29,7 @@ use Modules\Document\Actions\RestoreDocumentVersionAction;
 use Modules\Document\Actions\DeleteDocumentVersionAction;
 use Modules\Document\Data\DocumentVersionResourceData;
 use Modules\Document\Data\UploadDocumentVersionData;
-use Modules\Item\Actions\MoveDocumentsAction;
+use Modules\Document\Actions\MoveDocumentsAction;
 
 class DocumentController extends Controller
 {

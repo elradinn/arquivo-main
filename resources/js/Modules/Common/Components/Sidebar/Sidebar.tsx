@@ -53,8 +53,6 @@ const Sidebar: React.FC = () => {
         </Link>
     ));
 
-    console.log(workspaces);
-
     const renderWorkspaceLinks = workspaces.map((workspace) => (
         <div
             className={classes.workspaceLinkWrapper}

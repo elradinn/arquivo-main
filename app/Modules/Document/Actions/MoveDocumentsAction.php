@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Item\Actions;
+namespace Modules\Document\Actions;
 
 use App\Modules\Document\Data\MoveDocumentsData;
 use Modules\Document\Models\Document;
@@ -10,6 +10,6 @@ class MoveDocumentsAction
 {
     public function execute(MoveDocumentsData $data): void
     {
-        Item::whereIn('item_id', $data->ids)->update(['parent_id' => $data->destination_folder_id]);
+        Item::whereIn('id', $data->ids)->update(['parent_id' => $data->destination_folder_id]);
     }
 }

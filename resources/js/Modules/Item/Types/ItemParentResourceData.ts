@@ -3,6 +3,7 @@ import { MetadataResourceData } from "@/Modules/Metadata/Types/MetadataResourceD
 
 export type ItemParentResourceData = {
     item_id: string;
+    parent_id: string;
     name: string;
     owned_by: string;
     numbering_scheme_id?: number;

@@ -13,6 +13,8 @@ Route::middleware('auth')->group(function () {
 
         Route::put('/{document}/save', [DocumentController::class, 'save'])->name('document.save');
 
+        Route::put('/move', [DocumentController::class, 'move'])->name('document.move');
+
         Route::post('/', [DocumentController::class, 'store'])->name('document.store');
 
         Route::post('/{document}/share', [DocumentController::class, 'share'])->name('document.share');

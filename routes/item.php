@@ -14,6 +14,6 @@ Route::middleware('auth')->group(function () {
 
         Route::delete('/', [ItemController::class, 'delete'])->name('item.delete');
 
-        Route::get('/showItem/{item?}', [ItemController::class, 'showItems']);
+        Route::get('/showItem/{item?}', [ItemController::class, 'showItems'])->name('item.showItems');
     });
 });
