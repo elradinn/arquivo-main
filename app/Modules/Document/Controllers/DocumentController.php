@@ -3,6 +3,7 @@
 namespace Modules\Document\Controllers;
 
 use App\Modules\ActivityLog\Data\ActivityLogResourceData;
+use App\Modules\Document\Data\MoveDocumentsData;
 use Modules\Common\Controllers\Controller;
 use Modules\Document\Models\Document;
 use Illuminate\Http\JsonResponse;
@@ -28,6 +29,7 @@ use Modules\Document\Actions\RestoreDocumentVersionAction;
 use Modules\Document\Actions\DeleteDocumentVersionAction;
 use Modules\Document\Data\DocumentVersionResourceData;
 use Modules\Document\Data\UploadDocumentVersionData;
+use Modules\Item\Actions\MoveDocumentsAction;
 
 class DocumentController extends Controller
 {
@@ -38,7 +40,8 @@ class DocumentController extends Controller
         protected UpdateDocumentAction $updateDocumentAction,
         protected UploadDocumentVersionAction $uploadDocumentVersionAction,
         protected RestoreDocumentVersionAction $restoreDocumentVersionAction,
-        protected DeleteDocumentVersionAction $deleteDocumentVersionAction
+        protected DeleteDocumentVersionAction $deleteDocumentVersionAction,
+        protected MoveDocumentsAction $moveDocumentsAction
     ) {}
 
     public function store(UploadDocumentData $data): RedirectResponse
@@ -67,6 +70,13 @@ class DocumentController extends Controller
         //     'itemAncestors' => ItemAncestorsResourceData::collect($itemAncestors, DataCollection::class),
         //     'document' => DocumentResourceData::fromModel($document),
         // ], 200);
+    }
+
+    public function move(MoveDocumentsData $data): RedirectResponse
+    {
+        $this->moveDocumentsAction->execute($data);
+
+        return redirect()->back();
     }
 
     public function edit(Document $document)

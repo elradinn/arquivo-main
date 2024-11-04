@@ -13,5 +13,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/download', [ItemController::class, 'download'])->name('item.download');
 
         Route::delete('/', [ItemController::class, 'delete'])->name('item.delete');
+
+        Route::get('/showItem/{item?}', [ItemController::class, 'showItems']);
     });
 });

@@ -29,6 +29,7 @@ use Modules\Folder\Actions\UpdateFolderMetadataAction;
 use Modules\Folder\Data\UpdateFolderMetadataData;
 use Modules\Folder\Data\FolderRequiredMetadataResource;
 use Modules\Folder\Data\SelectMetadataColumnData;
+use Modules\Item\Actions\ShowMoveItemsAction;
 
 class FolderController extends Controller
 {
