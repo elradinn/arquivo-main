@@ -9,7 +9,6 @@ export function useSelectItems() {
     };
 
     const ids = extractIds(selectedRecord);
-    console.log(ids);
 
     return { selectedRecord, setSelectedRecord, ids };
 }

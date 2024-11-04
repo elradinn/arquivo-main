@@ -31,7 +31,6 @@ export default function useShowItems(itemId: string | null, isOpen: boolean) {
         try {
             const response = await axios.get(route("item.showItems", { item: itemId }));
             setData(response.data);
-            console.log(response.data)
         } catch (err) {
             setError("Failed to fetch items.");
             console.error(err);

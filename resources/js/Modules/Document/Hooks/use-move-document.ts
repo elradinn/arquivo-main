@@ -19,7 +19,6 @@ export default function useMoveDocuments({ setSelectedRecord }: { setSelectedRec
                 reset();
             },
             onError: (errors) => {
-                console.log(errors);
                 notifications.show({
                     message: "Failed to move documents",
                     color: "red",
