@@ -12,7 +12,7 @@ class DocumentApprovalRequestNotification extends Notification implements Should
 {
     use Queueable;
 
-    protected $documentApproval;
+    protected DocumentApproval $documentApproval;
 
     public function __construct(DocumentApproval $documentApproval)
     {
@@ -33,8 +33,9 @@ class DocumentApprovalRequestNotification extends Notification implements Should
     public function toDatabase($notifiable)
     {
         return [
-            'message' => 'There is an active ' . $this->documentApproval->type . 'workflow',
-            'document_id' => $this->documentApproval->document->id,
+            'message' => 'There is an active ' . $this->documentApproval->type . ' workflow',
+            'document_id' => $this->documentApproval->document->item_id,
+            'document_approval_id' => $this->documentApproval->id,
             'created_at' => now(),
         ];
     }

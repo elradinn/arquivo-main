@@ -28,6 +28,7 @@ import {
 } from "@tabler/icons-react";
 import { PageProps } from "../../Types";
 import GlobalSearch from "@/Modules/GlobalSearch/Components/GlobalSearch";
+import NotificationMenu from "@/Modules/Notification/Components/NotificationMenu";
 
 interface IProps {
     children: React.ReactNode;
@@ -70,29 +71,7 @@ export function Authenticated({ children, toolbar }: IProps) {
                                 Admin Tools
                             </Button>
                         )}
-                        <Menu
-                            width={200}
-                            transitionProps={{
-                                transition: "pop-top-right",
-                            }}
-                            position="bottom-end"
-                        >
-                            <Menu.Target>
-                                <ActionIcon variant="subtle" color="gray" size="xl">
-                                    <Indicator disabled>
-                                        <IconBell size={24} />
-                                    </Indicator>
-                                </ActionIcon>
-                            </Menu.Target>
-                            <Menu.Dropdown>
-                                <Center h={200}>
-                                    <Stack align="center" c="dimmed">
-                                        <IconInbox />
-                                        <Text c="dimmed">No notifications</Text>
-                                    </Stack>
-                                </Center>
-                            </Menu.Dropdown>
-                        </Menu>
+                        <NotificationMenu />
                         <Menu
                             width={200}
                             transitionProps={{
