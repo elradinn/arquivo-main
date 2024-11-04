@@ -57,7 +57,7 @@ export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, approvalStat
         } else if (isText(mime)) {
             return <IconFileText size={20} />;
         }
-        return <ArqDefault size={32} />;
+        return <ArqDefault size={36} />;
     };
 
     const indicatorColor = getColorStatus(approvalStatus);
