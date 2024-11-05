@@ -123,7 +123,7 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents }: It
                                             if (type === "folder") {
                                                 openFolder(type, id);
                                             } else if (type === "document") {
-                                                openDocument(type, id);
+                                                openDocument(id);
                                             }
                                         }
                                     },

@@ -72,10 +72,14 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                         </Group>
 
                         <Stack gap={12}>
-                            <Text size="sm" fw="bold">
-                                Document Versions
-                            </Text>
-                            <DocumentVersionsDataTable versions={document.versions} />
+                            {document.versions.length > 0 && (
+                                <>
+                                    <Text size="sm" fw="bold">
+                                        Document Versions
+                                    </Text>
+                                    <DocumentVersionsDataTable versions={document.versions} />
+                                </>
+                            )}
 
                             <Text size="sm" fw="bold">
                                 Audit Log
@@ -102,27 +106,6 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                         <Text c="dimmed" fw={500}>
                             Options
                         </Text>
-
-                        <Button
-                            variant="subtle"
-                            color="blue.5"
-                            leftSection={<IconLock size={18} />}
-                            fullWidth
-                            justify="left"
-                        >
-                            Lock File
-                        </Button>
-
-                        {/* <Button
-                            variant="subtle"
-                            color="blue.5"
-                            leftSection={<IconUpload size={18} />}
-                            fullWidth
-                            justify="left"
-
-                        >
-                            Upload New Version
-                        </Button> */}
 
                         <FileButton
                             onChange={handleFileUpload}

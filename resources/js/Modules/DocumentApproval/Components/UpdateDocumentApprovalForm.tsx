@@ -1,4 +1,5 @@
 import {
+    ActionIcon,
     Avatar,
     Button,
     Flex,
@@ -12,14 +13,16 @@ import {
 } from "@mantine/core";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { useUpdateDocumentApproval } from "../Hooks/use-update-document-approval";
+import { IconTrash } from "@tabler/icons-react";
 import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
+import ConfirmDeleteDocumentApprovalForm from "./ConfirmDeleteDocumentApprovalForm";
 
 interface IFormProps {
     document?: DocumentResourceData;
 }
 
 const UpdateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
-    const { modals, closeModal } = useModalStore();
+    const { modals, closeModal, openModal } = useModalStore();
     const isOpen = modals["updateDocumentApproval"];
 
     const {
@@ -36,76 +39,92 @@ const UpdateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
     });
 
     return (
-        <Modal
-            opened={modals["updateDocumentApproval"]}
-            onClose={() => closeModal("updateDocumentApproval")}
-            title={
-                <Text fw="bold" size="lg">
-                    Update Document Approval Process
-                </Text>
-            }
-            size={550}
-        >
-            <form onSubmit={handleUpdateDocumentApproval}>
-                <Stack gap={16}>
-                    <Text size="sm" c="dimmed">
-                        Routinely directs any uploaded file in this folder through a predefined
-                        document approval process
+        <>
+            <Modal
+                opened={modals["updateDocumentApproval"]}
+                onClose={() => closeModal("updateDocumentApproval")}
+                title={
+                    <Text fw="bold" size="lg">
+                        Update Document Approval Process
                     </Text>
+                }
+                size={550}
+            >
+                <form onSubmit={handleUpdateDocumentApproval}>
+                    <Stack gap={16}>
+                        <Text size="sm" c="dimmed">
+                            Routinely directs any uploaded file in this folder through a predefined
+                            document approval process
+                        </Text>
 
-                    <Radio.Group
-                        name="status"
-                        value={data.type}
-                        onChange={(value: string) => {
-                            setData("type", value);
-                            setDocumentApprovalType(value);
-                        }}
-                    >
-                        <Group mt="xs">
-                            <Radio value="reviewal" label="Review" />
-                            <Radio value="approval" label="Approval" />
-                        </Group>
-                    </Radio.Group>
-
-                    <Textarea
-                        label="Resolution"
-                        placeholder="Your resolution for this approval"
-                        value={data.resolution ?? ""}
-                        onChange={(e) => setData("resolution", e.target.value)}
-                        error={errors.resolution}
-                        autosize
-                        minRows={2}
-                        maxRows={4}
-                    />
-
-                    <Text size="sm" fw={500} mb={-8}>
-                        Users in this document approval
-                    </Text>
-
-                    {fetchedUsers.map(user => (
-                        <Paper withBorder radius="md" py={16} px={10} key={user.id}>
-                            <Group>
-                                <Avatar />
-                                <Stack gap={8}>
-                                    <Text size="sm">{user.name}</Text>
-                                    <Text size="sm">{user.email}</Text>
-                                </Stack>
+                        <Radio.Group
+                            name="status"
+                            value={data.type}
+                            onChange={(value: string) => {
+                                setData("type", value);
+                                setDocumentApprovalType(value);
+                            }}
+                        >
+                            <Group mt="xs">
+                                <Radio value="reviewal" label="Review" />
+                                <Radio value="approval" label="Approval" />
                             </Group>
-                        </Paper>
-                    ))}
-                </Stack>
+                        </Radio.Group>
 
-                <Flex align="center" justify="end" mt={16}>
-                    <Button variant="light" onClick={() => closeModal("updateDocumentApproval")}>
-                        Cancel
-                    </Button>
+                        <Textarea
+                            label="Resolution"
+                            placeholder="Your resolution for this approval"
+                            value={data.resolution ?? ""}
+                            onChange={(e) => setData("resolution", e.target.value)}
+                            error={errors.resolution}
+                            autosize
+                            minRows={2}
+                            maxRows={4}
+                        />
 
-                    <Button ml={12} type="submit" loading={processing}>
-                        Update
-                    </Button>
-                </Flex>
-            </form>
-        </Modal>
+                        <Text size="sm" fw={500} mb={-8}>
+                            Users in this document approval
+                        </Text>
+
+                        {fetchedUsers.map(user => (
+                            <Paper withBorder radius="md" py={16} px={10} key={user.id}>
+                                <Group>
+                                    <Avatar />
+                                    <Stack gap={8}>
+                                        <Text size="sm">{user.name}</Text>
+                                        <Text size="sm">{user.email}</Text>
+                                    </Stack>
+                                </Group>
+                            </Paper>
+                        ))}
+                    </Stack>
+
+                    <Flex align="center" justify="end" mt={16}>
+                        <Button variant="light" onClick={() => closeModal("updateDocumentApproval")}>
+                            Cancel
+                        </Button>
+
+                        <Button ml={12} type="submit" loading={processing}>
+                            Update
+                        </Button>
+
+                        <ActionIcon
+                            variant="transparent"
+                            color="red"
+                            onClick={() => {
+                                closeModal("updateDocumentApproval");
+                                openModal("confirmDeleteDocumentApproval");
+                            }}
+                            title="Delete Document Approval"
+                            ml={12}
+                        >
+                            <IconTrash size={18} />
+                        </ActionIcon>
+                    </Flex>
+                </form>
+            </Modal>
+            <ConfirmDeleteDocumentApprovalForm documentApprovalId={document?.document_approval_id} />
+        </>
     );
 };
 

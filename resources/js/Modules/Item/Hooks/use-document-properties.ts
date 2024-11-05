@@ -1,14 +1,11 @@
 import { router } from "@inertiajs/react";
 
 interface UseDocumentProperties {
-    openDocument: (type?: string, id?: string) => void;
+    openDocument: (id?: string) => void;
 }
 
 export function useDocumentProperties(): UseDocumentProperties {
-    const openDocument = (type?: string, id?: string) => {
-        if (type !== "document") {
-            return;
-        }
+    const openDocument = (id?: string) => {
         router.visit(route("document.show", { document: id }));
     };
 

@@ -86,6 +86,7 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
                                 <Avatar />
                                 <Stack gap={8}>
                                     <Text size="sm">{user.name}</Text>
+                                    <Text size="sm">{user.email}</Text>
                                 </Stack>
                             </Group>
                         </Paper>

@@ -1,5 +1,5 @@
 export type FolderRequiredMetadataResource = {
-    id: number;
+    metadata_id: number;
     name: string;
     description: string;
 }

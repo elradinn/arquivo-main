@@ -73,9 +73,9 @@ export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, approvalStat
 
     return (
         <Group gap={4}>
-            {renderStatusIcon()}
-            {missingRequiredMetadata && <IconTag color="red" />}
             {renderIcon()}
+            {missingRequiredMetadata && <IconTag color="red" />}
+            {renderStatusIcon()}
         </Group>
     );
 };

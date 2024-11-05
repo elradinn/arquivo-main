@@ -13,13 +13,19 @@ use Modules\DocumentApproval\Data\DocumentApprovalResourceData;
 use Modules\DocumentApproval\Models\DocumentApproval;
 use Modules\DocumentApproval\Actions\UpdateDocumentApprovalAction;
 use Modules\DocumentApproval\Data\UpdateDocumentApprovalData;
+use Modules\DocumentApproval\Actions\DeleteDocumentApprovalAction;
 
 class DocumentApprovalController extends Controller
 {
+    private DeleteDocumentApprovalAction $deleteDocumentApprovalAction;
+
     public function __construct(
         protected CreateDocumentApprovalAction $createDocumentApprovalAction,
-        protected UpdateDocumentApprovalAction $updateDocumentApprovalAction
-    ) {}
+        protected UpdateDocumentApprovalAction $updateDocumentApprovalAction,
+        DeleteDocumentApprovalAction $deleteDocumentApprovalAction
+    ) {
+        $this->deleteDocumentApprovalAction = $deleteDocumentApprovalAction;
+    }
 
     public function show(DocumentApproval $documentApproval): Response
     {
@@ -40,16 +46,16 @@ class DocumentApprovalController extends Controller
         return redirect()->back();
     }
 
-    public function cancel(DocumentApproval $documentApproval): JsonResponse
-    {
-        $documentApproval->delete();
-
-        return response()->json(['message' => 'Document approval canceled.']);
-    }
-
     public function update(DocumentApproval $documentApproval, UpdateDocumentApprovalData $data): RedirectResponse
     {
         $this->updateDocumentApprovalAction->execute($documentApproval, $data);
+
+        return redirect()->back();
+    }
+
+    public function cancel(DocumentApproval $documentApproval): RedirectResponse
+    {
+        $this->deleteDocumentApprovalAction->execute($documentApproval);
 
         return redirect()->back();
     }

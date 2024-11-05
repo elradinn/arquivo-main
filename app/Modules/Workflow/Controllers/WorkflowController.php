@@ -38,8 +38,6 @@ class WorkflowController extends Controller
     {
         $workflow = $this->createWorkflowAction->execute($data);
 
-        dd($workflow);
-
         return redirect()->back();
     }
 
@@ -49,10 +47,10 @@ class WorkflowController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(Workflow $workflow): JsonResponse
+    public function destroy(Workflow $workflow): RedirectResponse
     {
         $this->deleteWorkflowAction->execute($workflow);
-        return response()->json(['message' => 'Workflow deleted successfully.'], 200);
+        return redirect()->back();
     }
 
     // public function getWorkflowUsersByType(string $type): JsonResponse

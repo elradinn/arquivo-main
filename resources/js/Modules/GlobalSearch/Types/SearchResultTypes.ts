@@ -1,7 +1,11 @@
 export type DocumentSearchResult = {
-    id: number;
+    id: string;
     name: string;
     document_number: string;
+    mime: string;
+    type: string;
+    status: string;
+    missing_required_metadata: boolean;
     metadata: {
         metadata_id: number;
         name: string;

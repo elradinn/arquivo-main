@@ -15,6 +15,8 @@ import {
     IconSelector,
     IconLayoutGrid,
     IconFileReport,
+    IconTags,
+    IconTag,
 } from "@tabler/icons-react";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { ItemParentResourceData } from "../Types/ItemParentResourceData";
@@ -142,7 +144,7 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent }) => {
                         variant="transparent"
                         color={itemParent?.required_metadata?.length ? "green.8" : "dark.3"}
                     >
-                        <IconDeviceSdCard size={18} />
+                        <IconTag size={18} />
                     </ActionIcon>
                 </Tooltip>
 
