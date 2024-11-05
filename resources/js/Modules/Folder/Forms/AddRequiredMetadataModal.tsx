@@ -25,7 +25,7 @@ const AddRequiredMetadataModal: React.FC<AddRequiredMetadataModalProps> = ({ fol
     };
 
     const options = metadataList.map((meta) => (
-        <Combobox.Option value={meta.id.toString()} key={meta.id}>
+        <Combobox.Option value={meta.metadata_id.toString()} key={meta.metadata_id}>
             {meta.name}
         </Combobox.Option>
     ));
@@ -49,7 +49,7 @@ const AddRequiredMetadataModal: React.FC<AddRequiredMetadataModalProps> = ({ fol
                             rightSectionPointerEvents="none"
                             onClick={() => combobox.toggleDropdown()}
                         >
-                            {selectedMetadata ? metadataList.find(meta => meta.id === selectedMetadata)?.name : "Select Metadata"}
+                            {selectedMetadata ? metadataList.find(meta => meta.metadata_id === selectedMetadata)?.name : "Select Metadata"}
                         </InputBase>
                     </Combobox.Target>
 
