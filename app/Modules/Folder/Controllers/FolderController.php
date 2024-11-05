@@ -30,6 +30,9 @@ use Modules\Folder\Data\UpdateFolderMetadataData;
 use Modules\Folder\Data\FolderRequiredMetadataResource;
 use Modules\Folder\Data\SelectMetadataColumnData;
 use Modules\Item\Actions\ShowMoveItemsAction;
+use Modules\Metadata\Models\Metadata;
+use Modules\Folder\Actions\DeleteRequiredMetadataAction;
+use Illuminate\Http\Request;
 
 class FolderController extends Controller
 {
@@ -40,7 +43,8 @@ class FolderController extends Controller
         private FolderAuthorization $folderAuthorization,
         private GetItemDataAction $getItemDataAction,
         private UpdateFolderMetadataAction $updateFolderMetadataAction,
-        private SelectMetadataColumnAction $selectMetadataColumnAction
+        private SelectMetadataColumnAction $selectMetadataColumnAction,
+        protected DeleteRequiredMetadataAction $deleteRequiredMetadataAction
     ) {}
 
     public function show(Folder $folder)
@@ -152,6 +156,16 @@ class FolderController extends Controller
     public function selectMetadataColumn(Folder $folder, SelectMetadataColumnData $data): RedirectResponse
     {
         $this->selectMetadataColumnAction->execute($folder, $data);
+        return redirect()->back();
+    }
+
+    /**
+     * Remove the specified required metadata from the folder.
+     */
+    public function deleteRequiredMetadata(Folder $folder, Metadata $metadata): RedirectResponse
+    {
+        $this->deleteRequiredMetadataAction->execute($folder, $metadata);
+
         return redirect()->back();
     }
 }

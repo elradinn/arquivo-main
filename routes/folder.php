@@ -28,5 +28,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{folder}/metadata_columns', [FolderController::class, 'getExistingMetadataColumns'])->name('folder.getExistingMetadataColumns');
 
         Route::post('/{folder}/metadata_columns', [FolderController::class, 'selectMetadataColumn'])->name('folder.selectMetadataColumn');
+
+        Route::delete('/{folder}/required_metadata/{metadata}', [FolderController::class, 'deleteRequiredMetadata'])->name('folder.deleteRequiredMetadata');
     });
 });
