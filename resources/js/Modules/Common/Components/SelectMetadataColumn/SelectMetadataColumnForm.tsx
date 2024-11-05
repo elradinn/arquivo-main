@@ -73,10 +73,10 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({ fol
 
                         {metadataList.map((meta) => (
                             <Checkbox
-                                key={meta.id}
+                                key={meta.metadata_id}
                                 label={meta.name}
-                                checked={data.metadata_ids.includes(meta.id)}
-                                onChange={() => handleCheckboxChange(meta.id)}
+                                checked={data.metadata_ids.includes(meta.metadata_id)}
+                                onChange={() => handleCheckboxChange(meta.metadata_id)}
                             />
                         ))}
                     </Group>

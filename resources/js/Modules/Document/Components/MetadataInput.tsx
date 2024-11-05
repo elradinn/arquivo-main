@@ -40,7 +40,7 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
     // Compute missing required metadata
     const missingRequiredMetadata = useMemo(() => {
         const existingIds = metadata.map(meta => meta.metadata_id);
-        return requiredMetadata.filter(required => !existingIds.includes(required.id));
+        return requiredMetadata.filter(required => !existingIds.includes(required.metadata_id));
     }, [metadata, requiredMetadata]);
 
     return (
@@ -78,7 +78,7 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
                             title={`${required.name} is missing`}
                             color="red"
                             variant="light"
-                            key={required.id}
+                            key={required.metadata_id}
                         />
                     ))}
                 </Stack>
@@ -88,7 +88,7 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
                 Add Custom Metadata
             </Button>
             <AddDocumentMetadataModal onAdd={(meta) => handleAddMetadata({
-                metadata_id: meta.id,
+                metadata_id: meta.metadata_id,
                 name: meta.name,
                 value: "",
             })} />

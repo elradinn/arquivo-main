@@ -28,7 +28,7 @@ const AddDocumentMetadataModal: React.FC<AddDocumentMetadataModalProps> = ({ onA
     };
 
     const options = metadataList.map(meta => (
-        <Combobox.Option value={meta.id.toString()} key={meta.id}>
+        <Combobox.Option value={meta.metadata_id.toString()} key={meta.metadata_id}>
             {meta.name}
         </Combobox.Option>
     ));
@@ -43,7 +43,7 @@ const AddDocumentMetadataModal: React.FC<AddDocumentMetadataModalProps> = ({ onA
                 <Combobox
                     store={combobox}
                     onOptionSubmit={(val) => {
-                        const selected = metadataList.find(meta => meta.id.toString() === val) || null;
+                        const selected = metadataList.find(meta => meta.metadata_id.toString() === val) || null;
                         setSelectedMetadata(selected);
                         combobox.closeDropdown();
                     }}
