@@ -57,7 +57,7 @@ class DownloadItemsAction
         Log::info("publicPath: $publicPath");
 
         if (!Storage::exists('zip')) {
-            Storage::makeDirectory('zip');
+            Storage::makeDirectory('public/zip');
         }
 
         $zipFile = Storage::path($publicPath);
