@@ -19,8 +19,6 @@ class NotificationResource extends Data
 
     public static function fromModel($notification): self
     {
-        Log::info($notification->data);
-
         return new self(
             id: $notification->id,
             document_id: $notification->data['document_id'],

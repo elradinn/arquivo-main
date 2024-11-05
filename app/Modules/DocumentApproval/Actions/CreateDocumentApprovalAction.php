@@ -37,8 +37,6 @@ class CreateDocumentApprovalAction
             ]);
         });
 
-        Log::info($documentApprovalUsers);
-
         $documentApproval->documentApprovalUsers()->saveMany($documentApprovalUsers);
 
         $documentApproval->document->update([

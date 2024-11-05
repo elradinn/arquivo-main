@@ -28,8 +28,6 @@ class GenerateReportAction
             ->with('document')
             ->get();
 
-        Log::info($itemContents);
-
         $folder = ItemParentResourceData::fromModel($item);
 
         $headerPath = public_path() . '/images/report-header.png';
