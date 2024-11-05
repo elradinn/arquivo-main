@@ -43,6 +43,8 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
         return requiredMetadata.filter(required => !existingIds.includes(required.metadata_id));
     }, [metadata, requiredMetadata]);
 
+    console.log(requiredMetadata);
+
     return (
         <Stack>
             {metadata.map((meta, index) => (

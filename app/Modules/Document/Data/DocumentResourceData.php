@@ -27,7 +27,10 @@ class DocumentResourceData extends Resource
     public static function fromModel(Document $document): self
     {
         $requiredMetadata = Folder::find($document->item->parent_id);
-        $requiredFolderMetadata = $requiredMetadata ? $requiredMetadata->requiredMetadata()->get()->toArray() : [];
+        $requiredFolderMetadata = $requiredMetadata ? $requiredMetadata->requiredMetadata()->get()->map(fn($metadata) => [
+            'metadata_id' => $metadata->id,
+            'name' => $metadata->name,
+        ])->toArray() : [];
 
         return new self(
             item_id: $document->item_id,
