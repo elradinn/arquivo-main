@@ -49,8 +49,6 @@ export default function FolderMetadataPage({ requiredMetadata, folder }: FolderM
         setMetadataToDelete(metadataId);
     };
 
-    console.log(metadataToDelete);
-
     return (
         <Authenticated>
             <Head title="Required Metadata" />
