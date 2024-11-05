@@ -37,6 +37,10 @@ const SearchItemsResult: React.FC<Props> = ({ documents, query }) => {
                         // { accessor: 'metadata', title: 'Metadata', render: (metadata: any[]) => metadata.map((meta: any) => `${meta.name}: ${meta.value}`).join(', ') },
                     ]}
                     records={combinedResults}
+                    highlightOnHover
+                    verticalSpacing="lg"
+                    horizontalSpacing="xl"
+                    textSelectionDisabled
                 // page={1}
                 // recordsPerPage={10}
                 // paginationText={({ from, to, total }) => `${from} - ${to} of ${total}`}
