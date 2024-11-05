@@ -31,7 +31,7 @@ export function useCreateWorkflow({ itemParentId }: IProps) {
         post(route("workflows.store"), {
             preserveScroll: true,
             onSuccess: () => {
-                closeModal("workflow");
+                closeModal("createWorkflow");
                 notifications.show({
                     message: "Approval process created",
                     color: "green",
