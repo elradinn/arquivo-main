@@ -8,28 +8,33 @@ import { NumberingSchemeResourceData } from "@/Modules/NumberingScheme/Types/Num
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
 import { usePaginateDataTable } from "@/Modules/Common/Hooks/use-paginate-datatable";
 import { Filters, PaginationData } from "@/Modules/NumberingScheme/Types/NumberingSchemePageTypes";
+import { UpdateNumberingSchemeForm } from "@/Modules/NumberingScheme/Forms/UpdateNumberingSchemeForm"; // Import the form
+import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
+import { ItemParentResourceData } from "@/Modules/Item/Types/ItemParentResourceData";
 
 interface IProps {
     numberingSchemes: PaginationData;
     filters: Filters;
+    itemParent: ItemParentResourceData; // Assume this prop is available
 }
 
-export default function NumberingSchemePage({ numberingSchemes, filters }: IProps) {
+export default function NumberingSchemePage({ numberingSchemes, filters, itemParent }: IProps) {
     const [selectedRecord, setSelectedRecord] = useState<NumberingSchemeResourceData[]>([]);
-    const [formOpened, setFormOpened] = useState(false);
     const [editingScheme, setEditingScheme] = useState<NumberingSchemeResourceData | null>(null);
 
     const { search, setSearch, handleSearch } = useSearchDataTable(filters.search || "", "/numbering-scheme");
     const { page, setPage, handlePageChange } = usePaginateDataTable(numberingSchemes.current_page);
 
-    const closeForm = () => {
-        setFormOpened(false);
-        setEditingScheme(null);
-    };
+    const { openModal, closeModal } = useModalStore();
 
     const handleEdit = (scheme: NumberingSchemeResourceData) => {
         setEditingScheme(scheme);
-        setFormOpened(true);
+        openModal("updateNumberingScheme");
+    };
+
+    const closeForm = () => {
+        setEditingScheme(null);
+        closeModal("updateNumberingScheme");
     };
 
     return (
@@ -70,13 +75,19 @@ export default function NumberingSchemePage({ numberingSchemes, filters }: IProp
                     }}
                     selectedRecords={selectedRecord}
                     onSelectedRecordsChange={setSelectedRecord}
+                    onEdit={handleEdit} // Pass the handler
                 />
 
-                {/* <NumberingSchemeForm
-                    isOpened={formOpened}
-                    close={closeForm}
-                    initialData={editingScheme || undefined}
-                /> */}
+                {/* Render the UpdateNumberingSchemeForm modal */}
+                {editingScheme && (
+                    <UpdateNumberingSchemeForm
+                        itemParent={{
+                            ...itemParent,
+                            numbering_scheme_id: editingScheme.id, // Pass the selected scheme's ID
+                        }}
+                    // Optionally, you can pass additional props if needed
+                    />
+                )}
             </Stack>
         </Authenticated>
     );
