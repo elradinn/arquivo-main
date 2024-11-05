@@ -1,22 +1,23 @@
 import React from 'react';
 import { DataTable } from 'mantine-datatable';
-import { Stack, Text } from '@mantine/core';
-import { IconFolder, IconFile } from '@tabler/icons-react';
+import { Group, Stack, Text } from '@mantine/core';
+import { IconFolder, IconFile, IconSearchOff } from '@tabler/icons-react';
 import { SearchResults, DocumentSearchResult, FolderSearchResult } from '@/Modules/GlobalSearch/Types/SearchResultTypes';
 import { Authenticated } from '@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated';
+import { useDocumentProperties } from "@/Modules/Item/Hooks/use-document-properties";
+import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 
 interface Props {
     documents: DocumentSearchResult[];
-    // folders: FolderSearchResult[];
     query: string;
 }
 
 const SearchItemsResult: React.FC<Props> = ({ documents, query }) => {
-    // Combine documents and folders into a single list with a type field
     const combinedResults = [
         ...documents.map(doc => ({ ...doc, type: 'document' as const })),
-        // ...folders.map(folder => ({ ...folder, type: 'folder' as const })),
     ];
+
+    const { openDocument } = useDocumentProperties();
 
     return (
         <Authenticated>
@@ -25,26 +26,48 @@ const SearchItemsResult: React.FC<Props> = ({ documents, query }) => {
                     Search Results for "{query}"
                 </Text>
 
-                <DataTable
-                    columns={[
-                        {
-                            accessor: 'type', title: 'Type', render: (record: any) => (
-                                record.type === 'document' ? <IconFile size={20} /> : <IconFolder size={20} />
-                            )
-                        },
-                        { accessor: 'name', title: 'Name' },
-                        { accessor: 'document_number', title: 'Document Number', hidden: true },
-                        // { accessor: 'metadata', title: 'Metadata', render: (metadata: any[]) => metadata.map((meta: any) => `${meta.name}: ${meta.value}`).join(', ') },
-                    ]}
-                    records={combinedResults}
-                    highlightOnHover
-                    verticalSpacing="lg"
-                    horizontalSpacing="xl"
-                    textSelectionDisabled
-                // page={1}
-                // recordsPerPage={10}
-                // paginationText={({ from, to, total }) => `${from} - ${to} of ${total}`}
-                />
+                {combinedResults.length > 0 ? (
+                    <DataTable
+                        columns={[
+                            {
+                                accessor: "name",
+                                render: ({ mime, type, name, status, missing_required_metadata }) => (
+                                    <Group align="center" gap={12}>
+                                        <ItemIcon
+                                            mime={mime ?? ""}
+                                            isFolder={false}  // TODO: should check if the item is a folder or document
+                                            approvalStatus={status}
+                                            missingRequiredMetadata={missing_required_metadata}
+                                        />
+                                        <span>{name}</span>
+                                    </Group>
+                                ),
+                            },
+                            { accessor: 'document_number', title: 'Document Number', hidden: true },
+                        ]}
+                        records={combinedResults}
+                        highlightOnHover
+                        verticalSpacing="lg"
+                        horizontalSpacing="xl"
+                        textSelectionDisabled
+                        customRowAttributes={({ type, id }) => ({
+                            onDoubleClick: (e: MouseEvent) => {
+                                if (e.button === 0) {
+                                    openDocument(id);
+                                }
+                            },
+                        })}
+                    />
+                ) : (
+                    <Stack align="center" justify="center" h="100%">
+                        <IconSearchOff size={128} color="gray" stroke={1} />
+                        <Text size="lg" c="gray.6" mt="md">
+                            No results found.
+                        </Text>
+                    </Stack>
+                )}
+
+
             </Stack>
         </Authenticated>
     );

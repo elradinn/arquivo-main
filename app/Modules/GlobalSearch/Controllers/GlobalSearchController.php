@@ -39,6 +39,10 @@ class GlobalSearchController extends Controller
                     'id' => $doc->item_id,
                     'name' => $doc->name,
                     'document_number' => $doc->document_number,
+                    'mime' => $doc->mime,
+                    'type' => $doc->type,
+                    'status' => $doc->status ? $doc->status->label() : null,
+                    'missing_required_metadata' => $doc->missing_required_metadata,
                     'metadata' => $doc->metadata->map(fn($metadata) => [
                         'metadata_id' => $metadata->id,
                         'name' => $metadata->name,
