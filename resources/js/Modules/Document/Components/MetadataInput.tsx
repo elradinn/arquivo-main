@@ -9,16 +9,17 @@ import { FolderRequiredMetadataResource } from "@/Modules/Folder/Types/FolderReq
 interface MetadataInputProps {
     metadata: DocumentMetadata[];
     requiredMetadata: FolderRequiredMetadataResource[];
+    onAdd?: (metadata: DocumentMetadata) => void;
+    onUpdate?: (metadata: DocumentMetadata[]) => void;
     onChange?: (metadata: DocumentMetadata[]) => void;
     onDelete?: (metadataId: number) => void;
 }
 
-const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadata, onChange, onDelete }) => {
+const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadata, onAdd, onUpdate, onChange, onDelete }) => {
     const { openModal } = useModalStore();
 
     const handleAddMetadata = (newMetadata: DocumentMetadata) => {
-        const updatedMetadata = [...metadata, newMetadata];
-        onChange && onChange(updatedMetadata);
+        onAdd && onAdd(newMetadata);
     };
 
     const handleAddCustomMetadata = () => {
@@ -28,7 +29,8 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
     const handleRemove = (index: number) => {
         const removedMeta = metadata[index];
         const newMetadata = metadata.filter((_, i) => i !== index);
-        onChange && onChange(newMetadata);
+        console.log("newMetadata", newMetadata);
+        onUpdate && onUpdate(newMetadata);
         onDelete && removedMeta.metadata_id !== 0 && onDelete(removedMeta.metadata_id);
     };
 

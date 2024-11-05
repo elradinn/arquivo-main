@@ -38,9 +38,18 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
 
     const [deletedMetadataIds, setDeletedMetadataIds] = useState<number[]>([]);
 
+    const handleMetadataAdd = (metadata: DocumentMetadata) => {
+        setData("update_metadata", [...(data.update_metadata || []), metadata]);
+    };
+
+    const handleMetadataUpdate = (updatedMetadata: DocumentMetadata[]) => {
+        data.update_metadata = updatedMetadata;
+    };
+
     const handleMetadataChange = (updatedMetadata: DocumentMetadata[]) => {
         setData("update_metadata", updatedMetadata);
     };
+
 
     const handleMetadataDelete = (metadataId: number) => {
         setDeletedMetadataIds((prev) => [...prev, metadataId]);
@@ -93,6 +102,8 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
                         <MetadataInput
                             metadata={data.update_metadata ?? []}
                             requiredMetadata={document.required_folder_metadata}
+                            onAdd={handleMetadataAdd}
+                            onUpdate={handleMetadataUpdate}
                             onChange={handleMetadataChange}
                             onDelete={handleMetadataDelete}
                         />

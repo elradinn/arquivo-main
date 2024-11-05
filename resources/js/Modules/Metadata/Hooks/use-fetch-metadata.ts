@@ -7,7 +7,7 @@ export default function useFetchMetadata() {
 
     useEffect(() => {
         axios.get(route('metadata.fetch'))
-            .then(response => {
+            .then((response: { data: { metadata: FolderRequiredMetadataResource[] } }) => {
                 setMetadataList(response.data.metadata);
             })
             .catch(error => {
