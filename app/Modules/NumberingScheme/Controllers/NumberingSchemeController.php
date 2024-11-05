@@ -69,11 +69,11 @@ class NumberingSchemeController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(NumberingScheme $numberingScheme): JsonResponse
+    public function destroy(NumberingScheme $numberingScheme): RedirectResponse
     {
         $this->deleteNumberingSchemeAction->execute($numberingScheme);
 
-        return response()->json(['message' => 'Numbering scheme deleted successfully']);
+        return redirect()->back();
     }
 
     public function getNumberingSchemeOfFolder(NumberingScheme $numberingScheme): JsonResponse
