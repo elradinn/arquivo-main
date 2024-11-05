@@ -4,6 +4,7 @@ import {
     ActionIcon,
     AppShell,
     Avatar,
+    Box,
     Burger,
     Button,
     Center,
@@ -54,7 +55,7 @@ export function Authenticated({ children, toolbar }: IProps) {
             padding="md"
         >
             <AppShell.Header>
-                <Flex h={toolbar ? "50%" : "100%"} px="md" justify="space-between" align="center">
+                <Flex h={toolbar ? "50%" : "100%"} px={32} justify="space-between" align="center">
                     <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
 
                     <GlobalSearch />
@@ -129,7 +130,9 @@ export function Authenticated({ children, toolbar }: IProps) {
             <AppShell.Navbar>
                 <Sidebar />
             </AppShell.Navbar>
-            <AppShell.Main>{children}</AppShell.Main>
+            <AppShell.Main>
+                <Box px={14}>{children}</Box>
+            </AppShell.Main>
         </AppShell>
     );
 }

@@ -40,7 +40,7 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent }) => {
     return (
         <Group
             h="50%"
-            px="md"
+            px={32}
             align="center"
             justify="space-between"
         >
