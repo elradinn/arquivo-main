@@ -25,6 +25,10 @@ class UpdateDocumentApprovalAction
             'overall_state' => $data->type === 'reviewal' ? DocumentReviewalPending::class : DocumentApprovalPending::class,
         ]);
 
+        $documentApproval->document()->update([
+            'status' => $data->type === 'reviewal' ? DocumentReviewalPending::class : DocumentApprovalPending::class,
+        ]);
+
         // Determine required role based on the new type
         $requiredRole = $this->getRequiredRole($data->type);
 
