@@ -133,14 +133,7 @@ export function StatCards({ dashboard }: StatCardsProps) {
   return (
     <div className={classes.root}>
       <Grid>
-        <Grid.Col
-          span={{ base: 12, lg: 3 }}
-        >
-          {totalDocuments && renderCard(totalDocuments, true)}
-        </Grid.Col>
-        <Grid.Col
-          span={{ base: 12, lg: 9 }}
-        >
+        <Grid.Col>
           <SimpleGrid
             cols={{ base: 1, lg: 3 }}
           >
