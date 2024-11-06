@@ -27,7 +27,7 @@ export function useUpdateMetadata({ metadata, close }: IProps) {
     const handleEdit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        patch(route("metadata.update", metadata?.id), {
+        patch(route("metadata.update", metadata?.metadata_id), {
             onSuccess: () => {
                 close();
                 notifications.show({
