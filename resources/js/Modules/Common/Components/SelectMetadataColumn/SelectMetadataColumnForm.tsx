@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import { Modal, Button, Group, Stack, Text, Checkbox } from "@mantine/core";
+import { Button, ActionIcon, Group, Select, Modal, Stack, Text, Flex, Loader, Alert } from "@mantine/core";
+import { IconPlus, IconTrash, IconAlertCircle } from "@tabler/icons-react";
+import useModalStore from "../../Hooks/use-modal-store";
 import { useForm } from "@inertiajs/react";
-import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
-import useFetchMetadata from "@/Modules/Metadata/Hooks/use-fetch-metadata";
-import { useFetchExistingMetadataColumn } from "@/Modules/Common/Hooks/use-fetch-existing-metadata-column";
-import { MetadataResourceData } from "@/Modules/Metadata/Types/MetadataResourceData";
 import { notifications } from "@mantine/notifications";
+import useFetchMetadata from "@/Modules/Metadata/Hooks/use-fetch-metadata";
 
 interface SelectMetadataColumnFormProps {
     folderId: string;
@@ -14,41 +13,62 @@ interface SelectMetadataColumnFormProps {
 const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({ folderId }) => {
     const { modals, closeModal } = useModalStore();
     const isOpen = modals["selectMetadataColumns"];
-    const { metadataList } = useFetchMetadata();
-    const { existingMetadataColumns, loading, error } = useFetchExistingMetadataColumn({ folderId, isOpen });
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { metadataList } = useFetchMetadata();
+
+    const { data, setData, post, processing, errors, reset } = useForm({
+        metadata_columns: [{ id: Date.now(), value: "" }],
         metadata_ids: [] as number[],
     });
 
+    // Populate metadata_ids whenever metadata_columns changes
     useEffect(() => {
-        const existingIds = existingMetadataColumns.map((meta) => meta.id);
-        setData("metadata_ids", existingIds);
-    }, [isOpen, existingMetadataColumns]);
+        const metadata_ids = data.metadata_columns
+            .map(column => parseInt(column.value))
+            .filter(id => !isNaN(id));
+        setData("metadata_ids", metadata_ids);
+    }, [data.metadata_columns]);
 
-    const handleCheckboxChange = (metadataId: number) => {
-        const current = data.metadata_ids;
-        if (current.includes(metadataId)) {
-            setData("metadata_ids", current.filter((id) => id !== metadataId));
-        } else {
-            setData("metadata_ids", [...current, metadataId]);
-        }
+    console.log(data);
+
+
+    const handleAddColumn = () => {
+        setData("metadata_columns", [...data.metadata_columns, { id: Date.now(), value: "" }]);
     };
 
-    const handleSubmit = () => {
+    const handleRemoveColumn = (id: number) => {
+        setData("metadata_columns", data.metadata_columns.filter(column => column.id !== id));
+    };
+
+    const handleChange = (id: number, value: string) => {
+        const updatedColumns = data.metadata_columns.map(column =>
+            column.id === id ? { ...column, value } : column
+        );
+        setData("metadata_columns", updatedColumns);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const metadata_ids = data.metadata_columns
+            .map(column => parseInt(column.value))
+            .filter(id => !isNaN(id));
+
         post(route("folder.selectMetadataColumn", folderId), {
+            preserveScroll: true,
             onSuccess: () => {
                 closeModal("selectMetadataColumns");
                 notifications.show({
                     title: "Success",
                     message: "Metadata columns selected successfully",
+                    color: "green",
                 });
+                reset();
             },
-            onError: (error) => {
-                console.error(error);
+            onError: () => {
                 notifications.show({
                     title: "Error",
                     message: "Failed to select metadata columns",
+                    color: "red",
                 });
             },
         });
@@ -57,42 +77,70 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({ fol
     return (
         <Modal
             opened={isOpen}
-            onClose={() => closeModal("selectMetadataColumns")}
-            title="Select Columns"
+            onClose={() => {
+                closeModal("selectMetadataColumns");
+                reset();
+            }}
+            title={
+                <Text fw="bold" size="lg">
+                    Select Metadata Columns
+                </Text>
+            }
+            size={550}
         >
-            <Stack>
-                <Text>Select the metadata columns you want to display:</Text>
-                {loading ? (
-                    <Text>Loading...</Text>
-                ) : error ? (
-                    <Text c="red">{error}</Text>
-                ) : (
-                    <Group dir="column">
-                        <Checkbox label="Name" checked disabled />
-                        <Checkbox label="Date" checked disabled />
+            <form onSubmit={handleSubmit}>
+                <Stack gap={16}>
+                    <Text c="dimmed">Select the metadata columns you want to display</Text>
 
-                        {metadataList.map((meta) => (
-                            <Checkbox
-                                key={meta.metadata_id}
-                                label={meta.name}
-                                checked={data.metadata_ids.includes(meta.metadata_id)}
-                                onChange={() => handleCheckboxChange(meta.metadata_id)}
+                    {/* Render Select components only when metadataList is available */}
+                    {data.metadata_columns.map((column) => (
+                        <Group key={column.id} justify="space-between" align="flex-end">
+                            <Select
+                                placeholder="Pick a metadata column"
+                                data={metadataList.map(meta => ({ value: meta.metadata_id.toString(), label: meta.name }))}
+                                value={column.value}
+                                onChange={(value) => handleChange(column.id, value || "")}
+                                w="90%"
+                                required
                             />
-                        ))}
-                    </Group>
-                )}
-                {errors.metadata_ids && (
-                    <Text c="red">{errors.metadata_ids}</Text>
-                )}
-                <Group justify="flex-end" mt="md">
-                    <Button variant="outline" onClick={() => closeModal("selectMetadataColumns")}>
+                            {data.metadata_columns.length > 1 && (
+                                <ActionIcon color="red" variant="subtle" onClick={() => handleRemoveColumn(column.id)}>
+                                    <IconTrash size={18} />
+                                </ActionIcon>
+                            )}
+                        </Group>
+                    ))}
+
+                    {/* Add New Column Button */}
+                    <Flex justify="flex-start">
+                        <Button
+                            variant="subtle"
+                            color="blue.5"
+                            leftSection={<IconPlus size={18} />}
+                            onClick={handleAddColumn}
+                        >
+                            Add New Column
+                        </Button>
+                    </Flex>
+                </Stack>
+
+                {/* Modal Actions */}
+                <Flex align="center" justify="end" mt={16}>
+                    <Button
+                        variant="outline"
+                        onClick={() => {
+                            closeModal("selectMetadataColumns");
+                            reset();
+                        }}
+                    >
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} loading={processing}>
+
+                    <Button ml={12} type="submit" loading={processing}>
                         Save
                     </Button>
-                </Group>
-            </Stack>
+                </Flex>
+            </form>
         </Modal>
     );
 };

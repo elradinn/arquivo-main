@@ -1,5 +1,5 @@
 export type MetadataResourceData = {
-    id: number;
+    metadata_id: number;
     name: string;
     type: string;
     value?: string;
