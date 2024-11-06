@@ -14,6 +14,8 @@ class UploadDocumentVersionData extends Data
         public string $document_item_id,
 
         #[Required]
-        public UploadedFile $file
+        public UploadedFile $file,
+
+        public ?string $due_date = null
     ) {}
 }

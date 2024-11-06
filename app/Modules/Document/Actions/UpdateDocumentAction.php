@@ -2,10 +2,9 @@
 
 namespace Modules\Document\Actions;
 
-use Modules\Document\Actions\DocumentMetadataAction;
-use Modules\Document\Data\DocumentMetadataData;
-use Modules\Document\Models\Document;
+use Modules\Document\Actions\UpdateDocumentMetadataAction;
 use Modules\Document\Data\UpdateDocumentData;
+use Modules\Document\Models\Document;
 
 class UpdateDocumentAction
 {
@@ -18,7 +17,8 @@ class UpdateDocumentAction
         $document->update([
             'name' => $data->name,
             'document_number' => $data->document_number,
-            'description' => $data->description
+            'description' => $data->description,
+            'due_date' => $data->due_date,
         ]);
 
         $this->updateDocumentMetadataAction->execute($document, $data);

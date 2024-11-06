@@ -20,6 +20,7 @@ import MetadataInput from "@/Modules/Document/Components/MetadataInput";
 import RelatedDocumentsInput from "@/Modules/Document/Components/RelatedDocumentsInput";
 import { useUpdateDocument } from "@/Modules/Document/Hooks/use-update-document";
 import { DocumentMetadata } from "@/Modules/Document/Types/DocumentMetadata";
+import { DatePickerInput } from "@mantine/dates";
 
 interface IProps {
     document: DocumentResourceData;
@@ -56,6 +57,8 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
         setData("delete_metadata", [...(data.delete_metadata || []), { metadata_id: metadataId }]);
     };
 
+    console.log(data);
+
     return (
         <Authenticated>
             <Head title="Document Properties" />
@@ -91,6 +94,13 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
                             placeholder="Enter description"
                             value={data.description}
                             onChange={(e) => setData("description", e.target.value)}
+                        />
+
+                        <DatePickerInput
+                            label="Due Date"
+                            placeholder="Select due date"
+                            value={data.due_date ? new Date(data.due_date) : undefined}
+                            onChange={(date: Date | null) => setData("due_date", date?.toISOString() ?? undefined)}
                         />
                     </Stack>
 

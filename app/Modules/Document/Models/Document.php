@@ -33,6 +33,7 @@ class Document extends Model
         'document_number',
         'status',
         'description',
+        'due_date',
         'mime',
         'size',
         'file_path',
@@ -40,6 +41,7 @@ class Document extends Model
 
     protected $casts = [
         'status' => DocumentState::class,
+        // 'due_date' => 'date',
     ];
 
     protected static function boot()
