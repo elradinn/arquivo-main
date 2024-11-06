@@ -16,18 +16,14 @@ export default function EditProfile({
             <Head title="Profile" />
 
             <div className={classes.container}>
-                <Paper shadow="xs" radius="md" className={classes.card}>
+                <Paper shadow="xs" radius="md" withBorder className={classes.card}>
                     <UpdateProfileInformationForm
                         mustVerifyEmail={mustVerifyEmail}
                         status={status}
                     />
                 </Paper>
-                <Paper shadow="xs" radius="md" className={classes.card}>
+                <Paper shadow="xs" radius="md" withBorder className={classes.card}>
                     <UpdatePasswordForm />
-                </Paper>
-
-                <Paper shadow="xs" radius="md" className={classes.card}>
-                    <DeleteUserForm />
                 </Paper>
             </div>
         </Authenticated>

@@ -1,12 +1,26 @@
+import React from "react";
 import ApproveIcon from "@/Modules/Common/Components/ApproveIcon/ApproveIcon";
-import { Avatar, Badge, Button, Card, Flex, Group, Stack, Text, Textarea } from "@mantine/core";
-import { Head, useForm } from "@inertiajs/react";
-import { IconDownload, IconFileTypePdf, IconFolder } from "@tabler/icons-react";
+import { ActionIcon, Avatar, Badge, Burger, Button, Card, Divider, Flex, Group, Menu, rem, Stack, Text, Textarea } from "@mantine/core";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
+import { IconDownload, IconFileTypePdf, IconFolder, IconLayoutGrid, IconLogout, IconUser } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { DocumentApprovalResourceData } from "@/Modules/DocumentApproval/Types/DocumentApprovalResourceData";
 import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
+import { PageProps } from "@/Modules/Common/Types";
+import { useDisclosure } from "@mantine/hooks";
+import NotificationMenu from "@/Modules/Notification/Components/NotificationMenu";
+import OfficeLogo from "@/Modules/Common/Components/OfficeLogo/OfficeLogo";
 
-const ApproveDocumentPage: React.FC<{ documentApproval: DocumentApprovalResourceData }> = ({ documentApproval }) => {
+interface IProps {
+    documentApproval: DocumentApprovalResourceData;
+}
+
+const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
+    const { props } = usePage<PageProps>();
+    const user = props.auth.user;
+    const isAdmin = props.auth.isAdmin;
+    const [opened, { toggle }] = useDisclosure();
+
     const { data, post, processing } = useForm({
         comment: "",
     });
@@ -29,9 +43,82 @@ const ApproveDocumentPage: React.FC<{ documentApproval: DocumentApprovalResource
         });
     };
 
+
+
+    console.log(documentApproval);
+
     return (
         <>
             <Head title="Approve Document" />
+            <Flex h={72} px={32} justify="space-between" align="center">
+                <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+                <Link href="/dashboard">
+                    <OfficeLogo h={48} w={48} />
+                </Link>
+
+                <Group align="center" gap={8}>
+                    {isAdmin && (
+                        <Button
+                            component={Link}
+                            href={route('admin.tools')}
+                            leftSection={<IconLayoutGrid stroke={1.5} />}
+                            radius="md"
+                            variant="light"
+                        >
+                            Admin Tools
+                        </Button>
+                    )}
+                    <NotificationMenu />
+                    <Menu
+                        width={200}
+                        transitionProps={{
+                            transition: "pop-top-right",
+                        }}
+                        position="bottom-end"
+                    >
+                        <Menu.Target>
+                            <ActionIcon variant="subtle" color="gray" size="xl" radius="xl">
+                                <Avatar name={user.name} color="blue" size="md" />
+                            </ActionIcon>
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                            <Menu.Item
+                                component={Link}
+                                leftSection={
+                                    <IconUser
+                                        style={{
+                                            width: rem(14),
+                                            height: rem(14),
+                                        }}
+                                    />
+                                }
+                                href={route("profile.edit")}
+                            >
+                                Profile
+                            </Menu.Item>
+                            <Menu.Item
+                                component={Link}
+                                leftSection={
+                                    <IconLogout
+                                        style={{
+                                            width: rem(14),
+                                            height: rem(14),
+                                        }}
+                                    />
+                                }
+                                href={route("logout")}
+                                as="button"
+                                method="post"
+                            >
+                                Logout
+                            </Menu.Item>
+                        </Menu.Dropdown>
+                    </Menu>
+                </Group>
+            </Flex>
+
+            <Divider />
+
             <Flex mih={100} justify="center" mb={48} style={{ padding: '1rem' }}>
                 <div style={{ maxWidth: '600px', width: '100%' }}>
                     <Stack gap={16} align="center" mb={16}>
@@ -103,15 +190,21 @@ const ApproveDocumentPage: React.FC<{ documentApproval: DocumentApprovalResource
                                 />
 
                                 <Flex align="center" justify="end">
-                                    <Button color="red" onClick={() => handleDocumentAction("reject")} disabled={processing}>
+                                    <Button color="red" onClick={() => handleDocumentAction("reject")} disabled={processing || documentApproval.is_done}>
                                         Reject
                                     </Button>
 
-                                    <Button ml={12} color="green" onClick={() => handleDocumentAction("accept")} disabled={processing}>
+                                    <Button ml={12} color="green" onClick={() => handleDocumentAction("accept")} disabled={processing || documentApproval.is_done}>
                                         Approve
                                     </Button>
                                 </Flex>
                             </Stack>
+                        )}
+
+                        {documentApproval.is_done && (
+                            <Text c="green" size="md" ta="center">
+                                You have already made a decision on this document.
+                            </Text>
                         )}
                     </Stack>
                 </div>

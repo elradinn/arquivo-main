@@ -13,6 +13,7 @@ export function useUpdateDocument({ document, onSuccess }: UseUpdateDocumentProp
         name: document.name,
         document_number: document.document_number || "",
         description: document.description || "",
+        due_date: document.due_date || "",
         update_metadata: document.metadata.map(meta => ({
             metadata_id: meta.metadata_id,
             name: meta.name,

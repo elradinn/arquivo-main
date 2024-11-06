@@ -21,20 +21,23 @@ class DocumentApprovalResourceData extends Resource
         public array $document_user_approvals,
         public string $created_at,
         public string $updated_at,
-        public bool $is_done,
-        public ?string $current_user_approval_id
+        public ?string $current_user_approval_id,
+        public bool $is_done
     ) {}
 
     public static function fromModel(DocumentApproval $documentApproval): self
     {
-        $isDone = !$documentApproval->documentApprovalUsers->contains(function ($documentUserApproval) {
-            return $documentUserApproval->user_state instanceof UserApprovalPending
-                || $documentUserApproval->user_state instanceof UserReviewalPending;
-        });
-
         $currentUserApproval = $documentApproval->documentApprovalUsers
             ->where('user_id', Auth::id())
             ->first();
+
+        $isDone = false;
+        if ($currentUserApproval) {
+            $isDone = !(
+                $currentUserApproval->user_state instanceof UserApprovalPending ||
+                $currentUserApproval->user_state instanceof UserReviewalPending
+            );
+        }
 
         return new self(
             id: $documentApproval->id,
@@ -54,8 +57,8 @@ class DocumentApprovalResourceData extends Resource
             ])->toArray(),
             created_at: $documentApproval->created_at,
             updated_at: $documentApproval->updated_at,
-            is_done: $isDone,
-            current_user_approval_id: $currentUserApproval?->id
+            current_user_approval_id: $currentUserApproval?->id,
+            is_done: $isDone
         );
     }
 }

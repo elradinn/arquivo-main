@@ -8,6 +8,7 @@ export type DocumentResourceData = {
     document_number?: string;
     status?: string;
     description?: string;
+    due_date?: string;
     file_path?: string;
     document_approval_id?: string;
     related_documents: Array<{

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { Head } from "@inertiajs/react";
@@ -11,7 +11,7 @@ import {
     ActionIcon,
     Flex,
 } from "@mantine/core";
-import { IconSearch, IconDownload } from "@tabler/icons-react";
+import { IconDownload } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
@@ -75,6 +75,11 @@ export default function DashboardReportPage({
         router.get("/dashboard/reports", query, { replace: true, preserveState: true });
     };
 
+    useEffect(() => {
+        handleFilter();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [documentStatus, dateRange]);
+
     const handleGenerateReport = () => {
         const payload = {
             document_status: documentStatus,
@@ -128,10 +133,6 @@ export default function DashboardReportPage({
                                 onChange={setDateRange}
                                 style={{ width: 300 }}
                             />
-
-                            <Button onClick={handleFilter} leftSection={<IconSearch size={16} />} color="blue">
-                                Apply Filters
-                            </Button>
                         </Flex>
 
                         {/* Generate Report Button */}
@@ -176,10 +177,10 @@ export default function DashboardReportPage({
                             },
                             // Dynamic columns based on selected metadata
                             ...selectedMetadata.map((meta) => ({
-                                accessor: `metadata_${meta.id}`,
+                                accessor: `metadata_${meta.metadata_id}`,
                                 title: meta.name,
                                 render: (record: ItemContentsResourceData) => {
-                                    const metaValue = record.metadata?.find((m) => m.id === meta.id);
+                                    const metaValue = record.metadata?.find((m) => m.metadata_id === meta.metadata_id);
                                     return metaValue ? metaValue.value : "N/A";
                                 },
                             })),

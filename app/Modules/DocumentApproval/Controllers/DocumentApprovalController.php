@@ -4,6 +4,7 @@ namespace Modules\DocumentApproval\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Common\Controllers\Controller;
@@ -14,21 +15,27 @@ use Modules\DocumentApproval\Models\DocumentApproval;
 use Modules\DocumentApproval\Actions\UpdateDocumentApprovalAction;
 use Modules\DocumentApproval\Data\UpdateDocumentApprovalData;
 use Modules\DocumentApproval\Actions\DeleteDocumentApprovalAction;
+use Modules\DocumentApproval\Authorization\DocumentApprovalAuthorization;
 
 class DocumentApprovalController extends Controller
 {
     private DeleteDocumentApprovalAction $deleteDocumentApprovalAction;
+    private DocumentApprovalAuthorization $documentApprovalAuthorization;
 
     public function __construct(
         protected CreateDocumentApprovalAction $createDocumentApprovalAction,
         protected UpdateDocumentApprovalAction $updateDocumentApprovalAction,
-        DeleteDocumentApprovalAction $deleteDocumentApprovalAction
+        DeleteDocumentApprovalAction $deleteDocumentApprovalAction,
+        DocumentApprovalAuthorization $documentApprovalAuthorization
     ) {
         $this->deleteDocumentApprovalAction = $deleteDocumentApprovalAction;
+        $this->documentApprovalAuthorization = $documentApprovalAuthorization;
     }
 
     public function show(DocumentApproval $documentApproval): Response
     {
+        $this->documentApprovalAuthorization->canView(Auth::user(), $documentApproval);
+
         return Inertia::render('ApproveDocument', [
             'documentApproval' => DocumentApprovalResourceData::fromModel($documentApproval),
         ]);
@@ -48,6 +55,8 @@ class DocumentApprovalController extends Controller
 
     public function update(DocumentApproval $documentApproval, UpdateDocumentApprovalData $data): RedirectResponse
     {
+        $this->documentApprovalAuthorization->canEdit(Auth::user(), $documentApproval);
+
         $this->updateDocumentApprovalAction->execute($documentApproval, $data);
 
         return redirect()->back();
@@ -55,6 +64,8 @@ class DocumentApprovalController extends Controller
 
     public function cancel(DocumentApproval $documentApproval): RedirectResponse
     {
+        $this->documentApprovalAuthorization->canEdit(Auth::user(), $documentApproval);
+
         $this->deleteDocumentApprovalAction->execute($documentApproval);
 
         return redirect()->back();
