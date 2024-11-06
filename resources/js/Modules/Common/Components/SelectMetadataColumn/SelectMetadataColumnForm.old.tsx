@@ -22,7 +22,7 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({ fol
     });
 
     useEffect(() => {
-        const existingIds = existingMetadataColumns.map((meta) => meta.id);
+        const existingIds = existingMetadataColumns.map((meta) => meta.metadata_id);
         setData("metadata_ids", existingIds);
     }, [isOpen, existingMetadataColumns]);
 

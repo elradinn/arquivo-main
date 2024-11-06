@@ -36,10 +36,10 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents }: It
     const { openDocument } = useDocumentProperties();
 
     const dynamicColumns = itemParent.metadata_columns?.map((metadata) => ({
-        accessor: `metadata_${metadata.id}`,
+        accessor: `metadata_${metadata.metadata_id}`,
         title: metadata.name,
         render: (record: ItemContentsResourceData) => {
-            const metadataItem = record.metadata?.find((m) => m.id === metadata.id);
+            const metadataItem = record.metadata?.find((m) => m.metadata_id === metadata.metadata_id);
             return metadataItem ? metadataItem.value : null;
         },
     }));

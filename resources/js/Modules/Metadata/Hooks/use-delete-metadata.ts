@@ -13,7 +13,7 @@ export function useDeleteMetadata({ metadata, close }: IProps) {
     const handleDelete = (e: React.FormEvent) => {
         e.preventDefault();
 
-        destroy(route("metadata.destroy", metadata?.id), {
+        destroy(route("metadata.destroy", metadata?.metadata_id), {
             onSuccess: () => {
                 close();
                 notifications.show({
