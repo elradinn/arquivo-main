@@ -134,8 +134,6 @@ class FolderController extends Controller
     {
         $requiredMetadata = $folder->requiredMetadata()->get();
 
-        // dd($requiredMetadata);
-
         // return response()->json($requiredMetadata);
 
         return Inertia::render('FolderMetadata', [

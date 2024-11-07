@@ -35,7 +35,6 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
                 });
             },
             onError: (errors) => {
-                console.log(errors);
                 notifications.show({
                     message: "Something went wrong",
                     color: "red",

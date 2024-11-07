@@ -29,7 +29,6 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
     const handleRemove = (index: number) => {
         const removedMeta = metadata[index];
         const newMetadata = metadata.filter((_, i) => i !== index);
-        console.log("newMetadata", newMetadata);
         onUpdate && onUpdate(newMetadata);
         onDelete && removedMeta.metadata_id !== 0 && onDelete(removedMeta.metadata_id);
     };

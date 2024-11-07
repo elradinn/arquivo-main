@@ -14,7 +14,7 @@ export function useDeleteUser({ user, close }: IProps) {
         e.preventDefault();
         if (!user) return;
 
-        destroy(route("user.destroy", user?.id), {
+        destroy(route("users.delete", user?.id), {
             onSuccess: () => {
                 notifications.show({
                     message: "User deleted successfully",

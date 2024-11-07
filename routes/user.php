@@ -7,14 +7,14 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('users')->group(function () {
 
-        Route::get('/', [UserController::class, 'index']);
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
 
-        Route::post('/register', [UserController::class, 'register']);
+        Route::post('/register', [UserController::class, 'register'])->name('users.register');
 
-        Route::put('/{user}', [UserController::class, 'update']);
+        Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
 
-        Route::delete('/{user}', [UserController::class, 'delete']);
+        Route::delete('/{user}', [UserController::class, 'delete'])->name('users.delete');
 
-        Route::get('/get-users-approval-role/{type}', [UserController::class, 'getUsersApprovalRole']);
+        Route::get('/get-users-approval-role/{type}', [UserController::class, 'getUsersApprovalRole'])->name('users.get-users-approval-role');
     });
 });

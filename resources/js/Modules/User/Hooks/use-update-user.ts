@@ -2,6 +2,7 @@ import { useForm } from "@inertiajs/react";
 import { UpdateUserData } from "../Types/UpdateUserData";
 import { notifications } from "@mantine/notifications";
 import { UserResourceData } from "../Types/UserResourceData";
+import { useEffect } from "react";
 
 interface IProps {
     user?: UserResourceData;
@@ -9,15 +10,25 @@ interface IProps {
 }
 
 export function useUpdateUser({ user, close }: IProps) {
-    const { data, setData, patch, processing, errors, reset } = useForm<UpdateUserData>({
-        name: user?.name || "",
+    const { data, setData, put, processing, errors, reset } = useForm<UpdateUserData>({
+        office_position: "",
+        workflow_role: "",
     });
+
+    useEffect(() => {
+        if (user) {
+            setData({
+                workflow_role: user.workflow_role,
+                office_position: user.office_position,
+            });
+        }
+    }, [user]);
 
     const submit: React.FormEventHandler = (e) => {
         e.preventDefault();
         if (!user) return;
 
-        patch(route("user.update", user.id), {
+        put(route("users.update", user.id), {
             onSuccess: () => {
                 notifications.show({
                     message: "User updated successfully",
@@ -26,7 +37,7 @@ export function useUpdateUser({ user, close }: IProps) {
                 close();
                 reset();
             },
-            onError: () => {
+            onError: (errors) => {
                 notifications.show({
                     message: "Failed to update user",
                     color: "red",

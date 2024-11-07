@@ -57,8 +57,6 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
         setData("delete_metadata", [...(data.delete_metadata || []), { metadata_id: metadataId }]);
     };
 
-    console.log(data);
-
     return (
         <Authenticated>
             <Head title="Document Properties" />
