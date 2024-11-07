@@ -10,13 +10,17 @@ import {
 } from "@/Modules/ActivityLog/Types/ActivityLogPageTypes";
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
 import { IconSearch } from "@tabler/icons-react";
+import { UserResourceData } from "@/Modules/ActivityLog/Types/UserResourceData";
+import { ObjectTypeResourceData } from "@/Modules/ActivityLog/Types/ObjectTypeResourceData";
 
 interface IProps {
     activityLogs: PaginationData;
     filters: Filters;
+    users: UserResourceData[];
+    objectTypes: ObjectTypeResourceData[];
 }
 
-const ActivityLogPage: React.FC<IProps> = ({ activityLogs, filters }: IProps) => {
+const ActivityLogPage: React.FC<IProps> = ({ activityLogs, filters, users, objectTypes }: IProps) => {
     const { search, setSearch, handleSearch } = useSearchDataTable(
         filters.search || "",
         "/activity-log"
@@ -53,7 +57,7 @@ const ActivityLogPage: React.FC<IProps> = ({ activityLogs, filters }: IProps) =>
                             handleSearch(e.target.value);
                         }}
                     />
-                    <FilterForm />
+                    <FilterForm users={users} objectTypes={objectTypes} />
                 </Flex>
 
                 <ActivityLogTable
