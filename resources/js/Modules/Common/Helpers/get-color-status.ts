@@ -1,15 +1,31 @@
 export const getColorStatus = (state: string | undefined) => {
-    switch (state) {
-        case "Reviewal Pending":
-        case "Approval Pending":
-            return "orange";
-        case "Reviewal Accepted":
-        case "Approval Accepted":
-            return "green";
-        case "Reviewal Rejected":
-        case "Approval Rejected":
-            return "red";
-        default:
-            return "gray";
+    if (!state) return "gray";
+
+    if (state.startsWith("Approval")) {
+        switch (state) {
+            case "Approval Pending":
+                return "orange";
+            case "Approval Accepted":
+                return "green";
+            case "Approval Rejected":
+                return "red";
+            default:
+                return "gray";
+        }
     }
+
+    if (state.startsWith("Reviewal")) {
+        switch (state) {
+            case "Reviewal Pending":
+                return "orange";
+            case "Reviewal Accepted":
+                return "teal";
+            case "Reviewal Rejected":
+                return "pink";
+            default:
+                return "gray";
+        }
+    }
+
+    return "gray";
 };

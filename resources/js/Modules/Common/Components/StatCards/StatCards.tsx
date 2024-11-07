@@ -1,4 +1,4 @@
-import { Group, Paper, SimpleGrid, Text, Grid } from "@mantine/core";
+import { Group, Paper, SimpleGrid, Text, Grid, Badge } from "@mantine/core";
 import { IconFile, IconCheck, IconX, IconClock, IconMessage, IconMessageCheck, IconMessageX, IconFileX, IconFileCheck, IconFileDescription } from "@tabler/icons-react";
 import { DashboardResource } from "@/Modules/Dashboard/Types/DashboardResource";
 import classes from "./StatCards.module.css";
@@ -24,21 +24,21 @@ export function StatCards({ dashboard }: StatCardsProps) {
       title: "Review Accepted",
       icon: "review_accepted",
       value: dashboard.number_of_review_accepted,
-      color: "green",
+      color: "teal",
       statusParam: "reviewal_accepted",
     },
     {
       title: "Review Pending",
       icon: "review_pending",
       value: dashboard.number_of_review_pending,
-      color: "yellow",
+      color: "orange",
       statusParam: "reviewal_pending",
     },
     {
       title: "Review Rejected",
       icon: "review_rejected",
       value: dashboard.number_of_review_rejected,
-      color: "red",
+      color: "pink",
       statusParam: "reviewal_rejected",
     },
     {
@@ -52,7 +52,7 @@ export function StatCards({ dashboard }: StatCardsProps) {
       title: "Approval Pending",
       icon: "approval_pending",
       value: dashboard.number_of_approval_pending,
-      color: "yellow",
+      color: "orange",
       statusParam: "approval_pending",
     },
     {
