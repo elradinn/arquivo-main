@@ -24,6 +24,7 @@ class Folder extends Model
     protected $fillable = [
         'name',
         'owned_by',
+        'parent_id', // Add parent_id to allow hierarchical folders
     ];
 
     public function item(): BelongsTo
@@ -63,5 +64,15 @@ class Folder extends Model
     {
         return $this->belongsToMany(Metadata::class, 'folder_has_metadata_columns', 'folder_item_id', 'metadata_id')
             ->withTimestamps();
+    }
+
+    /**
+     * Determine if the folder is a workspace.
+     *
+     * @return bool
+     */
+    public function isWorkspace(): bool
+    {
+        return is_null($this->parent_id);
     }
 }

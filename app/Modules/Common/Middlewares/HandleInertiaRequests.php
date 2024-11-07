@@ -4,8 +4,9 @@ namespace Modules\Common\Middlewares;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use Modules\Workspace\Data\WorkspaceLinksData;
-use Modules\Workspace\Models\Workspace;
+use Modules\Folder\Data\FolderLinksData;
+use Modules\Folder\Models\Folder;
+use Modules\Item\Models\Item;
 use Spatie\LaravelData\DataCollection;
 
 class HandleInertiaRequests extends Middleware
@@ -25,6 +26,7 @@ class HandleInertiaRequests extends Middleware
         return parent::version($request);
     }
 
+
     /**
      * Define the props that are shared by default.
      *
@@ -34,13 +36,15 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
 
+        $workspaces = Item::getRoots()->load('folder');
+
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $user,
                 'isAdmin' => $user ? $user->hasRole('admin') : false,
             ],
-            'workspaces' => WorkspaceLinksData::collect(Workspace::all(), DataCollection::class),
+            'workspaces' => FolderLinksData::collect($workspaces, DataCollection::class),
             'csrf_token' => csrf_token(),
         ];
     }

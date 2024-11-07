@@ -70,7 +70,7 @@ class DatabaseSeeder extends Seeder
             'type' => 'boolean',
         ]);
 
-        // Create Workspace
+        // Create Workspace through folder
         $createWorkspaceAction = app(CreateWorkspaceAction::class);
         $workspace = $createWorkspaceAction->execute(new CreateWorkspaceData(
             name: 'Administrative',
