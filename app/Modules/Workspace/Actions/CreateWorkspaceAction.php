@@ -5,8 +5,8 @@ namespace Modules\Workspace\Actions;
 use Modules\Workspace\Data\CreateWorkspaceData;
 use Modules\Item\Actions\CreateItemAction;
 use Modules\Item\Data\CreateItemData;
-use Modules\Workspace\Models\Workspace;
 use Illuminate\Support\Facades\Auth;
+use Modules\Folder\Models\Folder;
 
 class CreateWorkspaceAction
 {
@@ -14,7 +14,7 @@ class CreateWorkspaceAction
         protected CreateItemAction $createItemAction
     ) {}
 
-    public function execute(CreateWorkspaceData $data): Workspace
+    public function execute(CreateWorkspaceData $data): Folder
     {
         $item = $this->createItemAction->execute(
             CreateItemData::from([
@@ -23,7 +23,7 @@ class CreateWorkspaceAction
             ])
         );
 
-        $workspace = $item->workspace()->create([
+        $workspace = $item->folder()->create([
             'name' => $data->name,
             'owned_by' => $data->owned_by ?? Auth::id(),
         ]);

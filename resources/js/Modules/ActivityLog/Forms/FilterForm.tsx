@@ -19,8 +19,6 @@ const FilterForm: React.FC<FilterFormProps> = ({ users, objectTypes }) => {
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
 
-    console.log(selectedObjectType);
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
