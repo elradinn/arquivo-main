@@ -27,6 +27,8 @@ class DocumentApprovalResourceData extends Resource
 
     public static function fromModel(DocumentApproval $documentApproval): self
     {
+        // dd($documentApproval->documentApprovalUsers);
+
         $currentUserApproval = $documentApproval->documentApprovalUsers
             ->where('user_id', Auth::id())
             ->first();
