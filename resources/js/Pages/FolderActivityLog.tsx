@@ -40,7 +40,7 @@ export default function FolderActivityLogPage({ activityLogs, filters }: IProps)
                             handleSearch(e.target.value);
                         }}
                     />
-                    <FilterForm />
+                    <FilterForm users={[]} objectTypes={[]} />
                 </Flex>
 
                 <ActivityLogTable
