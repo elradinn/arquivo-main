@@ -6,17 +6,24 @@ use Inertia\Inertia;
 use Spatie\Activitylog\Models\Activity;
 use Modules\Common\Controllers\Controller;
 use App\Modules\ActivityLog\Data\ActivityLogResourceData;
+use App\Modules\ActivityLog\Helpers\ObjectTypeMapper;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Modules\ActivityLog\Models\ActivityLog;
+use Modules\User\Models\User;
 
 class ActivityLogController extends Controller
 {
     public function index(Request $request): Response
     {
         $search = $request->input('search');
+        $userId = $request->input('user_id');
+        $objectType = $request->input('object_type', '');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
-        $activityLogs = ActivityLog::query()
+        $mappedObjectType = ObjectTypeMapper::mapToSubjectType($objectType);
+
+        $activityLogs = Activity::query()
             ->when($search, function ($query, $search) {
                 $searchableColumns = ['description'];
 
@@ -26,13 +33,32 @@ class ActivityLogController extends Controller
                     }
                 });
             })
+            ->when($userId, function ($query, $userId) {
+                $query->where('causer_id', $userId);
+            })
+            ->when($mappedObjectType, function ($query, $mappedObjectType) {
+                $query->where('subject_type', $mappedObjectType);
+            })
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
 
+        $users = User::all(['id', 'name']);
+        $objectTypes = Activity::distinct()->pluck('subject_type')->map(function ($type) {
+            return [
+                'value' => $type,
+                'label' => ucfirst(strtolower(class_basename($type))),
+            ];
+        });
+
         return Inertia::render('ActivityLog', [
             'activityLogs' => ActivityLogResourceData::collect($activityLogs),
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'user_id', 'object_type', 'start_date', 'end_date']),
+            'users' => $users,
+            'objectTypes' => $objectTypes,
         ]);
     }
 }
