@@ -16,8 +16,6 @@ class FolderActivityLogController extends Controller
     {
         $search = $request->input('search');
 
-        // dd($folder->activityLogs);
-
         // $folder->activityLogs()->getQuery()->when;
 
         $activityLogs = $folder->activityLogs()->getQuery()

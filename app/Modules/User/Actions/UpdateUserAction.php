@@ -10,7 +10,8 @@ class UpdateUserAction
     public function execute(User $user, UpdateUserData $data): User
     {
         $user->update([
-            'name' => $data->name,
+            'workflow_role' => $data->workflow_role,
+            'office_position' => $data->office_position,
         ]);
 
         return $user;

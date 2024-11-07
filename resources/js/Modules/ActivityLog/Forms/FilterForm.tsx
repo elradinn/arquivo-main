@@ -1,15 +1,54 @@
-import React from "react";
-import { Button, Flex, Modal, Radio, Stack, Text, TextInput, Group } from "@mantine/core";
+import React, { useState } from "react";
+import { Button, Flex, Modal, Select, Stack, Text } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import { IconFilter } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
+import { router } from "@inertiajs/react";
+import { UserResourceData } from "../Types/UserResourceData";
+import { ObjectTypeResourceData } from "../Types/ObjectTypeResourceData";
 
-interface FilterFormProps { }
+interface FilterFormProps {
+    users: UserResourceData[];
+    objectTypes: ObjectTypeResourceData[];
+}
 
-const FilterForm: React.FC<FilterFormProps> = () => {
+const FilterForm: React.FC<FilterFormProps> = ({ users, objectTypes }) => {
     const [opened, { open, close }] = useDisclosure(false);
+    const [selectedUser, setSelectedUser] = useState<string | null>(null);
+    const [selectedObjectType, setSelectedObjectType] = useState<string | null>(null);
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
+
+    console.log(selectedObjectType);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        const query: Record<string, any> = {};
+
+        if (selectedUser) {
+            query.user_id = selectedUser;
+        }
+
+        if (selectedObjectType) {
+            query.object_type = selectedObjectType;
+        }
+
+        if (startDate && endDate) {
+            query.start_date = startDate.toISOString().split('T')[0];
+            query.end_date = endDate.toISOString().split('T')[0];
+        }
+
+        router.get('/activity-log', query, { replace: true, preserveState: true });
+        close();
+    };
+
+    const handleReset = () => {
+        setSelectedUser(null);
+        setSelectedObjectType(null);
+        setStartDate(null);
+        setEndDate(null);
+        router.get('/activity-log', {}, { replace: true, preserveState: true });
         close();
     };
 
@@ -36,26 +75,45 @@ const FilterForm: React.FC<FilterFormProps> = () => {
             >
                 <form onSubmit={handleSubmit}>
                     <Stack gap={16}>
-                        <TextInput
-                            placeholder="Search"
-                            leftSection={<IconFilter size={18} />}
-                        // value={search}
-                        // onChange={(e) => setSearch(e.target.value)}
+                        <Select
+                            label="User"
+                            placeholder="Select a user"
+                            data={users.map(user => ({ value: user.id.toString(), label: user.name }))}
+                            value={selectedUser}
+                            onChange={setSelectedUser}
+                            clearable
                         />
 
-                        <Radio.Group name="actionType" label="Action Type" defaultValue="">
-                            <Group mt="xs">
-                                <Radio value="created" label="Created" />
-                                <Radio value="updated" label="Updated" />
-                                <Radio value="deleted" label="Deleted" />
-                                <Radio value="" label="All" />
-                            </Group>
-                        </Radio.Group>
+                        <Select
+                            label="Object Type"
+                            placeholder="Select object type"
+                            data={objectTypes.map(obj => ({ value: obj.value, label: obj.label }))}
+                            value={selectedObjectType}
+                            onChange={setSelectedObjectType}
+                            clearable
+                        />
+
+                        <Flex gap={16}>
+                            <DatePickerInput
+                                label="Start Date"
+                                placeholder="Select start date"
+                                value={startDate}
+                                onChange={setStartDate}
+                                maxDate={endDate || undefined}
+                            />
+                            <DatePickerInput
+                                label="End Date"
+                                placeholder="Select end date"
+                                value={endDate}
+                                onChange={setEndDate}
+                                minDate={startDate || undefined}
+                            />
+                        </Flex>
                     </Stack>
 
-                    <Flex align="center" justify="end" mt={16}>
-                        <Button variant="outline" onClick={close}>
-                            Cancel
+                    <Flex align="center" justify="space-between" mt={16}>
+                        <Button variant="outline" color="gray" onClick={handleReset}>
+                            Reset Filters
                         </Button>
 
                         <Button ml={12} type="submit">

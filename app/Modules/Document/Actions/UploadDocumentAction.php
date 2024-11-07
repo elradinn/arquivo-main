@@ -23,32 +23,53 @@ class UploadDocumentAction
     {
         $documents = [];
 
-        foreach ($data->files as $file) {
-            $uploadedFile = $file->getUploadedFile();
+        foreach ($data->files as $fileData) {
+            $uploadedFile = $fileData->getUploadedFile();
 
+            // Generate a unique name within the folder
+            $originalName = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $extension = $uploadedFile->getClientOriginalExtension();
+            $newName = $originalName . '.' . $extension;
+            $counter = 1;
+
+            while (
+                Document::where('name', $newName)
+                ->whereHas('item', function ($query) use ($data) {
+                    $query->where('parent_id', $data->parent_id);
+                })
+                ->exists()
+            ) {
+                $counter++;
+                $newName = $originalName . " ({$counter})." . $extension;
+            }
+
+            // Create item for the document
             $item = $this->createItemAction->execute(
                 CreateItemData::from([
                     'parent_id' => $data->parent_id,
                 ])
             );
 
-            $filePath = $uploadedFile->store('documents', 'public');
+            // Store the file with the unique name
+            $filePath = $uploadedFile->storeAs('documents', $newName, 'public');
 
+            // Create the document
             $document = $item->document()->create([
-                'name' => $uploadedFile->getClientOriginalName(),
+                'name' => $newName,
                 'owned_by' => $data->owned_by ?? Auth::id(),
                 'mime' => $uploadedFile->getMimeType(),
                 'size' => $uploadedFile->getSize(),
                 'file_path' => $filePath,
             ]);
 
+            // Log activity
             activity()
                 ->performedOn($document)
                 ->causedBy(Auth::id())
-                ->log("Document uploaded");
+                ->log("Document '{$document->name}' uploaded");
 
+            // Apply numbering scheme and create approval workflow
             $this->applyDocumentNumberAction->execute($document);
-
             $this->createDocumentApprovalFromWorkflowAction->execute($document);
 
             $documents[] = $document;

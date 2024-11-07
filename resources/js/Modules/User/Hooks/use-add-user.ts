@@ -8,11 +8,13 @@ export function useAddUser() {
         email: "",
         password: "",
         password_confirmation: "",
+        workflow_role: "",
+        office_position: ""
     });
 
     const submit: React.FormEventHandler = (e) => {
         e.preventDefault();
-        post(route("user.store"), {
+        post(route("users.register"), {
             onSuccess: () => {
                 notifications.show({
                     message: "New user added successfully",

@@ -1,3 +1,4 @@
 export interface UpdateUserData {
-    name: string;
+    workflow_role?: string;
+    office_position?: string;
 }

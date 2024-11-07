@@ -30,8 +30,6 @@ class GlobalSearchController extends Controller
             })
             ->get();
 
-        // dd($documents);
-
         return Inertia::render('SearchItemsResult', [
             'documents' => $documents->map(function ($doc) {
 

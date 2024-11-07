@@ -1,8 +1,8 @@
 import React from "react";
 import ApproveIcon from "@/Modules/Common/Components/ApproveIcon/ApproveIcon";
-import { ActionIcon, Avatar, Badge, Burger, Button, Card, Divider, Flex, Group, Menu, rem, Stack, Text, Textarea } from "@mantine/core";
+import { ActionIcon, Avatar, Badge, Burger, Button, Card, Divider, Flex, Group, Menu, Paper, rem, Stack, Text, Textarea } from "@mantine/core";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
-import { IconDownload, IconFileTypePdf, IconFolder, IconLayoutGrid, IconLogout, IconUser } from "@tabler/icons-react";
+import { IconDownload, IconFileTypePdf, IconFolder, IconLayoutGrid, IconLogout, IconMessageCircle, IconUser } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { DocumentApprovalResourceData } from "@/Modules/DocumentApproval/Types/DocumentApprovalResourceData";
 import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
@@ -10,6 +10,7 @@ import { PageProps } from "@/Modules/Common/Types";
 import { useDisclosure } from "@mantine/hooks";
 import NotificationMenu from "@/Modules/Notification/Components/NotificationMenu";
 import OfficeLogo from "@/Modules/Common/Components/OfficeLogo/OfficeLogo";
+import { DocumentApprovalHasUserData } from "@/Modules/DocumentApproval/Types/DocumentApprovalHasUserData";
 
 interface IProps {
     documentApproval: DocumentApprovalResourceData;
@@ -21,20 +22,19 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
     const isAdmin = props.auth.isAdmin;
     const [opened, { toggle }] = useDisclosure();
 
-    const { data, post, processing } = useForm({
+    const { data, setData, post, processing } = useForm<DocumentApprovalHasUserData>({
         comment: "",
     });
 
     const handleDocumentAction = (action: "accept" | "reject") => {
         post(route(`document_user_approval.${action}`, { userApproval: documentApproval.current_user_approval_id }), {
-            data: { comment: data.comment },
             onSuccess: () => {
                 notifications.show({
                     message: `Document ${action}ed successfully`,
                     color: action === "accept" ? "green" : "red",
                 });
             },
-            onError: () => {
+            onError: (errors) => {
                 notifications.show({
                     message: "Something went wrong",
                     color: "red",
@@ -42,10 +42,6 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
             },
         });
     };
-
-
-
-    console.log(documentApproval);
 
     return (
         <>
@@ -126,6 +122,9 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
                         <Text fw={500} size="xl" ta="center">
                             This document needs your {documentApproval.type} decision
                         </Text>
+                        <Text size="sm" c="gray.8">
+                            Resolution: {documentApproval.resolution ? documentApproval.resolution : "None"}
+                        </Text>
                     </Stack>
 
                     <Stack gap={24}>
@@ -160,20 +159,27 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
                         </Text>
 
                         {documentApproval.document_user_approvals.map(userApproval => (
-                            <Group key={userApproval.user_id}>
-                                <Avatar />
-                                <div>
-                                    <Text size="md" fw={500}>
-                                        {userApproval.user_name}
-                                    </Text>
-                                    <StateBadge state={userApproval.user_state} />
-                                    {userApproval.user_state !== 'Pending' && (
-                                        <Text size="sm" c="dimmed">
-                                            Decision made on: {userApproval.updated_at}
+                            <Paper key={userApproval.user_id} withBorder radius="sm" p={16}>
+                                <Group>
+                                    <Avatar />
+                                    <Stack gap={10}>
+                                        <Text size="md" fw={500}>
+                                            {userApproval.user_name}
                                         </Text>
-                                    )}
-                                </div>
-                            </Group>
+                                        <StateBadge state={userApproval.user_state} />
+                                        {userApproval.comment && (
+                                            <Text size="sm" c="dimmed">
+                                                <IconMessageCircle size={14} /> {userApproval.comment}
+                                            </Text>
+                                        )}
+                                        {userApproval.user_state !== 'Pending' && (
+                                            <Text size="sm" c="dimmed">
+                                                Decision made on: {new Date(userApproval.updated_at).toLocaleDateString()}
+                                            </Text>
+                                        )}
+                                    </Stack>
+                                </Group>
+                            </Paper>
                         ))}
 
                         {!documentApproval.is_done && (
@@ -186,7 +192,7 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
                                     maxRows={6}
                                     style={{ width: '100%' }}
                                     value={data.comment}
-                                    onChange={(e) => data.comment = e.target.value}
+                                    onChange={(e) => setData("comment", e.target.value)}
                                 />
 
                                 <Flex align="center" justify="end">

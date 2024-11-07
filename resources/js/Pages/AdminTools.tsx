@@ -4,24 +4,24 @@ import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Auth
 import { IconReportAnalytics } from "@tabler/icons-react";
 
 const adminTools = [
-    {
-        title: "Generate Report",
-        description: "Create comprehensive reports",
-        icon: <IconReportAnalytics />,
-        href: "/generate-report",
-    },
+    // {
+    //     title: "Generate Report",
+    //     description: "Create comprehensive reports",
+    //     icon: <IconReportAnalytics />,
+    //     href: "/generate-report",
+    // },
     {
         title: "Manage Metadata",
         description: "Tag and categorize documents efficiently",
         icon: <IconReportAnalytics />,
         href: "/metadata",
     },
-    {
-        title: "Customization",
-        description: "Tailor the UI to your branding",
-        icon: <IconReportAnalytics />,
-        href: "/customization",
-    },
+    // {
+    //     title: "Customization",
+    //     description: "Tailor the UI to your branding",
+    //     icon: <IconReportAnalytics />,
+    //     href: "/customization",
+    // },
     {
         title: "Numbering Scheme",
         description: "Implement systematic document numbering",

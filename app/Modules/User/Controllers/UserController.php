@@ -4,6 +4,7 @@ namespace Modules\User\Controllers;
 
 use App\Modules\User\Data\UserResourceData;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Common\Controllers\Controller;
@@ -48,25 +49,25 @@ class UserController extends Controller
         ]);
     }
 
-    public function register(RegisterUserData $registerUserData): JsonResponse
+    public function register(RegisterUserData $registerUserData): RedirectResponse
     {
         $user = $this->registerUserAction->execute($registerUserData);
 
-        return response()->json($user, Response::HTTP_CREATED);
+        return redirect()->back();
     }
 
-    public function update(User $user, UpdateUserData $updateUserData): JsonResponse
+    public function update(User $user, UpdateUserData $updateUserData): RedirectResponse
     {
         $updatedUser = $this->updateUserAction->execute($user, $updateUserData);
 
-        return response()->json($updatedUser, Response::HTTP_OK);
+        return redirect()->back();
     }
 
-    public function delete(User $user): JsonResponse
+    public function delete(User $user): RedirectResponse
     {
         $this->deleteUserAction->execute($user);
 
-        return response()->json(['message' => 'User deleted successfully'], Response::HTTP_NO_CONTENT);
+        return redirect()->back();
     }
 
     public function getUsersApprovalRole(string $type): JsonResponse

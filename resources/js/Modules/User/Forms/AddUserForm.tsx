@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, Flex, Modal, Stack, Text, TextInput } from "@mantine/core";
+import React, { useState } from "react";
+import { Button, Flex, Modal, Select, Stack, Text, TextInput } from "@mantine/core";
 import { useAddUser } from "../Hooks/use-add-user";
 
 interface IProps {
@@ -27,7 +27,6 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         label="Name"
                         onChange={(e) => setData("name", e.target.value)}
                         error={errors.name}
-                        required
                     />
 
                     <TextInput
@@ -38,7 +37,6 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         label="Email"
                         onChange={(e) => setData("email", e.target.value)}
                         error={errors.email}
-                        required
                     />
 
                     <TextInput
@@ -49,7 +47,6 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         label="Password"
                         onChange={(e) => setData("password", e.target.value)}
                         error={errors.password}
-                        required
                     />
 
                     <TextInput
@@ -60,8 +57,29 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         label="Confirm Password"
                         onChange={(e) => setData("password_confirmation", e.target.value)}
                         error={errors.password_confirmation}
-                        required
                     />
+
+                    <TextInput
+                        id="office_position"
+                        type="text"
+                        name="office_position"
+                        value={data.office_position}
+                        label="Office Position"
+                        onChange={(e) => setData("office_position", e.target.value)}
+                        error={errors.office_position}
+                    />
+
+                    <Select
+                        id="workflow_role"
+                        type="text"
+                        name="workflow_role"
+                        label="Workflow Role"
+                        value={data.workflow_role}
+                        placeholder="Pick value"
+                        data={["Reviewer", "Approver"]}
+                        onChange={(_value, option) => setData("workflow_role", option.value)}
+                    />
+
                 </Stack>
 
                 <Flex align="center" justify="end" mt={16}>

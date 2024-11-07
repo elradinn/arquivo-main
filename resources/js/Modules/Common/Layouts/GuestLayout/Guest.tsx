@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Link } from "@inertiajs/react";
-import { Flex, Paper } from "@mantine/core";
+import { Flex, Paper, Text } from "@mantine/core";
 import classes from "./GuestLayout.module.css";
 import OfficeLogo from "@/Modules/Common/Components/OfficeLogo/OfficeLogo";
 
@@ -23,8 +23,13 @@ export default function Guest({ children }: PropsWithChildren) {
                 </Link>
             </div>
 
-            <Paper shadow="md" radius="md" className={classes.card}>
+            <Paper shadow="md" withBorder radius="lg" className={classes.card}>
                 {children}
+
+                {/* Powered by Arquivo Footer */}
+                <Text size="sm" ta="center" mt="md" c="dimmed">
+                    Powered by Arquivo
+                </Text>
             </Paper>
         </Flex>
     );
