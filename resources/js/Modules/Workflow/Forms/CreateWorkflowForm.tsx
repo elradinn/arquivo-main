@@ -36,14 +36,23 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
         handleUserChange,
         addAllUsers,
         maxUsers,
+        selectedUserIds,
+        fetchedUsers,
     } = useCreateWorkflow({
         itemParentId: itemParent?.item_id,
     });
 
     const { modals, closeModal } = useModalStore();
 
-    console.log("users", users);
-    console.log("data.users", data.users);
+    // Function to generate options for each Select, excluding already selected users
+    const getOptions = (currentIndex: number) => {
+        return fetchedUsers
+            .filter(user => !selectedUserIds.includes(user.id.toString()) || user.id.toString() === users[currentIndex].selectedUser)
+            .map(user => ({
+                value: user.id.toString(),
+                label: `${user.name} (${user.email})`,
+            }));
+    };
 
     return (
         <Modal
@@ -96,7 +105,7 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
                         <Group key={index} justify="space-between" align="flex-end">
                             <Select
                                 placeholder="Select a user"
-                                data={user.options}
+                                data={getOptions(index)}
                                 value={user.selectedUser}
                                 onChange={(value) => handleUserChange(index, value)}
                                 required
@@ -126,13 +135,13 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
                             </Button>
                         )}
 
-                        {(users.length < maxUsers || users.some(user => !user.selectedUser)) && (
+                        {selectedUserIds.length < maxUsers && (
                             <Button
                                 variant="subtle"
                                 color="blue"
                                 leftSection={<IconPlus size={16} />}
                                 onClick={addAllUsers}
-                                disabled={users.length + (maxUsers - users.length) > maxUsers}
+                                disabled={users.length >= maxUsers}
                             >
                                 Add All Users
                             </Button>
