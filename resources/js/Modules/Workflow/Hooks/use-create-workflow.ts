@@ -94,15 +94,28 @@ export function useCreateWorkflow({ itemParentId }: IProps) {
 
     const addAllUsers = () => {
         const allUsers = fetchedUsers.map(u => u.id.toString());
-        const updatedUsers: WorkflowUser[] = allUsers.map(id => ({
-            selectedUser: id,
-            options: fetchedUsers
-                .filter(user => user.id.toString() !== id)
-                .map(user => ({
-                    value: user.id.toString(),
-                    label: `${user.name} (${user.email})`,
-                })),
-        }));
+        const updatedUsers: WorkflowUser[] = allUsers.map(id => {
+            const selectedUser = fetchedUsers.find(user => user.id.toString() === id);
+            return {
+                selectedUser: id,
+                options: selectedUser
+                    ? [
+                          ...fetchedUsers
+                              .filter(user => user.id.toString() !== id)
+                              .map(user => ({
+                                  value: user.id.toString(),
+                                  label: `${user.name} (${user.email})`,
+                              })),
+                          { value: id, label: `${selectedUser.name} (${selectedUser.email})` }, // Include selected user
+                      ]
+                    : fetchedUsers.map(user => ({
+                          value: user.id.toString(),
+                          label: `${user.name} (${user.email})`,
+                      })),
+            };
+        });
+    
+        console.log(updatedUsers);
         setUsers(updatedUsers);
     };
 

@@ -42,6 +42,9 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
 
     const { modals, closeModal } = useModalStore();
 
+    console.log("users", users);
+    console.log("data.users", data.users);
+
     return (
         <Modal
             opened={modals["createWorkflow"]}
@@ -90,7 +93,6 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
                     </Text>
 
                     {users.map((user, index) => (
-                        console.log(user),
                         <Group key={index} justify="space-between" align="flex-end">
                             <Select
                                 placeholder="Select a user"
@@ -124,15 +126,17 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
                             </Button>
                         )}
 
-                        <Button
-                            variant="subtle"
-                            color="blue"
-                            leftSection={<IconPlus size={16} />}
-                            onClick={addAllUsers}
-                            disabled={users.length + (maxUsers - users.length) > maxUsers}
-                        >
-                            Add All Users
-                        </Button>
+                        {(users.length < maxUsers || users.some(user => !user.selectedUser)) && (
+                            <Button
+                                variant="subtle"
+                                color="blue"
+                                leftSection={<IconPlus size={16} />}
+                                onClick={addAllUsers}
+                                disabled={users.length + (maxUsers - users.length) > maxUsers}
+                            >
+                                Add All Users
+                            </Button>
+                        )}
                     </Group>
                 </Stack>
 
