@@ -10,12 +10,12 @@ import {
     Text,
     Textarea,
     ActionIcon,
+    Select,
 } from "@mantine/core";
-import { IconTrash } from "@tabler/icons-react";
+import { IconTrash, IconPlus } from "@tabler/icons-react";
 import { ItemParentResourceData } from "@/Modules/Item/Types/ItemParentResourceData";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { useUpdateWorkflow } from "../Hooks/use-update-workflow";
-import { useDeleteWorkflow } from "../Hooks/use-delete-workflow";
 import ConfirmDeleteWorkflowForm from "./ConfirmDeleteWorkflowForm";
 
 interface IFormProps {
@@ -31,20 +31,31 @@ const UpdateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
         setData,
         handleUpdateWorkflow,
         processing,
-        fetchedUsers,
+        users,
         setWorkflowType,
+        addUser,
+        removeUser,
+        handleUserChange,
+        addAllUsers,
+        maxUsers,
+        selectedUserIds,
+        fetchedUsers,
         errors,
     } = useUpdateWorkflow({
         itemParent,
         isOpen,
     });
 
-    // const { handleDeleteWorkflow, processing: deleting } = useDeleteWorkflow({
-    //     workflowId: itemParent?.workflow_id,
-    //     onDeleteSuccess: () => {
-    //         closeModal("updateWorkflow");
-    //     },
-    // });
+    const getOptions = (currentIndex: number) => {
+        return fetchedUsers
+            .filter(user => !selectedUserIds.includes(user.id.toString()) || user.id.toString() === users[currentIndex].selectedUser)
+            .map(user => ({
+                value: user.id.toString(),
+                label: `${user.name} (${user.email})`,
+            }));
+    };
+
+    console.log(users);
 
     return (
         <>
@@ -94,17 +105,52 @@ const UpdateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
                             Users in this workflow
                         </Text>
 
-                        {fetchedUsers.map(user => (
-                            <Paper withBorder radius="md" py={16} px={10} key={user.id}>
-                                <Group>
-                                    <Avatar />
-                                    <Stack gap={8}>
-                                        <Text size="sm">{user.name}</Text>
-                                        <Text size="sm">{user.email}</Text>
-                                    </Stack>
-                                </Group>
-                            </Paper>
+                        {users.map((user, index) => (
+                            <Group key={index} justify="space-between" align="flex-end">
+                                <Select
+                                    placeholder="Select a user"
+                                    data={getOptions(index)}
+                                    value={user.selectedUser}
+                                    onChange={(value) => handleUserChange(index, value)}
+                                    required
+                                    style={{ flex: 1 }}
+                                    allowDeselect={false}
+                                />
+                                <ActionIcon
+                                    color="red"
+                                    onClick={() => removeUser(index)}
+                                    title="Remove User"
+                                >
+                                    <IconTrash size={18} />
+                                </ActionIcon>
+                            </Group>
                         ))}
+
+                        <Group>
+                            {users.length < maxUsers && (
+                                <Button
+                                    variant="subtle"
+                                    color="green"
+                                    leftSection={<IconPlus size={16} />}
+                                    onClick={addUser}
+                                    disabled={users.length >= maxUsers}
+                                >
+                                    Add User
+                                </Button>
+                            )}
+
+                            {selectedUserIds.length < maxUsers && (
+                                <Button
+                                    variant="subtle"
+                                    color="blue"
+                                    leftSection={<IconPlus size={16} />}
+                                    onClick={addAllUsers}
+                                    disabled={users.length >= maxUsers}
+                                >
+                                    Add All Users
+                                </Button>
+                            )}
+                        </Group>
                     </Stack>
 
                     <Flex align="center" justify="end" mt={16}>
@@ -130,11 +176,9 @@ const UpdateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
                         </ActionIcon>
                     </Flex>
                 </form>
-
             </Modal>
             <ConfirmDeleteWorkflowForm workflowId={itemParent?.workflow_id} />
         </>
-
     );
 };
 
