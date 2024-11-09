@@ -110,6 +110,7 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
                                 onChange={(value) => handleUserChange(index, value)}
                                 required
                                 style={{ flex: 1 }}
+                                allowDeselect={false}
                             />
                             <ActionIcon
                                 color="red"
