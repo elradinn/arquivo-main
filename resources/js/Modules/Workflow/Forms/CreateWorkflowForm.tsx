@@ -9,7 +9,11 @@ import {
     Stack,
     Text,
     Textarea,
+    ActionIcon,
+    Select,
+    Tooltip,
 } from "@mantine/core";
+import { IconTrash, IconPlus } from "@tabler/icons-react";
 import { ItemParentResourceData } from "@/Modules/Item/Types/ItemParentResourceData";
 import { useCreateWorkflow } from "../Hooks/use-create-workflow";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
@@ -26,7 +30,12 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
         processing,
         errors,
         users,
-        setWorkflowType
+        setWorkflowType,
+        addUser,
+        removeUser,
+        handleUserChange,
+        addAllUsers,
+        maxUsers,
     } = useCreateWorkflow({
         itemParentId: itemParent?.item_id,
     });
@@ -46,7 +55,7 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
         >
             <form onSubmit={createApprovalSubmit}>
                 <Stack gap={16}>
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" color="dimmed">
                         Routinely directs any uploaded file in this folder through a predefined
                         approval workflow
                     </Text>
@@ -77,20 +86,54 @@ const CreateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
                     />
 
                     <Text size="sm" fw={500} mb={-8}>
-                        User in this workflow
+                        Users in this workflow
                     </Text>
 
-                    {users.map(user => (
-                        <Paper withBorder radius="md" py={16} px={10} key={user.id}>
-                            <Group>
-                                <Avatar />
-                                <Stack gap={8}>
-                                    <Text size="sm">{user.name}</Text>
-                                    <Text size="sm">{user.email}</Text>
-                                </Stack>
-                            </Group>
-                        </Paper>
+                    {users.map((user, index) => (
+                        console.log(user),
+                        <Group key={index} justify="space-between" align="flex-end">
+                            <Select
+                                placeholder="Select a user"
+                                data={user.options}
+                                value={user.selectedUser}
+                                onChange={(value) => handleUserChange(index, value)}
+                                required
+                                style={{ flex: 1 }}
+                            />
+                            <ActionIcon
+                                color="red"
+                                onClick={() => removeUser(index)}
+                                title="Remove User"
+                            >
+                                <IconTrash size={18} />
+                            </ActionIcon>
+                        </Group>
                     ))}
+
+                    {/* Conditionally render the Add User and Add All Users buttons */}
+                    <Group>
+                        {users.length < maxUsers && (
+                            <Button
+                                variant="subtle"
+                                color="green"
+                                leftSection={<IconPlus size={16} />}
+                                onClick={addUser}
+                                disabled={users.length >= maxUsers}
+                            >
+                                Add User
+                            </Button>
+                        )}
+
+                        <Button
+                            variant="subtle"
+                            color="blue"
+                            leftSection={<IconPlus size={16} />}
+                            onClick={addAllUsers}
+                            disabled={users.length + (maxUsers - users.length) > maxUsers}
+                        >
+                            Add All Users
+                        </Button>
+                    </Group>
                 </Stack>
 
                 <Flex align="center" justify="end" mt={16}>

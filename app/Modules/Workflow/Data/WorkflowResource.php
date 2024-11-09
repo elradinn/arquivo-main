@@ -27,10 +27,10 @@ class WorkflowResource extends Resource
             type: $workflow->type,
             destination: $workflow->destination,
             users: $workflow->users->map(fn($user) => [
-                'user_id' => $user->id,
-                'user_name' => $user->name,
-                'user_role' => $user->role,
-                'user_email' => $user->email,
+                'id' => $user->id,
+                'name' => $user->name,
+                'role' => $user->workflow_role,
+                'email' => $user->email,
             ])->toArray(),
         );
     }
