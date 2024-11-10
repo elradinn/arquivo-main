@@ -37,6 +37,10 @@ export function useUpdateWorkflow({ itemParent, isOpen }: IProps) {
 
     useEffect(() => {
         if (workflow) {
+            setInterval(() => {
+                setWorkflowType(workflow.type || "");
+            }, 1000);
+            
             setData({
                 resolution: workflow.resolution || "",
                 type: workflow.type || "",
@@ -44,20 +48,17 @@ export function useUpdateWorkflow({ itemParent, isOpen }: IProps) {
                     user_id: user.id,
                 })),
             });
-            
+
             setUsers(workflow.users.map(user => ({
                 selectedUser: user.id.toString()
             })));
             
-            setWorkflowType(workflow.type || "");
         }
     }, [workflow]);
 
     useEffect(() => {
         setUsers([]);
     }, [workflowType]);
-
-    console.log(users);
 
     const handleUpdateWorkflow = (e: React.FormEvent) => {
         e.preventDefault();
@@ -75,7 +76,6 @@ export function useUpdateWorkflow({ itemParent, isOpen }: IProps) {
                 });
             },
             onError: (e) => {
-                console.log(e);
                 notifications.show({
                     message: "Something went wrong",
                     color: "red",

@@ -55,8 +55,6 @@ const UpdateWorkflowForm: React.FC<IFormProps> = ({ itemParent }) => {
             }));
     };
 
-    console.log(users);
-
     return (
         <>
             <Modal
