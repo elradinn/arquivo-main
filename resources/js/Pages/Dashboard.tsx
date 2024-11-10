@@ -50,9 +50,6 @@ export default function DashboardPage({ dashboard }: DashboardPageProps) {
                                     <Group align="center" gap={12}>
                                         <ItemIcon mime="application/pdf" isFolder={false} approvalStatus={status} />
                                         <span>{name}</span>
-                                        <Text size="xs" c="dimmed">
-                                            {status}
-                                        </Text>
                                     </Group>
                                 ),
                             },

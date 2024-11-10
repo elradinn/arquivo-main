@@ -5,11 +5,15 @@ import { useFetchUsersApprovalRole } from "@/Modules/Common/Hooks/use-fetch-user
 import { useEffect, useState } from "react";
 import { useFetchDocumentApproval } from "./use-fetch-document-approval";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
-import { ItemParentResourceData } from "@/Modules/Item/Types/ItemParentResourceData";
+import { DocumentUserApproval } from "../Types/DocumentApprovalResourceData";
 
 interface IProps {
     documentApprovalId?: string;
     isOpen: boolean;
+}
+
+interface DocumentApprovalUser {
+    selectedUser: string;
 }
 
 export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps) {
@@ -28,16 +32,33 @@ export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps
             users: [],
         });
 
+    const [users, setUsers] = useState<DocumentApprovalUser[]>([]);
+    const maxUsers = fetchedUsers.length;
+
     useEffect(() => {
-        setData({
-            resolution: documentApproval?.resolution || "",
-            type: documentApproval?.type || "",
-            users: (documentApproval?.document_user_approvals || []).map((user) => ({
-                user_id: user.user_id,
-            })),
-        });
-        setDocumentApprovalType(documentApproval?.type || "");
-    }, [documentApproval]);
+        if (documentApproval) {
+            setDocumentApprovalType(documentApproval.type || "");
+
+            setData({
+                resolution: documentApproval.resolution || "",
+                type: documentApproval.type || "",
+                users: (documentApproval.document_user_approvals || []).map((user: DocumentUserApproval) => ({
+                    user_id: user.user_id,
+                })),
+            });
+
+            setUsers(
+                (documentApproval.document_user_approvals || []).map((user: DocumentUserApproval) => ({
+                    selectedUser: user.user_id.toString(),
+                }))
+            );
+        }
+    }, [documentApproval, isOpen]);
+
+    useEffect(() => {
+        // Reset users when documentApprovalType changes
+        setUsers([]);
+    }, [documentApprovalType]);
 
     const handleClose = () => {
         closeModal("updateDocumentApproval");
@@ -48,7 +69,10 @@ export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps
     const handleUpdateDocumentApproval = (e: React.FormEvent) => {
         e.preventDefault();
 
-        data.users = fetchedUsers.map((user) => ({ user_id: user.id.toString() }));
+        data.users = users
+            .map((user) => parseInt(user.selectedUser))
+            .filter((id) => !isNaN(id))
+            .map((id) => ({ user_id: id.toString() }));
 
         put(route("document_approvals.update", documentApprovalId), {
             onSuccess: () => {
@@ -68,6 +92,45 @@ export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps
         });
     };
 
+    const addUser = () => {
+        if (users.length < maxUsers) {
+            setUsers([
+                ...users,
+                {
+                    selectedUser: "",
+                },
+            ]);
+        }
+    };
+
+    const addAllUsers = () => {
+        const selectedUserIds = users.map((user) => user.selectedUser);
+        const availableUsers = fetchedUsers.filter(
+            (u) => !selectedUserIds.includes(u.id.toString())
+        );
+        const newUsers = availableUsers.map((u) => ({
+            selectedUser: u.id.toString(),
+        }));
+        setUsers([
+            ...users,
+            ...newUsers,
+        ]);
+    };
+
+    const removeUser = (index: number) => {
+        const updatedUsers = [...users];
+        updatedUsers.splice(index, 1);
+        setUsers(updatedUsers);
+    };
+
+    const handleUserChange = (index: number, value: string | null) => {
+        const updatedUsers = [...users];
+        updatedUsers[index].selectedUser = value || "";
+        setUsers(updatedUsers);
+    };
+
+    const selectedUserIds = users.map((user) => user.selectedUser).filter((id) => id !== "");
+
     return {
         data,
         setData,
@@ -75,8 +138,14 @@ export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps
         processing,
         errors,
         handleClose,
-        fetchedUsers,
+        users,
         setDocumentApprovalType,
-        documentApproval,
+        addUser,
+        removeUser,
+        handleUserChange,
+        addAllUsers,
+        maxUsers,
+        selectedUserIds,
+        fetchedUsers,
     };
 }

@@ -64,7 +64,7 @@ class DocumentApprovalController extends Controller
 
     public function cancel(DocumentApproval $documentApproval): RedirectResponse
     {
-        $this->documentApprovalAuthorization->canEdit(Auth::user(), $documentApproval);
+        // $this->documentApprovalAuthorization->canEdit(Auth::user(), $documentApproval);
 
         $this->deleteDocumentApprovalAction->execute($documentApproval);
 
