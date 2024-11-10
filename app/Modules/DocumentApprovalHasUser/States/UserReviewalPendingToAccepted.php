@@ -23,7 +23,7 @@ class UserReviewalPendingToAccepted extends Transition
         $this->documentApprovalHasUser->user_state = new UserReviewalAccepted($this->documentApprovalHasUser);
         $this->documentApprovalHasUser->save();
 
-        $sendDocumentApprovalNotification->execute($this->documentApprovalHasUser->documentApproval);
+        // $sendDocumentApprovalNotification->execute($this->documentApprovalHasUser->documentApproval);
 
         $recalculateDocumentStateAction->execute($this->documentApprovalHasUser->documentApproval);
 

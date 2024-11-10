@@ -64,7 +64,7 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
                             Admin Tools
                         </Button>
                     )}
-                    <NotificationMenu />
+                    <NotificationMenu handleDocumentAction={handleDocumentAction} />
                     <Menu
                         width={200}
                         transitionProps={{
