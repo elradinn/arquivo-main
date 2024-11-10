@@ -9,11 +9,14 @@ import {
     Stack,
     Text,
     Textarea,
+    ActionIcon,
+    Select,
+    Tooltip,
 } from "@mantine/core";
-import { ItemParentResourceData } from "@/Modules/Item/Types/ItemParentResourceData";
+import { IconTrash, IconPlus } from "@tabler/icons-react";
+import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
 import { useCreateDocumentApproval } from "../Hooks/use-create-document-approval";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
-import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
 
 interface IFormProps {
     document?: DocumentResourceData;
@@ -27,12 +30,29 @@ const CreateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
         processing,
         errors,
         users,
-        setDocumentApprovalType
+        setDocumentApprovalType,
+        addUser,
+        removeUser,
+        handleUserChange,
+        addAllUsers,
+        maxUsers,
+        selectedUserIds,
+        fetchedUsers,
     } = useCreateDocumentApproval({
         documentId: document?.item_id,
     });
 
     const { modals, closeModal } = useModalStore();
+
+    // Function to generate options for each Select, excluding already selected users
+    const getOptions = (currentIndex: number) => {
+        return fetchedUsers
+            .filter(user => !selectedUserIds.includes(user.id.toString()) || user.id.toString() === users[currentIndex].selectedUser)
+            .map(user => ({
+                value: user.id.toString(),
+                label: `${user.name} (${user.email})`,
+            }));
+    };
 
     return (
         <Modal
@@ -47,7 +67,7 @@ const CreateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
         >
             <form onSubmit={createApprovalSubmit}>
                 <Stack gap={16}>
-                    <Text size="sm" c="dimmed">
+                    <Text size="sm" color="dimmed">
                         Routinely directs any uploaded file in this folder through a predefined
                         document approval process
                     </Text>
@@ -81,17 +101,53 @@ const CreateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                         Users in this document approval
                     </Text>
 
-                    {users.map(user => (
-                        <Paper withBorder radius="md" py={16} px={10} key={user.id}>
-                            <Group>
-                                <Avatar />
-                                <Stack gap={8}>
-                                    <Text size="sm">{user.name}</Text>
-                                    <Text size="sm">{user.email}</Text>
-                                </Stack>
-                            </Group>
-                        </Paper>
+                    {users.map((user, index) => (
+                        <Group key={index} justify="space-between" align="flex-end">
+                            <Select
+                                placeholder="Select a user"
+                                data={getOptions(index)}
+                                value={user.selectedUser}
+                                onChange={(value) => handleUserChange(index, value)}
+                                required
+                                style={{ flex: 1 }}
+                                allowDeselect={false}
+                            />
+                            <ActionIcon
+                                color="red"
+                                onClick={() => removeUser(index)}
+                                title="Remove User"
+                            >
+                                <IconTrash size={18} />
+                            </ActionIcon>
+                        </Group>
                     ))}
+
+                    {/* Conditionally render the Add User and Add All Users buttons */}
+                    <Group>
+                        {users.length < maxUsers && (
+                            <Button
+                                variant="subtle"
+                                color="green"
+                                leftSection={<IconPlus size={16} />}
+                                onClick={addUser}
+                                disabled={users.length >= maxUsers}
+                            >
+                                Add User
+                            </Button>
+                        )}
+
+                        {selectedUserIds.length < maxUsers && (
+                            <Button
+                                variant="subtle"
+                                color="blue"
+                                leftSection={<IconPlus size={16} />}
+                                onClick={addAllUsers}
+                                disabled={users.length >= maxUsers}
+                            >
+                                Add All Users
+                            </Button>
+                        )}
+                    </Group>
                 </Stack>
 
                 <Flex align="center" justify="end" mt={16}>

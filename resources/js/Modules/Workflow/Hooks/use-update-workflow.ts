@@ -37,10 +37,8 @@ export function useUpdateWorkflow({ itemParent, isOpen }: IProps) {
 
     useEffect(() => {
         if (workflow) {
-            setInterval(() => {
-                setWorkflowType(workflow.type || "");
-            }, 1000);
-            
+            setWorkflowType(workflow.type || "");
+
             setData({
                 resolution: workflow.resolution || "",
                 type: workflow.type || "",
@@ -54,7 +52,7 @@ export function useUpdateWorkflow({ itemParent, isOpen }: IProps) {
             })));
             
         }
-    }, [workflow]);
+    }, [workflow, isOpen]);
 
     useEffect(() => {
         setUsers([]);
