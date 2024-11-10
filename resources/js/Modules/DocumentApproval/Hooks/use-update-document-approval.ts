@@ -139,6 +139,7 @@ export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps
         errors,
         handleClose,
         users,
+        documentApproval,
         setDocumentApprovalType,
         addUser,
         removeUser,
