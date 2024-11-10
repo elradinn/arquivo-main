@@ -22,9 +22,9 @@ interface IFormProps {
     document?: DocumentResourceData;
 }
 
-const UpdateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
+const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
     const { modals, closeModal, openModal } = useModalStore();
-    const isOpen = modals["updateDocumentApproval"];
+    const isOpen = modals["viewDocumentApproval"];
 
     const {
         data,
@@ -64,19 +64,18 @@ const UpdateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
         <>
             <Modal
                 opened={isOpen}
-                onClose={() => closeModal("updateDocumentApproval")}
+                onClose={() => closeModal("viewDocumentApproval")}
                 title={
                     <Text fw="bold" size="lg">
-                        Update Document Approval Process
+                        Document Workflow Process
                     </Text>
                 }
                 size={550}
             >
                 <form onSubmit={handleUpdateDocumentApproval}>
                     <Stack gap={16}>
-                        <Text size="sm" color="dimmed">
-                            Routinely directs any uploaded file in this folder through a predefined
-                            document approval process
+                        <Text size="sm">
+                            View the document workflow process for this document
                         </Text>
 
                         <Radio.Group
@@ -158,7 +157,7 @@ const UpdateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                     </Stack>
 
                     <Flex align="center" justify="end" mt={16}>
-                        <Button variant="light" onClick={() => closeModal("updateDocumentApproval")}>
+                        <Button variant="light" onClick={() => closeModal("viewDocumentApproval")}>
                             Cancel
                         </Button>
 
@@ -170,7 +169,7 @@ const UpdateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                             variant="transparent"
                             color="red"
                             onClick={() => {
-                                closeModal("updateDocumentApproval");
+                                closeModal("viewDocumentApproval");
                                 openModal("confirmDeleteDocumentApproval");
                             }}
                             title="Delete Document Approval"
@@ -186,4 +185,4 @@ const UpdateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
     );
 };
 
-export default UpdateDocumentApprovalForm;
+export default ViewDocumentApprovalForm;

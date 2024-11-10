@@ -15,7 +15,7 @@ import ItemBreadcrumbs from "@/Modules/Item/Components/ItemBreadcrumbs";
 import { ActivityLogResourceData } from "@/Modules/ActivityLog/Types/ActivityLogResourceData";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import CreateDocumentApprovalForm from "@/Modules/DocumentApproval/Components/CreateDocumentApprovalForm";
-import UpdateDocumentApprovalForm from "@/Modules/DocumentApproval/Components/UpdateDocumentApprovalForm";
+import ViewDocumentApprovalForm from "@/Modules/DocumentApproval/Components/ViewDocumentApprovalForm";
 import DocumentVersionsDataTable from "@/Modules/Document/Components/DocumentVersionDataTable";
 import { FileWithPath } from "@mantine/dropzone";
 import useUploadDocumentVersion from "@/Modules/Document/Hooks/use-upload-document-version";
@@ -128,7 +128,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                             leftSection={<IconGitBranch size={18} />}
                             fullWidth
                             justify="left"
-                            onClick={() => { openModal(document.document_approval_id ? "updateDocumentApproval" : "createDocumentApproval") }}
+                            onClick={() => { openModal(document.document_approval_id ? "viewDocumentApproval" : "createDocumentApproval") }}
                         >
                             {document.document_approval_id ? "View" : "Start"} Approval Process
                         </Button>
@@ -137,7 +137,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
             </Grid>
 
             <CreateDocumentApprovalForm document={document} />
-            <UpdateDocumentApprovalForm document={document} />
+            <ViewDocumentApprovalForm document={document} />
         </Authenticated>
     );
 }
