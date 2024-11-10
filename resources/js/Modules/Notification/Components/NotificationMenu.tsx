@@ -18,7 +18,8 @@ const NotificationMenu: React.FC = () => {
             <Menu.Target>
                 <ActionIcon variant="subtle" color="gray" size="xl">
                     <Indicator
-                        label={notifications.length}
+                        processing
+                        inline
                         disabled={notifications.length === 0}
                         color="red"
                     >
