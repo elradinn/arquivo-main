@@ -11,7 +11,7 @@ import {
     ActionIcon,
     Flex,
 } from "@mantine/core";
-import { IconDownload } from "@tabler/icons-react";
+import { IconDownload, IconTable } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
@@ -133,17 +133,20 @@ export default function DashboardReportPage({
                                 onChange={setDateRange}
                                 style={{ width: 300 }}
                             />
+
+                            <Button
+                                onClick={() => openModal("selectDashboardMetadataColumns")}
+                                leftSection={<IconTable size={16} />}
+                                variant="subtle"
+                                color="gray"
+                            >
+                                Columns
+                            </Button>
                         </Flex>
 
                         {/* Generate Report Button */}
                         <Button onClick={handleGenerateReport} leftSection={<IconDownload size={16} />} color="green">
                             Generate Report
-                        </Button>
-                    </Group>
-
-                    <Group>
-                        <Button onClick={() => openModal("selectDashboardMetadataColumns")}>
-                            Select Metadata Columns
                         </Button>
                     </Group>
 

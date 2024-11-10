@@ -44,15 +44,19 @@ class DashboardController extends Controller
         foreach ($statuses as $statusKey) {
             $statusClass = DocumentStatusHelper::getStatusClass($statusKey);
             if ($statusClass) {
-                $count = Document::where('status', $statusClass)->count();
+                // Ensure the Document's associated Item is not soft-deleted
+                $count = Document::where('status', $statusClass)
+                    ->whereHas('item') // This ensures the related Item is not soft-deleted
+                    ->count();
                 $statusCounts[$statusKey] = $count;
             } else {
                 $statusCounts[$statusKey] = 0;
             }
         }
 
-        // Fetch recently uploaded documents
-        $recently_uploaded_documents = Document::orderBy('updated_at', 'desc')
+        // Fetch recently uploaded documents, ensuring associated Items are not soft-deleted
+        $recently_uploaded_documents = Document::whereHas('item')
+            ->orderBy('updated_at', 'desc')
             ->take(5)
             ->get()
             ->map(function ($doc) {
@@ -64,8 +68,6 @@ class DashboardController extends Controller
             })
             ->toArray();
 
-
-
         // Create DashboardResource instance
         $dashboardData = new DashboardResource(
             number_of_review_pending: $statusCounts['reviewal_pending'],
@@ -74,10 +76,9 @@ class DashboardController extends Controller
             number_of_approval_pending: $statusCounts['approval_pending'],
             number_of_approval_accepted: $statusCounts['approval_accepted'],
             number_of_approval_rejected: $statusCounts['approval_rejected'],
-            number_of_documents: Document::count(),
+            number_of_documents: Document::whereHas('item')->count(),
             recently_uploaded_documents: $recently_uploaded_documents
         );
-
 
         return Inertia::render('Dashboard', [
             'dashboard' => $dashboardData,
@@ -104,8 +105,10 @@ class DashboardController extends Controller
         // Get all available metadata
         $availableMetadata = Metadata::all();
 
-        // Query documents based on filters
-        $documentsQuery = Item::query()->with('document')->whereHas('document');
+        // Query documents based on filters, ensuring associated Items are not soft-deleted
+        $documentsQuery = Item::with('document')
+            ->whereHas('document')
+            ->whereNull('deleted_at'); // Ensure Item is not soft-deleted
 
         // Apply document status filter
         if ($documentStatus) {
