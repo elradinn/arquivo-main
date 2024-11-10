@@ -61,7 +61,7 @@ export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps
     }, [documentApprovalType]);
 
     const handleClose = () => {
-        closeModal("updateDocumentApproval");
+        closeModal("viewDocumentApproval");
         reset();
         clearErrors();
     };
