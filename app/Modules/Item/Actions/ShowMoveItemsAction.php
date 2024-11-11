@@ -17,7 +17,7 @@ class ShowMoveItemsAction
         $itemAncestors = [];
 
         if ($item === null) {
-            $itemContents = Workspace::all();
+            $itemContents = Item::whereNull('parent_id')->get();
         } else {
             $itemContents = $item->getChildren();
             $itemAncestors = $item->ancestorsWithSelf()->get()->load('workspace', 'folder');
