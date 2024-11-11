@@ -14,6 +14,8 @@ export function useCreateNumberingScheme({ itemParent }: IProps) {
         folder_item_id: itemParent?.item_id ?? "",
         name: "",
         prefix: "",
+        next_number: 1,
+        reset_frequency: "none",
     });
 
     const { closeModal } = useModalStore();
@@ -26,13 +28,14 @@ export function useCreateNumberingScheme({ itemParent }: IProps) {
         post(route("numbering-scheme.store"), {
             preserveScroll: true,
             onSuccess: () => {
-                closeModal("numberingScheme");
+                closeModal("createNumberingScheme");
                 notifications.show({
                     message: "Numbering scheme created",
                     color: "green",
                 });
             },
-            onError: () => {
+            onError: (errors) => {
+                console.log(errors);
                 notifications.show({
                     message: "Something went wrong",
                     color: "red",

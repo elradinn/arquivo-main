@@ -11,7 +11,9 @@ class NumberingSchemeResourceData extends Resource
         public int $id,
         public string $prefix,
         public string $name,
-        public string $folder_name
+        public string $folder_name,
+        public int $next_number,
+        public string $reset_frequency
     ) {}
 
     public static function fromModel(NumberingScheme $numberingScheme): self
@@ -20,7 +22,9 @@ class NumberingSchemeResourceData extends Resource
             id: $numberingScheme->id,
             prefix: $numberingScheme->prefix,
             name: $numberingScheme->name,
-            folder_name: $numberingScheme->folder->name ?? 'No Folder'
+            folder_name: $numberingScheme->folder->name ?? 'No Folder',
+            next_number: $numberingScheme->next_number,
+            reset_frequency: $numberingScheme->reset_frequency
         );
     }
 }

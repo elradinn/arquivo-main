@@ -13,6 +13,10 @@ class CreateNumberingSchemeData extends Data
 
         public string $name,
 
-        public string $prefix
+        public string $prefix,
+
+        public int $next_number,
+
+        public string $reset_frequency,
     ) {}
 }

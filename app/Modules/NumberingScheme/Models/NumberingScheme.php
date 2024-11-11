@@ -14,6 +14,13 @@ class NumberingScheme extends Model
         'folder_item_id',
         'name',
         'prefix',
+        'next_number',
+        'reset_frequency',
+        'last_reset_date',
+    ];
+
+    protected $casts = [
+        'last_reset_date' => 'date',
     ];
 
     public function folder()

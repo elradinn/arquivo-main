@@ -17,6 +17,8 @@ export function useUpdateNumberingScheme({ itemParent, isOpen }: UseUpdateNumber
     const { data, setData, put, processing, errors, reset } = useForm<UpdateNumberingSchemeData>({
         name: "",
         prefix: "",
+        next_number: 0,
+        reset_frequency: "none",
     });
 
     const { closeModal } = useModalStore();
@@ -25,6 +27,8 @@ export function useUpdateNumberingScheme({ itemParent, isOpen }: UseUpdateNumber
         setData({
             name: numberingScheme?.name || "",
             prefix: numberingScheme?.prefix || "",
+            next_number: numberingScheme?.next_number || 0,
+            reset_frequency: numberingScheme?.reset_frequency || "none",
         });
     }, [numberingScheme]);
 

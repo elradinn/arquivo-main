@@ -23,7 +23,7 @@ class ApplyDocumentNumberAction
             $numberingScheme = $folder->numberingScheme;
 
             if ($numberingScheme) {
-                $documentNumber = $this->generateDocumentNumberAction->execute($numberingScheme->prefix);
+                $documentNumber = $this->generateDocumentNumberAction->execute($numberingScheme);
 
                 // $document = Document::find($document->item->id);
                 // $document->document_number = $documentNumber;

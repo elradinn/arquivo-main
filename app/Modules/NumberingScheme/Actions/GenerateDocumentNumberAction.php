@@ -3,19 +3,57 @@
 namespace Modules\NumberingScheme\Actions;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Modules\NumberingScheme\Models\NumberingScheme;
 
 class GenerateDocumentNumberAction
 {
-    public function execute(string $prefix): string
+    public function execute(NumberingScheme $numberingScheme): string
     {
-        $date = Carbon::now();
-        $number = $prefix;
+        return DB::transaction(function () use ($numberingScheme) {
+            $date = Carbon::now();
+            $prefix = $numberingScheme->prefix;
+            $resetFrequency = $numberingScheme->reset_frequency;
+            $lastResetDate = $numberingScheme->last_reset_date;
 
-        $number = str_replace('[DD]', $date->format('d'), $number);
-        $number = str_replace('[MM]', $date->format('m'), $number);
-        $number = str_replace('[YY]', $date->format('y'), $number);
-        $number = str_replace('[YYYY]', $date->format('Y'), $number);
+            // Determine if reset is needed
+            $shouldReset = false;
 
-        return $number;
+            if ($resetFrequency === 'monthly') {
+                if (
+                    !$lastResetDate ||
+                    $date->month !== Carbon::parse($lastResetDate)->month ||
+                    $date->year !== Carbon::parse($lastResetDate)->year
+                ) {
+                    $shouldReset = true;
+                }
+            } elseif ($resetFrequency === 'yearly') {
+                if (!$lastResetDate || $date->year !== Carbon::parse($lastResetDate)->year) {
+                    $shouldReset = true;
+                }
+            }
+
+            if ($shouldReset) {
+                $numberingScheme->next_number = 1;
+                $numberingScheme->last_reset_date = $date->toDateString();
+            }
+
+            $currentNumber = $numberingScheme->next_number;
+            $numberingScheme->next_number += 1;
+            $numberingScheme->save();
+
+            $number = $prefix;
+
+            // Replace date placeholders
+            $number = str_replace('[DD]', $date->format('d'), $number);
+            $number = str_replace('[MM]', $date->format('m'), $number);
+            $number = str_replace('[YY]', $date->format('y'), $number);
+            $number = str_replace('[YYYY]', $date->format('Y'), $number);
+
+            // Replace [INC] placeholder with the current number without padding
+            $number = str_replace('[INC]', (string)$currentNumber, $number);
+
+            return $number;
+        });
     }
 }
