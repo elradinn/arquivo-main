@@ -8,6 +8,8 @@ class UpdateNumberingSchemeData extends Data
 {
     public function __construct(
         public string $name,
-        public string $prefix
+        public string $prefix,
+        public int $next_number,
+        public string $reset_frequency,
     ) {}
 }

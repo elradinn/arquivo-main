@@ -6,12 +6,27 @@ use Modules\Document\Models\Document;
 
 class AttachRelatedDocumentAction
 {
-    public function execute(Document $document, Document $relatedDocument): void
+    public function execute(Document $document, array $relatedDocuments): void
     {
-        // Attach the related document without detaching existing ones
-        $document->relatedDocuments()->syncWithoutDetaching([$relatedDocument->item_id]);
+        $relatedDocumentIds = collect($relatedDocuments)->pluck('item_id');
+
+        // Map each item_id to a related_document_id
+        $formattedRelatedDocuments = $relatedDocumentIds->map(function ($itemId) {
+            return [
+                'related_document_id' => $itemId,
+            ];
+        });
+
+        // Delete first all related documents
+        $document->relatedDocuments()->detach();
+
+        // Attaching related documents (assuming a relationship exists)
+        $document->relatedDocuments()->syncWithoutDetaching($formattedRelatedDocuments->pluck('related_document_id'));
 
         // Also attach the inverse relationship
-        $relatedDocument->relatedDocuments()->syncWithoutDetaching([$document->item_id]);
+        foreach ($relatedDocuments as $relatedDocument) {
+            $relatedDocumentModel = Document::find($relatedDocument['item_id']);
+            $relatedDocumentModel->relatedDocuments()->syncWithoutDetaching([$document->item_id]);
+        }
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Modules\Document\Data\UploadDocumentData;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Document\Actions\UpdateDocumentAction;
@@ -142,5 +143,12 @@ class DocumentController extends Controller
         $this->deleteDocumentVersionAction->execute($versionId);
 
         return redirect()->back();
+    }
+
+    public function view(Document $document)
+    {
+        return response()->file(Storage::disk('public')->path($document->file_path), [
+            'Content-Type' => $document->mime_type,
+        ]);
     }
 }

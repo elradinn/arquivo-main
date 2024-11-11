@@ -26,5 +26,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/versions/{version}/restore', [DocumentController::class, 'restoreDocumentVersion'])->name('document.restore_version');
 
         Route::delete('/versions/{version}', [DocumentController::class, 'deleteDocumentVersion'])->name('document.delete_version');
+
+        Route::get('/{document}/view', [DocumentController::class, 'view'])->name('document.view');
     });
 });

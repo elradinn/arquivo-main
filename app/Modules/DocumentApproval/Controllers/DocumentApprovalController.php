@@ -16,6 +16,8 @@ use Modules\DocumentApproval\Actions\UpdateDocumentApprovalAction;
 use Modules\DocumentApproval\Data\UpdateDocumentApprovalData;
 use Modules\DocumentApproval\Actions\DeleteDocumentApprovalAction;
 use Modules\DocumentApproval\Authorization\DocumentApprovalAuthorization;
+use Modules\DocumentApprovalHasUser\States\UserApprovalPending;
+use Modules\DocumentApprovalHasUser\States\UserReviewalPending;
 
 class DocumentApprovalController extends Controller
 {
@@ -81,8 +83,8 @@ class DocumentApprovalController extends Controller
         $pendingApprovals = DocumentApproval::whereHas('documentApprovalUsers', function ($query) use ($user) {
             $query->where('user_id', $user->id)
                 ->whereIn('user_state', [
-                    \Modules\DocumentApprovalHasUser\States\UserApprovalPending::class,
-                    \Modules\DocumentApprovalHasUser\States\UserReviewalPending::class,
+                    UserApprovalPending::class,
+                    UserReviewalPending::class,
                 ]);
         })->get()->map(fn($approval) => DocumentApprovalResourceData::fromModel($approval));
 

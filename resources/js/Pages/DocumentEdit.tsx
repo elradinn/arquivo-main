@@ -17,7 +17,7 @@ import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceD
 import { ItemAncestorsResourceData } from "@/Modules/Item/Types/ItemAncestorsResourceData";
 import ItemBreadcrumbs from "@/Modules/Item/Components/ItemBreadcrumbs";
 import MetadataInput from "@/Modules/Document/Components/MetadataInput";
-import RelatedDocumentsInput from "@/Modules/Document/Components/RelatedDocumentsInput";
+import RelatedFilesInput from "@/Modules/Document/Components/RelatedFilesInput";
 import { useUpdateDocument } from "@/Modules/Document/Hooks/use-update-document";
 import { DocumentMetadata } from "@/Modules/Document/Types/DocumentMetadata";
 import { DatePickerInput } from "@mantine/dates";
@@ -51,19 +51,19 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
         setData("update_metadata", updatedMetadata);
     };
 
-
     const handleMetadataDelete = (metadataId: number) => {
         setDeletedMetadataIds((prev) => [...prev, metadataId]);
         setData("delete_metadata", [...(data.delete_metadata || []), { metadata_id: metadataId }]);
+    };
+
+    const handleRelatedDocsChange = (updatedRelatedDocs: { item_id: string; name: string }[]) => {
+        setData("related_documents", updatedRelatedDocs);
     };
 
     return (
         <Authenticated>
             <Head title="Document Properties" />
             <Stack px={8} py={8} gap={24} w={550} mb={72}>
-                {/* <Box px={8} py={8} mb={48}>
-                    <ItemBreadcrumbs ancestors={itemAncestors} />
-                </Box> */}
                 <Group mt={24} align="center">
                     <IconFile size={56} stroke={1.5} color="gray" />
                     <Text fw={500}>{data.name}</Text>
@@ -115,33 +115,26 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
                             onChange={handleMetadataChange}
                             onDelete={handleMetadataDelete}
                         />
-
                     </Stack>
 
-                    {/* <Stack gap={12}>
+                    <Stack gap={12}>
                         <Text size="sm" fw={500}>
-                            Related Files
+                            Related Documents
                         </Text>
 
-                        <RelatedDocumentsInput
-                            relatedDocuments={data.related_documents}
-                            onChange={(updatedRelatedDocs) => setData("related_documents", updatedRelatedDocs)}
+                        <RelatedFilesInput
+                            relatedDocuments={data.related_documents || []}
+                            onChange={handleRelatedDocsChange}
                         />
-
-                        <Flex justify="flex-start">
-                            <Button variant="subtle" color="blue.5" leftSection={<IconPlus size={18} />}>
-                                Add Related File
-                            </Button>
-                        </Flex>
-                    </Stack> */}
+                    </Stack>
 
                     <Flex align="center" justify="end" mt={16}>
-                        <Button variant="outline" type="button" onClick={() => window.history.back()}>
+                        <Button variant="light" onClick={() => reset()}>
                             Cancel
                         </Button>
 
                         <Button ml={12} type="submit" loading={processing}>
-                            Save
+                            Save Changes
                         </Button>
                     </Flex>
                 </form>

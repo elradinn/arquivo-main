@@ -13,8 +13,10 @@ return new class extends Migration
             $table->uuid('folder_item_id')->unique();
             $table->string('name');
             $table->string('prefix');
+            $table->integer('next_number')->default(1);
+            $table->string('reset_frequency');
+            $table->date('last_reset_date')->nullable();
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('folder_item_id')->references('item_id')->on('folders')->onDelete('cascade');
         });

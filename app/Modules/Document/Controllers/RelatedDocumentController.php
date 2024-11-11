@@ -26,7 +26,8 @@ class RelatedDocumentController extends Controller
      */
     public function attach(Document $document, Document $relatedDocument): JsonResponse
     {
-        $this->attachRelatedDocumentAction->execute($document, $relatedDocument);
+        // Old way
+        // $this->attachRelatedDocumentAction->execute($document, $relatedDocument);
 
         return response()->json([
             'message' => 'Related document attached successfully.',
