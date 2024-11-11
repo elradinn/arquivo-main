@@ -7,7 +7,7 @@ import axios from 'axios';
 import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 
 interface NotificationMenuProps {
-    handleDocumentAction: (action: "accept" | "reject") => void;
+    handleDocumentAction?: (action: "accept" | "reject") => void;
 }
 
 const NotificationMenu: React.FC<NotificationMenuProps> = ({ handleDocumentAction }) => {
