@@ -24,10 +24,10 @@ import {
     isZip,
 } from "@/Modules/Item/Helpers/file-helper";
 import { Group } from "@mantine/core";
-import { getColorStatus } from "@/Modules/Common/Helpers/get-color-status";
 import ArqPdf from "../IconFiles/ArqPdf";
 import ArqDefault from "../IconFiles/ArqDefault";
 import ArqFolder from "../IconFiles/ArqFolder";
+import { StatusIcon } from "../StatusIcon/StatusIcon";
 
 interface ItemIconProps {
     mime: string;
@@ -60,22 +60,11 @@ export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, approvalStat
         return <ArqDefault size={36} />;
     };
 
-    const indicatorColor = getColorStatus(approvalStatus);
-
-    const renderStatusIcon = () => {
-        if (approvalStatus?.includes("Approval")) {
-            return <IconSquareCheckFilled color={indicatorColor} />;
-        } else if (approvalStatus?.includes("Reviewal")) {
-            return <IconMessageFilled color={indicatorColor} />;
-        }
-        return null;
-    };
-
     return (
         <Group gap={4}>
             {renderIcon()}
             {missingRequiredMetadata && <IconTag color="red" />}
-            {renderStatusIcon()}
+            <StatusIcon approvalStatus={approvalStatus} />
         </Group>
     );
 };

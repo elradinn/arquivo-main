@@ -21,7 +21,7 @@ export const getColorStatus = (state: string | undefined) => {
             case "Reviewal Accepted":
                 return "teal";
             case "Reviewal Rejected":
-                return "pink";
+                return "red";
             default:
                 return "gray";
         }

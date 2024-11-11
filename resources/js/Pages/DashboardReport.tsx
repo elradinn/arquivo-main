@@ -26,6 +26,7 @@ import { ItemContentsResourceData } from "@/Modules/Item/Types/ItemContentsResou
 import { DatePickerInput } from "@mantine/dates";
 import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
+import { useDocumentProperties } from "@/Modules/Item/Hooks/use-document-properties";
 
 interface DashboardReportProps {
     documents: PaginationData<ItemContentsResourceData>;
@@ -51,6 +52,8 @@ export default function DashboardReportPage({
         filters.start_date ? new Date(filters.start_date) : null,
         filters.end_date ? new Date(filters.end_date) : null,
     ]);
+
+    const { openDocument } = useDocumentProperties();
 
     const { search, setSearch, handleSearch } = useSearchDataTable("", `/dashboard/reports`);
     const { page, setPage, handlePageChange } = usePaginateDataTable(documents.current_page);
@@ -138,14 +141,14 @@ export default function DashboardReportPage({
                                 onClick={() => openModal("selectDashboardMetadataColumns")}
                                 leftSection={<IconTable size={16} />}
                                 variant="subtle"
-                                color="gray"
+                                color="dark.5"
                             >
                                 Columns
                             </Button>
                         </Flex>
 
                         {/* Generate Report Button */}
-                        <Button onClick={handleGenerateReport} leftSection={<IconDownload size={16} />} color="green">
+                        <Button onClick={handleGenerateReport} leftSection={<IconDownload size={16} />} color="blue" variant="subtle">
                             Generate Report
                         </Button>
                     </Group>
@@ -196,6 +199,13 @@ export default function DashboardReportPage({
                         highlightOnHover
                         verticalSpacing="lg"
                         horizontalSpacing="xl"
+                        customRowAttributes={({ type, id }) => ({
+                            onDoubleClick: (e: MouseEvent) => {
+                                if (e.button === 0) {
+                                    openDocument(id);
+                                }
+                            },
+                        })}
                     />
                 </Stack>
             </Stack>

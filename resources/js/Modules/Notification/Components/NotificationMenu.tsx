@@ -1,52 +1,69 @@
-import React from "react";
-import {
-    Menu,
-    ActionIcon,
-    Indicator,
-    List,
-    Text,
-    Loader,
-} from "@mantine/core";
-import { IconBell, IconInbox } from "@tabler/icons-react";
-import { useRetrieveNotification } from "../Hooks/use-retrieve-notification";
+import React, { useEffect, useState } from 'react';
+import { ActionIcon, Badge, Group, Menu, Text, ScrollArea, Avatar, Indicator, Stack, Divider } from '@mantine/core';
+import { IconBell, IconFileTypePdf, IconDownload } from '@tabler/icons-react';
+import { DocumentApprovalResourceData } from '@/Modules/DocumentApproval/Types/DocumentApprovalResourceData';
+import { Link } from '@inertiajs/react';
+import axios from 'axios';
+import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 
-const NotificationMenu: React.FC = () => {
-    const { notifications, loading, error } = useRetrieveNotification();
+interface NotificationMenuProps {
+    handleDocumentAction?: (action: "accept" | "reject") => void;
+}
+
+const NotificationMenu: React.FC<NotificationMenuProps> = ({ handleDocumentAction }) => {
+    const [pendingApprovals, setPendingApprovals] = useState<DocumentApprovalResourceData[]>([]);
+
+    useEffect(() => {
+        fetchPendingApprovals();
+    }, [handleDocumentAction]);
+
+    const fetchPendingApprovals = async () => {
+        try {
+            const response = await axios.get(route('document_approvals.pending'));
+            setPendingApprovals(response.data.pending_approvals);
+        } catch (error) {
+            console.error('Error fetching pending approvals:', error);
+        }
+    };
 
     return (
-        <Menu width={300} position="bottom-end">
+        <Menu
+            width={300}
+            position="bottom-end"
+            shadow="md"
+        >
             <Menu.Target>
-                <ActionIcon variant="subtle" color="gray" size="xl">
-                    <Indicator
-                        label={notifications.length}
-                        disabled={notifications.length === 0}
-                        color="red"
-                    >
+                <Indicator
+                    processing
+                    inline
+                    disabled={pendingApprovals.length === 0}
+                    color="red"
+                >
+                    <ActionIcon variant="subtle" color="gray" size="lg">
                         <IconBell size={24} />
-                    </Indicator>
-                </ActionIcon>
+                    </ActionIcon>
+                </Indicator>
             </Menu.Target>
+
             <Menu.Dropdown>
-                {loading ? (
-                    <Loader size="sm" />
-                ) : error ? (
-                    <Text c="red">{error}</Text>
-                ) : notifications.length === 0 ? (
-                    <div style={{ textAlign: "center", padding: "1rem" }}>
-                        <IconInbox size={24} />
-                        <Text>No notifications</Text>
-                    </div>
+                <Menu.Label>Pending Approvals</Menu.Label>
+                {pendingApprovals.length === 0 ? (
+                    <Menu.Item disabled>No pending approvals.</Menu.Item>
                 ) : (
-                    <List spacing="sm" size="sm" center>
-                        {notifications.map((notification) => (
-                            <List.Item key={notification.id}>
-                                <Text size="sm">{notification.message}</Text>
-                                <Text size="xs" c="dimmed">
-                                    {new Date(notification.date).toLocaleString()}
-                                </Text>
-                            </List.Item>
+                    <ScrollArea style={{ height: 200 }}>
+                        {pendingApprovals.map(approval => (
+                            <>
+                                <Menu.Item py={16} key={approval.id} component={Link} href={`/document_approval/${approval.id}`}>
+                                    <Group gap={12}>
+                                        <ItemIcon mime={"application/pdf"} isFolder={false} />
+                                        <Text size="sm">{approval.document_name.slice(0, 20) + "..."}</Text>
+                                    </Group>
+                                </Menu.Item>
+
+                                <Divider />
+                            </>
                         ))}
-                    </List>
+                    </ScrollArea>
                 )}
             </Menu.Dropdown>
         </Menu>

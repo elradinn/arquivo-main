@@ -21,24 +21,24 @@ class DocumentApprovalRequestNotification extends Notification implements Should
 
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['mail'];
     }
 
-    /**
-     * Get the array representation of the notification for storage in the database.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toDatabase($notifiable)
-    {
-        return [
-            'message' => 'There is an active ' . $this->documentApproval->type . ' workflow',
-            'document_id' => $this->documentApproval->document->item_id,
-            'document_approval_id' => $this->documentApproval->id,
-            'created_at' => now(),
-        ];
-    }
+    // /**
+    //  * Get the array representation of the notification for storage in the database.
+    //  *
+    //  * @param  mixed  $notifiable
+    //  * @return array
+    //  */
+    // public function toDatabase($notifiable)
+    // {
+    //     return [
+    //         'message' => 'There is an active ' . $this->documentApproval->type . ' workflow',
+    //         'document_id' => $this->documentApproval->document->item_id,
+    //         'document_approval_id' => $this->documentApproval->id,
+    //         'created_at' => now(),
+    //     ];
+    // }
 
     public function toMail($notifiable)
     {

@@ -38,7 +38,7 @@ export function StatCards({ dashboard }: StatCardsProps) {
       title: "Review Rejected",
       icon: "review_rejected",
       value: dashboard.number_of_review_rejected,
-      color: "pink",
+      color: "red",
       statusParam: "reviewal_rejected",
     },
     {

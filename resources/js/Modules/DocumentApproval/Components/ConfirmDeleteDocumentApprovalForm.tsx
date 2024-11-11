@@ -14,7 +14,7 @@ const ConfirmDeleteDocumentApprovalForm: React.FC<ConfirmDeleteDocumentApprovalP
         documentApprovalId,
         onDeleteSuccess: () => {
             closeModal("confirmDeleteDocumentApproval");
-            closeModal("updateDocumentApproval");
+            closeModal("viewDocumentApproval");
         },
     });
 
@@ -30,7 +30,7 @@ const ConfirmDeleteDocumentApprovalForm: React.FC<ConfirmDeleteDocumentApprovalP
             <Flex align="center" justify="flex-end" mt={16}>
                 <Button variant="light" onClick={() => {
                     closeModal("confirmDeleteDocumentApproval");
-                    openModal("updateDocumentApproval");
+                    openModal("viewDocumentApproval");
                 }}>
                     Cancel
                 </Button>

@@ -1,9 +1,11 @@
 <?php
 
-use Modules\DocumentApproval\Controllers\DocumentApprovalController;
 use Illuminate\Support\Facades\Route;
+use Modules\DocumentApproval\Controllers\DocumentApprovalController;
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('document_approval/pending', [DocumentApprovalController::class, 'getPendingApprovals'])->name('document_approvals.pending');
 
     Route::prefix('document_approval')->group(function () {
 
