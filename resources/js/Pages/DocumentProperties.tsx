@@ -1,8 +1,9 @@
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import { Anchor, Box, Breadcrumbs, Button, FileButton, Grid, Group, Paper, Stack, Text } from "@mantine/core";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import {
     IconChevronRight,
+    IconEye,
     IconFile,
     IconGitBranch,
     IconLock,
@@ -131,6 +132,19 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                             onClick={() => { openModal(document.document_approval_id ? "viewDocumentApproval" : "createDocumentApproval") }}
                         >
                             {document.document_approval_id ? "View" : "Start"} Approval Process
+                        </Button>
+
+                        <Button
+                            variant="subtle"
+                            component="a"
+                            href={route('document.view', { document: document.item_id })}
+                            target="_blank"
+                            color="blue.5"
+                            leftSection={<IconEye size={18} />}
+                            justify="left"
+                            fullWidth
+                        >
+                            View Document
                         </Button>
                     </Paper>
                 </Grid.Col>
