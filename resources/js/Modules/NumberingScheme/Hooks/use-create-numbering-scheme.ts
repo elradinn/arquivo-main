@@ -25,6 +25,8 @@ export function useCreateNumberingScheme({ itemParent }: IProps) {
 
         data.folder_item_id = itemParent?.item_id ?? "";
 
+        console.log("Submitting data", data);
+
         post(route("numbering-scheme.store"), {
             preserveScroll: true,
             onSuccess: () => {

@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NumberingScheme extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
         'folder_item_id',
         'name',

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('reset_frequency');
             $table->date('last_reset_date')->nullable();
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('folder_item_id')->references('item_id')->on('folders')->onDelete('cascade');
         });
