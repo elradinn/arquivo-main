@@ -14,21 +14,25 @@ class ItemParentResourceData extends Data
         public string $owned_by,
         public ?string $numbering_scheme_id = null,
         public ?string $workflow_id = null,
+        public ?bool $is_shared = null,
         public ?array $required_metadata = null,
         public ?array $metadata_columns = null
     ) {}
 
     public static function fromModel(Item $item): self
     {
+        $item->load('folder.userAccess');
+
         return new self(
             item_id: $item->id,
-            parent_id: $item->parent_id ? $item->parent_id : null,
-            name: $item->workspace->name ?? $item->folder->name ?? null,
-            owned_by: $item->workspace->owned_by ?? $item->folder->owned_by ?? null,
+            parent_id: $item->parent_id ?? null,
+            name: $item->workspace->name ?? $item->folder->name ?? '',
+            owned_by: $item->workspace->owned_by ?? $item->folder->owned_by ?? '',
             numbering_scheme_id: $item->folder->numberingScheme->id ?? null,
             workflow_id: $item->folder->workflow->id ?? null,
+            is_shared: $item->folder->userAccess->isNotEmpty(),
             required_metadata: $item->workspace ? [] : ($item->folder->requiredMetadata()->get()->toArray() ?? []),
-            metadata_columns: $item->workspace ? [] : ($item->folder ? $item->folder->metadataColumns()->get()->toArray() ?? [] : [])
+            metadata_columns: $item->workspace ? [] : ($item->folder->metadataColumns()->get()->toArray() ?? [])
         );
     }
 }

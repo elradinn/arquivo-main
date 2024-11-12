@@ -135,7 +135,7 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent }) => {
                     <ActionIcon
                         variant="transparent"
                         size="lg"
-                        color="dark.3"
+                        color={itemParent?.is_shared ? "green.8" : "dark.3"}
                         onClick={() => openModal("shareFolder")}
                     >
                         <IconShare size={18} />

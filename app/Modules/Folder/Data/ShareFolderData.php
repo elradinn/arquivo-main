@@ -11,7 +11,6 @@ class ShareFolderData extends Data
      * @var ShareFolderUserData[] $users
      */
     public function __construct(
-        #[Required]
         public array $users
     ) {}
 }
