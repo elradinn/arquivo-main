@@ -1,6 +1,9 @@
 import { useForm } from "@inertiajs/react";
 import { notifications } from "@mantine/notifications";
 import { ShareFolderData, ShareFolderUserData } from "../Types/ShareFolderData";
+import { useEffect } from "react";
+import { useFetchUsersShareFolder } from "./use-fetch-users-share-folder";
+import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 
 interface UseShareFolderProps {
     folderId: string;
@@ -8,14 +11,25 @@ interface UseShareFolderProps {
 }
 
 export function useShareFolder({ folderId, close }: UseShareFolderProps) {
+    const { modals } = useModalStore();
+    const isOpen = modals["shareFolder"];
+    const { sharedUsers, loading, error } = useFetchUsersShareFolder({ folderId, isOpen });
+
     const { data, setData, post, processing, errors, reset } = useForm<ShareFolderData>({
-        users: [
-            {
-                email: "",
-                role: "viewer",
-            },
-        ],
+        users: [],
     });
+
+
+
+    useEffect(() => {
+        if (sharedUsers.length > 0) {
+            const initialUsers: ShareFolderUserData[] = sharedUsers.map(user => ({
+                email: user.email,
+                role: "viewer", // Assuming default role; adjust if role information is available
+            }));
+            setData('users', initialUsers);
+        }
+    }, [sharedUsers]);
 
     const addUser = () => {
         setData('users', [...data.users, { email: "", role: "viewer" }]);
@@ -33,7 +47,16 @@ export function useShareFolder({ folderId, close }: UseShareFolderProps) {
         setData('users', updatedUsers);
     };
 
-    const submit = () => {
+    const handleAddAllUsers = () => {
+        // This function can be enhanced to set the role if needed
+        const allUsers = sharedUsers.map(user => ({
+            email: user.email,
+            role: "viewer" as const,
+        }));
+        setData('users', allUsers);
+    };
+
+    const submitShare = () => {
         post(route("folder.share", { folder: folderId }), {
             onSuccess: () => {
                 close();
@@ -55,12 +78,12 @@ export function useShareFolder({ folderId, close }: UseShareFolderProps) {
 
     return {
         data,
-        setData,
-        submit,
+        submit: submitShare,
         processing,
         errors,
         addUser,
         removeUser,
         handleUserChange,
+        handleAddAllUsers,
     };
 }

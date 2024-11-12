@@ -96,20 +96,30 @@ class FolderController extends Controller
         return response()->json(['message' => 'Folder deleted successfully']);
     }
 
-    public function share(ShareFolderData $data, Folder $folder): JsonResponse
+    public function share(ShareFolderData $data, Folder $folder): RedirectResponse
     {
         // $this->folderAuthorization->canShare(Auth::user(), $folder);
+
+        // Delete all users first
+        $folder->userAccess()->detach();
 
         foreach ($data->users as $userData) {
             $user = User::where('email', $userData->email)->firstOrFail();
 
-            // Avoid duplicate entries
             if (!$folder->userAccess()->where('user_id', $user->id)->exists()) {
                 $folder->userAccess()->attach($user->id, ['role' => $userData->role]);
             }
         }
 
-        return response()->json(['message' => 'Folder shared successfully.'], 200);
+        return redirect()->back();
+    }
+
+    public function fetchUserShareFolder(Folder $folder): JsonResponse
+    {
+        // Assuming the relationship is defined as userAccess()
+        $sharedUsers = $folder->userAccess()->select('users.id', 'users.name', 'users.email')->get();
+
+        return response()->json($sharedUsers);
     }
 
     public function removeShare(RemoveShareFolderData $data, Folder $folder): JsonResponse
