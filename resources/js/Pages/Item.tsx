@@ -26,9 +26,10 @@ interface ItemPageProps {
     itemParent: ItemParentResourceData;
     itemAncestors: ItemAncestorsResourceData[];
     itemContents: ItemContentsResourceData[];
+    folderUserRole?: 'viewer' | 'editor';
 }
 
-export default function ItemPage({ itemParent, itemAncestors, itemContents }: ItemPageProps) {
+export default function ItemPage({ itemParent, itemAncestors, itemContents, folderUserRole }: ItemPageProps) {
     const openRef = useRef<() => void>(null);
     const { uploadFiles } = useUploadDocument(itemParent);
     const { selectedRecord, setSelectedRecord, ids } = useSelectItems();
@@ -76,7 +77,10 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents }: It
                         <SelectedItemToolbar setSelectedRecord={setSelectedRecord} selectedIds={ids} parentId={itemParent.item_id} />
                     ) : (
                         <ItemToolbar
-                            itemParent={itemParent}
+                            itemParent={{
+                                ...itemParent,
+                            }}
+                            folderUserRole={folderUserRole}
                             uploadFileRef={openRef}
                         />
                     )
@@ -93,28 +97,6 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents }: It
                             <DataTable
                                 textSelectionDisabled
                                 columns={metadataColumns}
-                                // columns={[
-                                //     {
-                                //         accessor: "name",
-                                //         render: ({ mime, type, name, status, missing_required_metadata }) => (
-                                //             <Group align="center" gap={12}>
-                                //                 <ItemIcon
-                                //                     mime={mime ?? ""}
-                                //                     isFolder={type === "folder"}
-                                //                     approvalStatus={status}
-                                //                     missingRequiredMetadata={missing_required_metadata}
-                                //                 />
-                                //                 <span>{name}</span>
-                                //             </Group>
-                                //         ),
-                                //     },
-                                //     { accessor: "owner" },
-                                //     {
-                                //         accessor: "updated_at",
-                                //         title: "Last Modified",
-                                //     },
-                                //     { accessor: "size" },
-                                // ]}
                                 records={itemContents}
                                 customRowAttributes={({ type, id }) => ({
                                     onDoubleClick: (e: MouseEvent) => {

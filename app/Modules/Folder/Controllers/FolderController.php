@@ -51,11 +51,24 @@ class FolderController extends Controller
     {
         $this->folderAuthorization->canView(Auth::user(), $folder);
 
+        $user = Auth::user();
+        $user = User::find($user->id);
+
+        // Determine the user's role: 'admin' takes precedence
+        if ($user->hasRole('admin')) {
+            $role = 'admin';
+        } else {
+            $userAccess = $folder->userAccess()->where('user_id', $user->id)->first();
+            $role = $userAccess ? $userAccess->pivot->role : null;
+        }
+
         $items = Item::find($folder->item->id);
 
         $data = $this->getItemDataAction->execute($items);
 
-        return Inertia::render('Item', $data);
+        return Inertia::render('Item', array_merge($data, [
+            'folderUserRole' => $role,
+        ]));
     }
 
     public function store(CreateFolderData $data): RedirectResponse
