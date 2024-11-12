@@ -27,31 +27,38 @@ const NAV_LINKS = [
         label: "Dashboard",
         icon: IconLayoutDashboard,
         href: "/dashboard",
+        adminOnly: true,
     },
     {
         label: "Trash",
         icon: IconTrash,
         href: "/trash",
+        adminOnly: true,
     },
 ];
 
 const Sidebar: React.FC = () => {
-    const { workspaces } = usePage<{ workspaces: WorkspaceLinksData[] }>().props;
+    const { workspaces, auth } = usePage<{
+        workspaces: WorkspaceLinksData[],
+        auth: { isAdmin: boolean }
+    }>().props;
     const { openModal } = useModalStore();
 
     const currentPath = window.location.pathname;
 
-    const renderNavLinks = NAV_LINKS.map(({ label, icon: Icon, href }) => (
-        <Link
-            className={classes.link}
-            data-active={currentPath === href || undefined}
-            href={href}
-            key={label}
-        >
-            <Icon className={classes.linkIcon} stroke={1.5} />
-            <span>{label}</span>
-        </Link>
-    ));
+    const renderNavLinks = NAV_LINKS
+        .filter(link => !link.adminOnly || auth.isAdmin)
+        .map(({ label, icon: Icon, href }) => (
+            <Link
+                className={classes.link}
+                data-active={currentPath === href || undefined}
+                href={href}
+                key={label}
+            >
+                <Icon className={classes.linkIcon} stroke={1.5} />
+                <span>{label}</span>
+            </Link>
+        ));
 
     const renderWorkspaceLinks = workspaces.map((workspace) => (
         <div
