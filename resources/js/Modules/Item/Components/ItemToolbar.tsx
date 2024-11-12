@@ -17,6 +17,7 @@ import {
     IconFileReport,
     IconTags,
     IconTag,
+    IconShare,
 } from "@tabler/icons-react";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { ItemParentResourceData } from "../Types/ItemParentResourceData";
@@ -27,6 +28,7 @@ import CreateNumberingSchemeForm from "@/Modules/NumberingScheme/Forms/CreateNum
 import CreateFolderForm from "@/Modules/Folder/Forms/FolderForm";
 import UpdateWorkflowForm from "@/Modules/Workflow/Forms/UpdateWorkflowForm";
 import useGenerateReport from "@/Modules/Common/Hooks/use-generate-report";
+import ShareModalForm from "@/Modules/Folder/Forms/ShareModalForm";
 
 interface IProps {
     uploadFileRef?: React.RefObject<() => void>;
@@ -54,12 +56,6 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent }) => {
                     position="bottom-start"
                 >
                     <Menu.Target>
-                        {/* <Tooltip label="New" position="bottom" withArrow>
-                            <ActionIcon variant="transparent" color="dark.3">
-                                <IconPlus size={18} />
-                                <IconChevronDown size={12} style={{ marginLeft: rem(4) }} />
-                            </ActionIcon>
-                        </Tooltip> */}
                         <Button
                             variant="subtle"
                             color="dark.3"
@@ -68,7 +64,6 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent }) => {
                         >
                             New
                         </Button>
-
                     </Menu.Target>
 
                     <Menu.Dropdown>
@@ -133,6 +128,17 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent }) => {
                         onClick={() => openModal(itemParent?.workflow_id ? "updateWorkflow" : "createWorkflow")}
                     >
                         <IconGitBranch size={18} />
+                    </ActionIcon>
+                </Tooltip>
+
+                <Tooltip label="Share" position="bottom" withArrow>
+                    <ActionIcon
+                        variant="transparent"
+                        size="lg"
+                        color="dark.3"
+                        onClick={() => openModal("shareFolder")}
+                    >
+                        <IconShare size={18} />
                     </ActionIcon>
                 </Tooltip>
 
@@ -216,6 +222,7 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent }) => {
             <UpdateWorkflowForm itemParent={itemParent} />
             <CreateNumberingSchemeForm itemParent={itemParent} />
             <UpdateNumberingSchemeForm itemParent={itemParent} />
+            <ShareModalForm folderId={itemParent?.item_id ?? ""} />
         </Group>
     );
 };

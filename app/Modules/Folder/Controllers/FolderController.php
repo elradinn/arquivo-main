@@ -98,11 +98,16 @@ class FolderController extends Controller
 
     public function share(ShareFolderData $data, Folder $folder): JsonResponse
     {
-        $this->folderAuthorization->canShare(Auth::user(), $folder);
+        // $this->folderAuthorization->canShare(Auth::user(), $folder);
 
-        $user = User::where('email', $data->email)->firstOrFail();
+        foreach ($data->users as $userData) {
+            $user = User::where('email', $userData->email)->firstOrFail();
 
-        $folder->userAccess()->attach($user->id, ['role' => $data->role]);
+            // Avoid duplicate entries
+            if (!$folder->userAccess()->where('user_id', $user->id)->exists()) {
+                $folder->userAccess()->attach($user->id, ['role' => $userData->role]);
+            }
+        }
 
         return response()->json(['message' => 'Folder shared successfully.'], 200);
     }
