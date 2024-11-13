@@ -102,15 +102,23 @@ class DocumentController extends Controller
         return redirect()->back();
     }
 
-    public function share(ShareDocumentData $data, Document $document): JsonResponse
+    public function share(ShareDocumentData $data, Document $document): RedirectResponse
     {
         $this->documentAuthorization->canShare(Auth::user(), $document);
 
-        $user = User::where('email', $data->email)->firstOrFail();
+        // Detach all existing users
+        $document->userAccess()->detach();
 
-        $document->userAccess()->attach($user->id, ['role' => $data->role]);
+        // Attach new users with roles
+        foreach ($data->users as $userData) {
+            $user = User::where('email', $userData->email)->firstOrFail();
 
-        return response()->json(['message' => 'Document shared successfully.'], 200);
+            if (!$document->userAccess()->where('user_id', $user->id)->exists()) {
+                $document->userAccess()->attach($user->id, ['role' => $userData->role]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Document shared successfully.');
     }
 
     public function removeShare(RemoveShareDocumentData $data, Document $document): JsonResponse

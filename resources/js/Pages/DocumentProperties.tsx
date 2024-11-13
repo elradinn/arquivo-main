@@ -7,6 +7,7 @@ import {
     IconFile,
     IconGitBranch,
     IconLock,
+    IconShare,
     IconUpload,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
@@ -20,6 +21,7 @@ import ViewDocumentApprovalForm from "@/Modules/DocumentApproval/Components/View
 import DocumentVersionsDataTable from "@/Modules/Document/Components/DocumentVersionDataTable";
 import { FileWithPath } from "@mantine/dropzone";
 import useUploadDocumentVersion from "@/Modules/Document/Hooks/use-upload-document-version";
+import ShareDocumentModalForm from "@/Modules/Document/Components/ShareDocumentModalForm";
 
 interface IProps {
     document: DocumentResourceData;
@@ -146,12 +148,24 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                         >
                             View Document
                         </Button>
+
+                        <Button
+                            variant="subtle"
+                            color="blue.5"
+                            leftSection={<IconShare size={18} />}
+                            fullWidth
+                            justify="left"
+                            onClick={() => openModal("shareDocument")}
+                        >
+                            Share Document
+                        </Button>
                     </Paper>
                 </Grid.Col>
             </Grid>
 
             <CreateDocumentApprovalForm document={document} />
             <ViewDocumentApprovalForm document={document} />
+            <ShareDocumentModalForm documentId={document.item_id} />
         </Authenticated>
     );
 }
