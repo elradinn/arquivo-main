@@ -93,7 +93,7 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent, folderUserRo
                             >
                                 Upload Files
                             </Menu.Item>
-                            <Menu.Item
+                            {/* <Menu.Item
                                 leftSection={
                                     <IconFolderUp
                                         style={{
@@ -104,7 +104,7 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent, folderUserRo
                                 }
                             >
                                 Upload Folder
-                            </Menu.Item>
+                            </Menu.Item> */}
                         </Menu.Dropdown>
                     </Menu>
 
