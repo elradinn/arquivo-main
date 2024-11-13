@@ -181,6 +181,22 @@ export default function DashboardReportPage({
                                 accessor: "status",
                                 render: ({ status }) => <StateBadge state={status} />,
                             },
+                            {
+                                accessor: "due_in",
+                                title: "Due in",
+                                render: ({ due_in }) => {
+                                    return due_in !== undefined ? (
+                                        due_in < 0 ? (
+                                            <Text c="red">{Math.abs(due_in)} days overdue</Text>
+                                        ) : (
+                                            `${due_in} day${due_in !== 1 ? 's' : ''} remaining`
+                                        )
+                                    ) : (
+                                        "N/A"
+                                    );
+                                },
+                                sortable: true,
+                            },
                             // Dynamic columns based on selected metadata
                             ...selectedMetadata.map((meta) => ({
                                 accessor: `metadata_${meta.metadata_id}`,
