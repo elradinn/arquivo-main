@@ -29,7 +29,7 @@ export default function DashboardPage({ dashboard }: DashboardPageProps) {
                             color="blue"
                             rightSection={<IconArrowRight size={16} />}
                         >
-                            Go to Reports
+                            All Documents Report
                         </Button>
                     </Group>
 

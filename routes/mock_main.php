@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return;
+})->middleware('role.redirect');
 
 Route::get('/api-tester', function () {
     return Inertia::render('ApiTester');

@@ -14,9 +14,12 @@ return Application::configure(basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR_
         $middleware->web(append: [
             \Modules\Common\Middlewares\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            // \Modules\Common\Middlewares\RoleRedirectMiddleware::class,
         ]);
 
-        //
+        $middleware->alias([
+            'role.redirect' => \Modules\Common\Middlewares\RoleRedirectMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -14,6 +14,7 @@ import {
     IconLayoutDashboard,
     IconPlus,
     IconDotsVertical,
+    IconUsers,
 } from "@tabler/icons-react";
 import classes from "./Sidebar.module.css";
 import OfficeLogo from "../OfficeLogo/OfficeLogo";
@@ -28,6 +29,12 @@ const NAV_LINKS = [
         icon: IconLayoutDashboard,
         href: "/dashboard",
         adminOnly: true,
+    },
+    {
+        label: "Shared with me",
+        icon: IconUsers,
+        href: "/item/shared-with-me",
+        adminOnly: false,
     },
     {
         label: "Trash",
@@ -47,7 +54,14 @@ const Sidebar: React.FC = () => {
     const currentPath = window.location.pathname;
 
     const renderNavLinks = NAV_LINKS
-        .filter(link => !link.adminOnly || auth.isAdmin)
+        .filter(link => {
+            // Show link if it's not adminOnly or the user is admin
+            const isAllowed = !link.adminOnly || auth.isAdmin;
+            // Additionally, hide "Shared with me" if the user is admin
+            const isSharedWithMe = link.label === "Shared with me";
+            const shouldHideSharedWithMe = isSharedWithMe && auth.isAdmin;
+            return isAllowed && !shouldHideSharedWithMe;
+        })
         .map(({ label, icon: Icon, href }) => (
             <Link
                 className={classes.link}
@@ -61,26 +75,19 @@ const Sidebar: React.FC = () => {
         ));
 
     const renderWorkspaceLinks = workspaces.map((workspace) => (
-        <div
+        <Link
             className={classes.workspaceLinkWrapper}
             key={workspace.item_id}
             data-active={currentPath === workspace.url || undefined}
+            href={workspace.url}
         >
-            <Link className={classes.workspaceLinkDesign} href={workspace.url}>
-                <div className={classes.workspaceLinkContent}>
-                    <ArqFolder className={classes.linkIcon} />
-                    <span>{workspace.name}</span>
-                </div>
-            </Link>
-            <Menu width={200} position="right-start">
-                <Menu.Target>
-                    <ActionIcon className={classes.actionIcon} variant="transparent" size={32}>
-                        <IconDotsVertical className={classes.settingsIcon} stroke={1.5} />
-                    </ActionIcon>
-                </Menu.Target>
-                {/* Add Menu.Items here if needed */}
-            </Menu>
-        </div>
+            {/* <Link className={classes.workspaceLinkDesign} href={workspace.url}> */}
+            <div className={classes.workspaceLinkContent}>
+                <ArqFolder className={classes.linkIcon} />
+                <span>{workspace.name}</span>
+            </div>
+            {/* </Link> */}
+        </Link>
     ));
 
     return (
@@ -88,7 +95,7 @@ const Sidebar: React.FC = () => {
             <nav className={classes.navbar}>
                 <div className={classes.navbarMain}>
                     <Group className={classes.header}>
-                        <Link href="/dashboard">
+                        <Link href="/">
                             <OfficeLogo h={48} w={48} />
                         </Link>
                     </Group>
@@ -99,18 +106,19 @@ const Sidebar: React.FC = () => {
                             Sections
                         </Text>
 
-                        <Tooltip label="New section" withArrow position="right">
-                            <ActionIcon variant="default" size={18} onClick={() => openModal("workspace")}>
-                                <IconPlus
-                                    style={{
-                                        width: rem(12),
-                                        height: rem(12),
-                                    }}
-                                    stroke={1.5}
-                                />
-                            </ActionIcon>
-                        </Tooltip>
-
+                        {auth.isAdmin && (
+                            <Tooltip label="New section" withArrow position="right">
+                                <ActionIcon variant="default" size={18} onClick={() => openModal("workspace")}>
+                                    <IconPlus
+                                        style={{
+                                            width: rem(12),
+                                            height: rem(12),
+                                        }}
+                                        stroke={1.5}
+                                    />
+                                </ActionIcon>
+                            </Tooltip>
+                        )}
                     </Group>
                     <div className={classes.workspaces}>{renderWorkspaceLinks}</div>
                 </div>

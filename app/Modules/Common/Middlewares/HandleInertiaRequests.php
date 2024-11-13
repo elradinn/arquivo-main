@@ -40,14 +40,17 @@ class HandleInertiaRequests extends Middleware
             $workspaces = Item::whereNull('parent_id')
                 ->with('folder')
                 ->get();
-        } else {
-            // If not an admin, retrieve only root items where the folder is shared with the user
+        } elseif ($user) {
+            // If the user is authenticated but not an admin, retrieve only root items where the folder is shared with the user
             $workspaces = Item::whereNull('parent_id')
                 ->whereHas('folder.userAccess', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
                 ->with('folder')
                 ->get();
+        } else {
+            // If the user is not authenticated, you might want to define default workspaces or set it to an empty collection
+            $workspaces = collect(); // Empty collection or define as needed
         }
 
         return array_merge(parent::share($request), [
