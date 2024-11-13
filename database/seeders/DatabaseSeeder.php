@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'John Alfred Alfonso',
             'email' => 'johnalfredalfonso12@gmail.com',
             'password' => '12345678',
+            'office_position' => 'Admin Staff',
             'workflow_role' => 'unassigned',
         ]);
 
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Angelo Alteza',
             'email' => 'emmanuelangelocanares.alteza@bicol-u.edu.ph',
             'password' => '12345678',
+            'office_position' => 'Director',
             'workflow_role' => 'approver',
         ]);
 
@@ -44,6 +46,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Mark Elthon Jay Omanga',
             'email' => 'markelthonjaymanoza.omanga@bicol-u.edu.ph',
             'password' => '12345678',
+            'office_position' => 'Admin Staff',
             'workflow_role' => 'unassigned',
         ]);
 
@@ -52,6 +55,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Geryme Mendez',
             'email' => 'gerymeacuna.mendez@bicol-u.edu.ph',
             'password' => '12345678',
+            'office_position' => 'Coordinator',
             'workflow_role' => 'reviewer',
         ]);
 
@@ -60,6 +64,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'John Carlo Abillano',
             'email' => 'johncarlobutlig.abillano@bicol-u.edu.ph',
             'password' => '12345678',
+            'office_position' => 'Coordinator',
             'workflow_role' => 'reviewer',
         ]);
 
