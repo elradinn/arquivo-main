@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { UserResourceData } from "@/Modules/User/Types/UserResourceData";
 import { notifications } from "@mantine/notifications";
-import { ShareFolderUserResource } from "../Types/ShareFolderUserResource";
+import { ShareDocumentUserResource } from "../Types/ShareDocumentUserResource";
 
-interface UseFetchUsersShareFolderProps {
-    folderId: string;
+interface UseFetchUsersShareDocumentProps {
+    documentId: string;
     isOpen: boolean;
 }
 
-export function useFetchUsersShareFolder({ folderId, isOpen }: UseFetchUsersShareFolderProps) {
-    const [sharedUsers, setSharedUsers] = useState<ShareFolderUserResource[]>([]);
+export function useFetchUsersShareDocument({ documentId, isOpen }: UseFetchUsersShareDocumentProps) {
+    const [sharedUsers, setSharedUsers] = useState<ShareDocumentUserResource[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +18,7 @@ export function useFetchUsersShareFolder({ folderId, isOpen }: UseFetchUsersShar
         const fetchSharedUsers = async () => {
             setLoading(true);
             try {
-                const response = await axios.get<ShareFolderUserResource[]>(route("folder.fetchSharedUsers", { folder: folderId }));
+                const response = await axios.get<ShareDocumentUserResource[]>(route("document.fetchSharedUsers", { document: documentId }));
                 setSharedUsers(response.data);
                 setError(null);
             } catch (err) {
@@ -34,10 +34,10 @@ export function useFetchUsersShareFolder({ folderId, isOpen }: UseFetchUsersShar
             }
         };
 
-        if (folderId) {
+        if (documentId) {
             fetchSharedUsers();
         }
-    }, [folderId, isOpen]);
+    }, [documentId, isOpen]);
 
     return { sharedUsers, loading, error };
 }

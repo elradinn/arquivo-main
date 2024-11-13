@@ -26,10 +26,11 @@ import ShareDocumentModalForm from "@/Modules/Document/Components/ShareDocumentM
 interface IProps {
     document: DocumentResourceData;
     itemAncestors: ItemAncestorsResourceData[];
-    activityLog: ActivityLogResourceData[]
+    activityLog: ActivityLogResourceData[];
+    userRole: string | null;
 }
 
-const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, activityLog }: IProps) => {
+const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, activityLog, userRole }) => {
     const { openModal } = useModalStore();
     const { uploadVersion, processing, errors } = useUploadDocumentVersion(document.item_id);
 
@@ -110,31 +111,37 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                             Options
                         </Text>
 
-                        <FileButton
-                            onChange={handleFileUpload}
-                        >
-                            {(props) => <Button {...props}
+                        {(userRole === 'editor' || userRole === 'admin') && (
+                            <FileButton onChange={handleFileUpload}>
+                                {(props) => (
+                                    <Button
+                                        {...props}
+                                        variant="subtle"
+                                        color="blue.5"
+                                        fullWidth
+                                        justify="left"
+                                        leftSection={<IconUpload size={18} />}
+                                    >
+                                        Upload New Version
+                                    </Button>
+                                )}
+                            </FileButton>
+                        )}
+
+                        {(userRole === 'editor' || userRole === 'admin') && (
+                            <Button
                                 variant="subtle"
                                 color="blue.5"
+                                leftSection={<IconGitBranch size={18} />}
                                 fullWidth
                                 justify="left"
-                                leftSection={<IconUpload size={18} />}
+                                onClick={() => {
+                                    openModal(document.document_approval_id ? "viewDocumentApproval" : "createDocumentApproval");
+                                }}
                             >
-                                Upload New Version
+                                {document.document_approval_id ? "View" : "Start"} Approval Process
                             </Button>
-                            }
-                        </FileButton>
-
-                        <Button
-                            variant="subtle"
-                            color="blue.5"
-                            leftSection={<IconGitBranch size={18} />}
-                            fullWidth
-                            justify="left"
-                            onClick={() => { openModal(document.document_approval_id ? "viewDocumentApproval" : "createDocumentApproval") }}
-                        >
-                            {document.document_approval_id ? "View" : "Start"} Approval Process
-                        </Button>
+                        )}
 
                         <Button
                             variant="subtle"
@@ -149,16 +156,18 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                             View Document
                         </Button>
 
-                        <Button
-                            variant="subtle"
-                            color="blue.5"
-                            leftSection={<IconShare size={18} />}
-                            fullWidth
-                            justify="left"
-                            onClick={() => openModal("shareDocument")}
-                        >
-                            Share Document
-                        </Button>
+                        {(userRole === 'editor' || userRole === 'admin') && (
+                            <Button
+                                variant="subtle"
+                                color="blue.5"
+                                leftSection={<IconShare size={18} />}
+                                fullWidth
+                                justify="left"
+                                onClick={() => openModal("shareDocument")}
+                            >
+                                Share Document
+                            </Button>
+                        )}
                     </Paper>
                 </Grid.Col>
             </Grid>

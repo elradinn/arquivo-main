@@ -60,17 +60,28 @@ class DocumentController extends Controller
 
         $itemAncestors = $item->ancestorsWithSelf()->get()->load('workspace', 'folder');
 
+        // $userRole = $document->userAccess()
+        //     ->where('user_id', Auth::id())
+        //     ->pluck('role')
+        //     ->first();
+
+        $user = Auth::user();
+        $user = User::find($user->id);
+
+        // Determine the user's role: 'admin' takes precedence
+        if ($user->hasRole('admin')) {
+            $userRole = 'admin';
+        } else {
+            $userAccess = $document->userAccess()->where('user_id', $user->id)->first();
+            $userRole = $userAccess ? $userAccess->pivot->role : null;
+        }
+
         return Inertia::render('DocumentProperties', [
             'activityLog' => ActivityLogResourceData::collect($document->activityLogs),
             'itemAncestors' => ItemAncestorsResourceData::collect($itemAncestors, DataCollection::class),
             'document' => DocumentResourceData::fromModel($document),
+            'userRole' => $userRole,
         ]);
-
-        // return response()->json([
-        //     'activityLog' => ActivityLogResourceData::collect($document->activityLogs),
-        //     'itemAncestors' => ItemAncestorsResourceData::collect($itemAncestors, DataCollection::class),
-        //     'document' => DocumentResourceData::fromModel($document),
-        // ], 200);
     }
 
     public function move(MoveDocumentsData $data): RedirectResponse
@@ -130,6 +141,14 @@ class DocumentController extends Controller
         $document->userAccess()->detach($user->id);
 
         return response()->json(['message' => 'Document unshared successfully.'], 200);
+    }
+
+    public function fetchUserShareDocument(Document $document): JsonResponse
+    {
+        // Assuming the relationship is defined as userAccess()
+        $sharedUsers = $document->userAccess()->select('users.id', 'users.name', 'users.email', 'role')->get();
+
+        return response()->json($sharedUsers);
     }
 
     public function uploadDocumentVersion(UploadDocumentVersionData $data): RedirectResponse

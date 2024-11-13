@@ -130,7 +130,7 @@ class FolderController extends Controller
     public function fetchUserShareFolder(Folder $folder): JsonResponse
     {
         // Assuming the relationship is defined as userAccess()
-        $sharedUsers = $folder->userAccess()->select('users.id', 'users.name', 'users.email')->get();
+        $sharedUsers = $folder->userAccess()->select('users.id', 'users.name', 'users.email', 'role')->get();
 
         return response()->json($sharedUsers);
     }

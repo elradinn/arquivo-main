@@ -28,5 +28,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/versions/{version}', [DocumentController::class, 'deleteDocumentVersion'])->name('document.delete_version');
 
         Route::get('/{document}/view', [DocumentController::class, 'view'])->name('document.view');
+
+        Route::get('/{document}/shared_users', [DocumentController::class, 'fetchUserShareDocument'])->name('document.fetchSharedUsers');
     });
 });

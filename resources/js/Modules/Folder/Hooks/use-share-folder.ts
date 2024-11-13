@@ -25,7 +25,7 @@ export function useShareFolder({ folderId, close }: UseShareFolderProps) {
         if (sharedUsers.length > 0) {
             const initialUsers: ShareFolderUserData[] = sharedUsers.map(user => ({
                 email: user.email,
-                role: "viewer", // Assuming default role; adjust if role information is available
+                role: user.role,
             }));
             setData('users', initialUsers);
         }
