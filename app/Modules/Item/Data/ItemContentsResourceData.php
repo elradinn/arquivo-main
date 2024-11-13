@@ -38,7 +38,7 @@ class ItemContentsResourceData extends Resource
             status: $item->document && $item->document->status ? $item->document->status->label() : null,
             description: $item->document->description ?? null,
             updated_at: $item->document->updated_at ?? null,
-            due_in: $item->document->due_date ? Carbon::parse($item->document->due_date)->diffInDays(Carbon::now()) : null,
+            due_in: $item->document?->due_date ? Carbon::parse($item->document->due_date)->diffInDays(Carbon::now()) : null,
             file_path: $item->document->file_path ?? null,
             metadata: $item->document ? $item->document->metadata()->get()->map(fn($metadata) => [
                 'id' => $metadata->id,
