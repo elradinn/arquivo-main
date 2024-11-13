@@ -1,1 +1,0 @@
-import{b as a,c as s}from"./app-Bi-kKfSQ.js";function c(){const[e,r]=a.useState([]);return a.useEffect(()=>{s.get(route("metadata.fetch")).then(t=>{r(t.data.metadata)}).catch(t=>{console.error("Error fetching metadata:",t)})},[]),{metadataList:e}}export{c as u};
