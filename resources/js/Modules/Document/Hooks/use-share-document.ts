@@ -62,7 +62,6 @@ export function useShareDocument({ documentId, close }: UseShareDocumentProps) {
                 reset();
             },
             onError: (errors) => {
-                console.log(errors);
                 notifications.show({
                     message: "Failed to share the document.",
                     color: "red",

@@ -14,8 +14,6 @@ const RelatedDocumentModal: React.FC<RelatedDocumentModalProps> = ({ onAdd }) =>
     const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
     const { data, loading, error } = useShowItems(currentFolderId, isOpen);
 
-    console.log("related document modal data", data);
-
     const handleFolderClick = (folderId: string) => {
         setCurrentFolderId(folderId);
     };

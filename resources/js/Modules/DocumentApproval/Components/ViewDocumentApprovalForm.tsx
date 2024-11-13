@@ -127,8 +127,6 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                                 (ua) => ua.user_id.toString() === user.selectedUser
                             );
 
-                            console.log("userApproval", userApproval);
-
                             const isDecided = userApproval && ["Reviewal Accepted", "Reviewal Rejected", "Approval Accepted", "Approval Rejected"].includes(userApproval.user_state);
 
                             return (

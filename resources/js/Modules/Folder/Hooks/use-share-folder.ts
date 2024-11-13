@@ -67,7 +67,6 @@ export function useShareFolder({ folderId, close }: UseShareFolderProps) {
                 reset();
             },
             onError: (errors) => {
-                console.log(errors);
                 notifications.show({
                     message: "Failed to share the folder.",
                     color: "red",
