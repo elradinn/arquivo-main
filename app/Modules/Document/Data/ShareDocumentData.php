@@ -3,17 +3,17 @@
 namespace Modules\Document\Data;
 
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Spatie\LaravelData\Attributes\Validation\In;
+use Modules\Folder\Data\ShareFolderUserData;
 
 class ShareDocumentData extends Data
 {
-    public function __construct(
-        #[Required, Exists('users', 'email')]
-        public string $email,
+    /**
+     * @var ShareFolderUserData[] $users
+     */
+    public array $users;
 
-        #[Required, In(['viewer', 'editor'])]
-        public string $role
-    ) {}
+    public function __construct(array $users)
+    {
+        $this->users = $users;
+    }
 }

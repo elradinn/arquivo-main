@@ -2,6 +2,7 @@
 
 namespace Modules\Item\Data;
 
+use Carbon\Carbon;
 use Spatie\LaravelData\Resource;
 use Modules\Item\Models\Item;
 
@@ -18,6 +19,7 @@ class ItemContentsResourceData extends Resource
         public ?string $status,
         public ?string $description,
         public ?string $updated_at,
+        public ?int $due_in,
         public ?string $file_path,
         public ?bool $missing_required_metadata = false, // TODO: make logic to check if the document is missing required metadata
         public ?array $metadata = null
@@ -36,6 +38,7 @@ class ItemContentsResourceData extends Resource
             status: $item->document && $item->document->status ? $item->document->status->label() : null,
             description: $item->document->description ?? null,
             updated_at: $item->document->updated_at ?? null,
+            due_in: $item->document->due_date ? Carbon::parse($item->document->due_date)->diffInDays(Carbon::now()) : null,
             file_path: $item->document->file_path ?? null,
             metadata: $item->document ? $item->document->metadata()->get()->map(fn($metadata) => [
                 'id' => $metadata->id,

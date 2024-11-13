@@ -76,6 +76,12 @@
 }
 
 .workspaceLinkWrapper {
+    text-decoration: none;
+    font-size: var(--mantine-font-size-sm);
+    color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+    padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+    border-radius: var(--mantine-radius-sm);
+    font-weight: 500;
     position: relative; /* To position the settings icon */
 
     display: flex;

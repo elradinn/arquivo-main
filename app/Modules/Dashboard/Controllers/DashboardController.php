@@ -4,6 +4,7 @@ namespace Modules\Dashboard\Controllers;
 
 use Modules\Dashboard\Data\DashboardMetadataResourceData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,15 +19,20 @@ use Modules\Dashboard\Helpers\DocumentStatusHelper;
 use Modules\Document\Data\DocumentResourceData;
 use Modules\Item\Data\ItemContentsResourceData;
 use Modules\Item\Models\Item;
+use Modules\Dashboard\Authorization\DashboardAuthorization;
 
 class DashboardController extends Controller
 {
     public function __construct(
-        protected SelectDashboardReportMetadataColumnAction $selectDashboardReportMetadataColumnAction
+        protected SelectDashboardReportMetadataColumnAction $selectDashboardReportMetadataColumnAction,
+        protected DashboardAuthorization $dashboardAuthorization
     ) {}
 
     public function dashboard(): Response
     {
+        // Enforce admin authorization
+        $this->dashboardAuthorization->isAdmin(Auth::user());
+
         // Define the statuses to count
         $statuses = [
             'reviewal_pending',

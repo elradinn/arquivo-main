@@ -30,5 +30,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/{folder}/metadata_columns', [FolderController::class, 'selectMetadataColumn'])->name('folder.selectMetadataColumn');
 
         Route::delete('/{folder}/required_metadata/{metadata}', [FolderController::class, 'deleteRequiredMetadata'])->name('folder.deleteRequiredMetadata');
+
+        Route::get('/{folder}/shared_users', [FolderController::class, 'fetchUserShareFolder'])->name('folder.fetchSharedUsers');
     });
 });

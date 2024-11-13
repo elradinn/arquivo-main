@@ -8,6 +8,7 @@ export type ItemParentResourceData = {
     owned_by: string;
     numbering_scheme_id?: number;
     workflow_id?: number;
+    is_shared?: boolean;
     required_metadata?: FolderRequiredMetadataResource[];
     metadata_columns?: MetadataResourceData[];
 };
