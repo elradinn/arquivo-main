@@ -86,7 +86,15 @@ class DocumentApprovalController extends Controller
                     UserApprovalPending::class,
                     UserReviewalPending::class,
                 ]);
-        })->get()->map(fn($approval) => DocumentApprovalResourceData::fromModel($approval));
+        })
+            ->whereHas('document', function ($query) {
+                // No need to check for 'deleted_at' on Document, since it doesn't use soft deletes.
+                $query->whereHas('item', function ($query) {
+                    $query->whereNull('deleted_at'); // Ensure the related Item is not soft-deleted
+                });
+            })
+            ->get()
+            ->map(fn($approval) => DocumentApprovalResourceData::fromModel($approval));
 
         return response()->json(['pending_approvals' => $pendingApprovals], 200);
     }
