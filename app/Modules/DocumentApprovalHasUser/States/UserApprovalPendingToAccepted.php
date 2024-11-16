@@ -26,9 +26,6 @@ class UserApprovalPendingToAccepted extends Transition
 
         // $sendDocumentApprovalNotification->execute($this->documentApprovalHasUser->documentApproval);
 
-        $user = User::find(Auth::user()->id);
-        $user->notifications()->where('data->document_approval_id', $this->documentApprovalHasUser->documentApproval->id)->markAsRead();
-
         $recalculateDocumentStateAction->execute($this->documentApprovalHasUser->documentApproval);
 
         activity()
