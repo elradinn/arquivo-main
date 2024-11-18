@@ -46,22 +46,27 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
     useEffect(() => {
         const data = sortBy(itemContents, sortStatus.columnAccessor) as ItemContentsResourceData[];
         setRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
-    }, [sortStatus]);
+    }, [sortStatus, itemContents]);
 
-    const dynamicColumns = itemParent.metadata_columns?.map((metadata) => ({
-        accessor: `metadata_${metadata.metadata_id}`,
+    const dynamicColumns: DataTableColumn<ItemContentsResourceData>[] = itemParent.metadata_columns?.map((metadata) => ({
+        accessor: `metadata_${metadata.metadata_id}`, // Changed accessor to include metadata_id
         title: metadata.name,
         render: (record: ItemContentsResourceData) => {
             const metadataItem = record.metadata?.find((m) => m.metadata_id === metadata.metadata_id);
             return metadataItem ? metadataItem.value : null;
         },
-    }));
+        sortable: true,
+        ellipsis: true,
+    })) ?? [];
+
+    console.log(itemParent.metadata_columns?.map((metadata) => metadata));
+    console.log(records.map((record) => record.metadata));
 
     const metadataColumns: DataTableColumn<ItemContentsResourceData>[] = [
         {
             accessor: "name",
             render: ({ mime, type, name, status, missing_required_metadata }) => (
-                <Group align="center" gap={12}>
+                <Group align="center" gap={12} preventGrowOverflow>
                     <ItemIcon
                         mime={mime ?? ""}
                         isFolder={type === "folder"}
@@ -72,11 +77,13 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
                 </Group>
             ),
             sortable: true,
+            ellipsis: true
         },
         {
             accessor: "updated_at",
             title: "Last Modified",
             sortable: true,
+            ellipsis: true,
         },
         ...(dynamicColumns ?? []),
     ];

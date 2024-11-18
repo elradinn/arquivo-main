@@ -27,6 +27,12 @@ class ItemContentsResourceData extends Resource
 
     public static function fromModel(Item $item): self
     {
+        // dd($item->document->metadata()->get()->map(fn($metadata) => [
+        //     'metadata_id' => $metadata->id,
+        //     'name' => $metadata->name,
+        //     'value' => $metadata->pivot,
+        // ])->toArray());
+
         return new self(
             id: $item->id,
             owned_by: $item->folder->owned_by ?? null,
@@ -41,7 +47,7 @@ class ItemContentsResourceData extends Resource
             due_in: $item->document?->due_date ? Carbon::parse($item->document->due_date)->diffInDays(Carbon::now()) : null,
             file_path: $item->document->file_path ?? null,
             metadata: $item->document ? $item->document->metadata()->get()->map(fn($metadata) => [
-                'id' => $metadata->id,
+                'metadata_id' => $metadata->id,
                 'name' => $metadata->name,
                 'value' => $metadata->pivot->value,
             ])->toArray() : null,

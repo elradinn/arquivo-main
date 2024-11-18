@@ -4,6 +4,7 @@ namespace Modules\NumberingScheme\Actions;
 
 use Modules\Document\Models\Document;
 use Modules\Folder\Models\Folder;
+use Modules\Metadata\Models\Metadata;
 use Modules\NumberingScheme\Actions\GenerateDocumentNumberAction;
 
 class ApplyDocumentNumberAction
@@ -30,6 +31,12 @@ class ApplyDocumentNumberAction
 
                 $document->update([
                     'document_number' => $documentNumber,
+                ]);
+
+                $metadata = Metadata::where('name', 'Document Number')->first();
+
+                $document->metadata()->attach($metadata->id, [
+                    'value' => $documentNumber,
                 ]);
             }
         }

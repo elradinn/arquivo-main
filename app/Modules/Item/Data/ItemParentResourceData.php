@@ -2,6 +2,7 @@
 
 namespace Modules\Item\Data;
 
+use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Data;
 use Modules\Item\Models\Item;
 
@@ -23,6 +24,8 @@ class ItemParentResourceData extends Data
     {
         $item->load('folder.userAccess');
 
+        // dd($item->folder->metadataColumns()->get()->toArray());
+
         return new self(
             item_id: $item->id,
             parent_id: $item->parent_id ?? null,
@@ -32,7 +35,10 @@ class ItemParentResourceData extends Data
             workflow_id: $item->folder->workflow->id ?? null,
             is_shared: $item->folder->userAccess->isNotEmpty(),
             required_metadata: $item->workspace ? [] : ($item->folder->requiredMetadata()->get()->toArray() ?? []),
-            metadata_columns: $item->workspace ? [] : ($item->folder->metadataColumns()->get()->toArray() ?? [])
+            metadata_columns: $item->workspace ? [] : ($item->folder->metadataColumns()->get()->map(fn($metadata) => [
+                'metadata_id' => $metadata->id,
+                'name' => $metadata->name,
+            ])->toArray() ?? [])
         );
     }
 }
