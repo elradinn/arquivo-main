@@ -14,8 +14,6 @@ export function useDashboardMetadata({
         metadata_ids: [] as number[],
     });
 
-    console.log(data);
-
     const handleSubmit = () => {
         post(route("dashboard.selectMetadataColumn"), {
             onSuccess: () => {

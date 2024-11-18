@@ -24,8 +24,6 @@ class ItemParentResourceData extends Data
     {
         $item->load('folder.userAccess');
 
-        // dd($item->folder->metadataColumns()->get()->toArray());
-
         return new self(
             item_id: $item->id,
             parent_id: $item->parent_id ?? null,
