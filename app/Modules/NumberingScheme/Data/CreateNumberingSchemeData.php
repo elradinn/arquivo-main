@@ -18,5 +18,7 @@ class CreateNumberingSchemeData extends Data
         public int $next_number,
 
         public string $reset_frequency,
+
+        public bool $add_if_approved,
     ) {}
 }

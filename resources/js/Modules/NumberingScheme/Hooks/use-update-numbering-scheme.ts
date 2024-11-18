@@ -13,22 +13,27 @@ interface UseUpdateNumberingSchemeProps {
 
 type PrefixPart = {
     id: number;
-    type: 'text' | 'dynamic';
+    type: "text" | "dynamic";
     value: string;
 };
 
-export function useUpdateNumberingScheme({ itemParent, isOpen }: UseUpdateNumberingSchemeProps) {
+export function useUpdateNumberingScheme({
+    itemParent,
+    isOpen,
+}: UseUpdateNumberingSchemeProps) {
     const numberingScheme = useFetchNumberingScheme({
         numberingSchemeId: itemParent?.numbering_scheme_id,
         isOpen,
     });
 
-    const { data, setData, put, processing, errors, reset } = useForm<UpdateNumberingSchemeData>({
-        name: "",
-        prefix: "",
-        next_number: 0,
-        reset_frequency: "none",
-    });
+    const { data, setData, put, processing, errors, reset } =
+        useForm<UpdateNumberingSchemeData>({
+            name: "",
+            prefix: "",
+            next_number: 0,
+            reset_frequency: "none",
+            add_if_approved: false,
+        });
 
     const { closeModal } = useModalStore();
 
@@ -37,17 +42,17 @@ export function useUpdateNumberingScheme({ itemParent, isOpen }: UseUpdateNumber
     useEffect(() => {
         if (numberingScheme) {
             // Parse the prefix string back into prefixParts
-            const parts = numberingScheme.prefix.split(' ').map(part => {
-                if (part.startsWith('[') && part.endsWith(']')) {
+            const parts = numberingScheme.prefix.split(" ").map((part) => {
+                if (part.startsWith("[") && part.endsWith("]")) {
                     return {
                         id: Date.now() + Math.random(), // Unique ID
-                        type: 'dynamic' as const,
+                        type: "dynamic" as const,
                         value: part.slice(1, -1),
                     };
                 } else {
                     return {
                         id: Date.now() + Math.random(), // Unique ID
-                        type: 'text' as const,
+                        type: "text" as const,
                         value: part,
                     };
                 }
@@ -58,20 +63,23 @@ export function useUpdateNumberingScheme({ itemParent, isOpen }: UseUpdateNumber
                 prefix: numberingScheme.prefix || "",
                 next_number: numberingScheme.next_number || 0,
                 reset_frequency: numberingScheme.reset_frequency || "none",
+                add_if_approved: numberingScheme.add_if_approved || false,
             });
         }
     }, [numberingScheme]);
 
     // Update the prefix string when prefixParts change
     useEffect(() => {
-        const prefixString = prefixParts.map(part => {
-            if (part.type === 'text') {
-                return part.value;
-            } else {
-                // Represent dynamic parts with placeholders
-                return `[${part.value}]`;
-            }
-        }).join(' ');
+        const prefixString = prefixParts
+            .map((part) => {
+                if (part.type === "text") {
+                    return part.value;
+                } else {
+                    // Represent dynamic parts with placeholders
+                    return `[${part.value}]`;
+                }
+            })
+            .join(" ");
         setData("prefix", prefixString);
     }, [prefixParts]);
 
@@ -100,19 +108,29 @@ export function useUpdateNumberingScheme({ itemParent, isOpen }: UseUpdateNumber
 
     // Functions to manage prefixParts
     const addTextPart = () => {
-        setPrefixParts([...prefixParts, { id: Date.now(), type: 'text', value: '' }]);
+        setPrefixParts([
+            ...prefixParts,
+            { id: Date.now(), type: "text", value: "" },
+        ]);
     };
 
     const addDynamicPart = () => {
-        setPrefixParts([...prefixParts, { id: Date.now(), type: 'dynamic', value: '' }]);
+        setPrefixParts([
+            ...prefixParts,
+            { id: Date.now(), type: "dynamic", value: "" },
+        ]);
     };
 
     const updatePart = (id: number, value: string) => {
-        setPrefixParts(prefixParts.map(part => part.id === id ? { ...part, value } : part));
+        setPrefixParts(
+            prefixParts.map((part) =>
+                part.id === id ? { ...part, value } : part
+            )
+        );
     };
 
     const removePart = (id: number) => {
-        setPrefixParts(prefixParts.filter(part => part.id !== id));
+        setPrefixParts(prefixParts.filter((part) => part.id !== id));
     };
 
     return {

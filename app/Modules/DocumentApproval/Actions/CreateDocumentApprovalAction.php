@@ -4,6 +4,8 @@ namespace Modules\DocumentApproval\Actions;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Modules\Document\States\DocumentApprovalPending as StatesDocumentApprovalPending;
+use Modules\Document\States\DocumentReviewalPending as StatesDocumentReviewalPending;
 use Modules\DocumentApproval\States\DocumentApprovalPending;
 use Modules\DocumentApproval\States\DocumentReviewalPending;
 use Modules\DocumentApproval\Data\CreateDocumentApprovalData;
@@ -39,8 +41,9 @@ class CreateDocumentApprovalAction
 
         $documentApproval->documentApprovalUsers()->saveMany($documentApprovalUsers);
 
+        // Document lang to yung sa taas document workflow yan hayst
         $documentApproval->document->update([
-            'status' => $approvalType === 'reviewal' ? DocumentReviewalPending::class : DocumentApprovalPending::class,
+            'status' => $approvalType === 'reviewal' ? StatesDocumentReviewalPending::class : StatesDocumentApprovalPending::class,
         ]);
 
         $this->sendDocumentApprovalNotificationAction->execute($documentApproval);

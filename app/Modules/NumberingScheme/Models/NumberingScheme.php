@@ -15,6 +15,7 @@ class NumberingScheme extends Model
         'next_number',
         'reset_frequency',
         'last_reset_date',
+        'add_if_approved',
     ];
 
     protected $casts = [

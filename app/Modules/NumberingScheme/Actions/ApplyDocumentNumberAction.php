@@ -3,6 +3,7 @@
 namespace Modules\NumberingScheme\Actions;
 
 use Modules\Document\Models\Document;
+use Modules\Document\States\DocumentApprovalAccepted;
 use Modules\Folder\Models\Folder;
 use Modules\Metadata\Models\Metadata;
 use Modules\NumberingScheme\Actions\GenerateDocumentNumberAction;
@@ -15,19 +16,13 @@ class ApplyDocumentNumberAction
 
     public function execute(Document $document): void
     {
-
         $folder = Folder::find($document->item->parent_id);
 
         if ($folder) {
-            // $numberingScheme = NumberingScheme::where('folder_id', $folder->item_id)->first();
-
             $numberingScheme = $folder->numberingScheme;
 
-            if ($numberingScheme) {
+            if ($numberingScheme && (!$numberingScheme->add_if_approved || $document->status == DocumentApprovalAccepted::class)) {
                 $documentNumber = $this->generateDocumentNumberAction->execute($numberingScheme);
-
-                // $document = Document::find($document->item->id);
-                // $document->document_number = $documentNumber;
 
                 $document->update([
                     'document_number' => $documentNumber,

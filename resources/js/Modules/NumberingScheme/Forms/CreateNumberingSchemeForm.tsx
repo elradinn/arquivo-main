@@ -1,4 +1,4 @@
-import { Modal, Text, TextInput, Button, Stack, Flex, NumberInput, Select, Group, Paper, ActionIcon } from "@mantine/core";
+import { Modal, Text, TextInput, Button, Stack, Flex, NumberInput, Select, Group, Paper, ActionIcon, Switch } from "@mantine/core";
 import { useState, useEffect } from "react";
 import { NumberingSchemeResourceData } from "../Types/NumberingSchemeResourceData";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
@@ -81,6 +81,13 @@ const CreateNumberingSchemeForm: React.FC<IProps> = ({ itemParent }) => {
                         onChange={(e) => setData("name", e.target.value)}
                         error={errors.name}
                         required
+                    />
+
+                    <Switch
+                        label="Add Number Only If Approved"
+                        checked={data.add_if_approved}
+                        onChange={(event) => setData("add_if_approved", event.currentTarget.checked)}
+                        mt="md"
                     />
 
                     <Text size="sm" fw={500}>Prefix</Text>

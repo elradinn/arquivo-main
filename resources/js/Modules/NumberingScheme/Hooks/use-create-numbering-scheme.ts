@@ -10,13 +10,15 @@ interface IProps {
 }
 
 export function useCreateNumberingScheme({ itemParent }: IProps) {
-    const { data, setData, post, processing, errors, reset } = useForm<CreateNumberingSchemeData>({
-        folder_item_id: itemParent?.item_id ?? "",
-        name: "",
-        prefix: "",
-        next_number: 1,
-        reset_frequency: "none",
-    });
+    const { data, setData, post, processing, errors, reset } =
+        useForm<CreateNumberingSchemeData>({
+            folder_item_id: itemParent?.item_id ?? "",
+            name: "",
+            prefix: "",
+            next_number: 1,
+            reset_frequency: "none",
+            add_if_approved: false,
+        });
 
     const { closeModal } = useModalStore();
 

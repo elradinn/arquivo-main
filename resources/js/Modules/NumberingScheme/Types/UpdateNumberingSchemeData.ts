@@ -3,4 +3,5 @@ export type UpdateNumberingSchemeData = {
     prefix: string;
     next_number: number;
     reset_frequency: string;
+    add_if_approved: boolean;
 };
