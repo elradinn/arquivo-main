@@ -3,6 +3,7 @@
 namespace Modules\Item\Data;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Resource;
 use Modules\Item\Models\Item;
 
@@ -27,12 +28,6 @@ class ItemContentsResourceData extends Resource
 
     public static function fromModel(Item $item): self
     {
-        // dd($item->document->metadata()->get()->map(fn($metadata) => [
-        //     'metadata_id' => $metadata->id,
-        //     'name' => $metadata->name,
-        //     'value' => $metadata->pivot,
-        // ])->toArray());
-
         return new self(
             id: $item->id,
             owned_by: $item->folder->owned_by ?? null,

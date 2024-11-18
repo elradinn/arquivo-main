@@ -6,20 +6,17 @@ import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { DashboardMetadataResourceData } from "../Types/DashboardMetadataResourceData";
 
 interface SelectDashboardMetadataColumnFormProps {
-    folderId: string;
     availableMetadata: DashboardMetadataResourceData[];
     existingMetadataIds: number[];
 }
 
 const SelectDashboardMetadataColumnForm: React.FC<SelectDashboardMetadataColumnFormProps> = ({
-    folderId,
     availableMetadata,
     existingMetadataIds,
 }) => {
     const { modals, closeModal } = useModalStore();
     const isOpen = modals["selectDashboardMetadataColumns"];
     const { data, setData, handleSubmit, processing, errors } = useDashboardMetadata({
-        folderId,
         closeModal: () => closeModal("selectDashboardMetadataColumns"),
     });
 

@@ -80,7 +80,6 @@ export default function DashboardReportPage({
 
     useEffect(() => {
         handleFilter();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [documentStatus, dateRange]);
 
     const handleGenerateReport = () => {
@@ -93,6 +92,9 @@ export default function DashboardReportPage({
 
         generateDashboardReport(payload);
     };
+
+    console.log(documents.data);
+    console.log(selectedMetadata);
 
     return (
         <Authenticated>
@@ -155,7 +157,6 @@ export default function DashboardReportPage({
 
                     {/* Existing SelectMetadataColumnForm */}
                     <SelectDashboardMetadataColumnForm
-                        folderId="your-folder-item-id"
                         availableMetadata={availableMetadata}
                         existingMetadataIds={existingMetadataIds}
                     />
