@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { Head } from "@inertiajs/react";
@@ -8,7 +8,6 @@ import {
     Select,
     Stack,
     Text,
-    ActionIcon,
     Flex,
 } from "@mantine/core";
 import { IconDownload, IconTable } from "@tabler/icons-react";
@@ -16,7 +15,7 @@ import { DataTable } from "mantine-datatable";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
 import { usePaginateDataTable } from "@/Modules/Common/Hooks/use-paginate-datatable";
-import useGenerateReport from "@/Modules/Common/Hooks/use-generate-report";
+import useGenerateReport from "@/Modules/Reports/Hooks/use-generate-dashboard-report";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { PaginationData } from "@/Modules/Common/Types/CommonPageTypes";
 import { MetadataResourceData } from "@/Modules/Metadata/Types/MetadataResourceData";
@@ -62,25 +61,25 @@ export default function DashboardReportPage({
 
     const { openModal } = useModalStore();
 
-    const handleFilter = () => {
-        const query: any = {};
-
-        if (documentStatus) {
-            query.document_status = documentStatus;
-        }
-
-        if (dateRange[0] && dateRange[1]) {
-            query.start_date = dateRange[0].toISOString().split('T')[0];
-            query.end_date = dateRange[1].toISOString().split('T')[0];
-        }
+    const handleFilter = (updatedFilters: { document_status?: string | null; start_date?: string | null; end_date?: string | null }) => {
+        const query: any = { ...updatedFilters };
 
         // Navigate with Inertia to apply filters
-        router.get("/dashboard/reports", query, { replace: true, preserveState: true });
+        router.get(route("dashboard.reports"), query, { replace: true, preserveState: true });
     };
 
-    useEffect(() => {
-        handleFilter();
-    }, [documentStatus, dateRange]);
+    const handleDocumentStatusChange = (value: string | null) => {
+        setDocumentStatus(value);
+        handleFilter({ document_status: value });
+    };
+
+    const handleDateRangeChange = (value: [Date | null, Date | null]) => {
+        setDateRange(value);
+        handleFilter({
+            start_date: value[0] ? value[0].toISOString().split('T')[0] : null,
+            end_date: value[1] ? value[1].toISOString().split('T')[0] : null,
+        });
+    };
 
     const handleGenerateReport = () => {
         const payload = {
@@ -92,9 +91,6 @@ export default function DashboardReportPage({
 
         generateDashboardReport(payload);
     };
-
-    console.log(documents.data);
-    console.log(selectedMetadata);
 
     return (
         <Authenticated>
@@ -119,7 +115,7 @@ export default function DashboardReportPage({
                             <Select
                                 placeholder="Select document status"
                                 value={documentStatus}
-                                onChange={setDocumentStatus}
+                                onChange={handleDocumentStatusChange}
                                 data={[
                                     { value: "reviewal_accepted", label: "Review Accepted" },
                                     { value: "reviewal_rejected", label: "Review Rejected" },
@@ -135,7 +131,7 @@ export default function DashboardReportPage({
                                 type="range"
                                 placeholder="Select date range"
                                 value={dateRange}
-                                onChange={setDateRange}
+                                onChange={handleDateRangeChange}
                                 style={{ width: 300 }}
                             />
 
@@ -186,17 +182,16 @@ export default function DashboardReportPage({
                                 accessor: "due_in",
                                 title: "Due in",
                                 render: ({ due_in }) => {
-                                    return due_in !== undefined ? (
+                                    return due_in !== undefined && due_in !== null ? (
                                         due_in < 0 ? (
-                                            <Text c="red">{Math.abs(due_in)} days overdue</Text>
+                                            <Text c="red" size="sm">{Math.abs(due_in)} days overdue</Text>
                                         ) : (
-                                            `${due_in} day${due_in !== 1 ? 's' : ''} remaining`
+                                            <Text size="sm">{`${due_in} day${due_in !== 1 ? 's' : ''} remaining`}</Text>
                                         )
                                     ) : (
-                                        "N/A"
+                                        "Deadline not set"
                                     );
                                 },
-                                sortable: true,
                             },
                             // Dynamic columns based on selected metadata
                             ...selectedMetadata.map((meta) => ({

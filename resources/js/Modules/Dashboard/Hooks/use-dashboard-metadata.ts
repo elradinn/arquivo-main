@@ -7,10 +7,14 @@ interface UseDashboardMetadataProps {
     closeModal: () => void;
 }
 
-export function useDashboardMetadata({ closeModal }: UseDashboardMetadataProps) {
+export function useDashboardMetadata({
+    closeModal,
+}: UseDashboardMetadataProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         metadata_ids: [] as number[],
     });
+
+    console.log(data);
 
     const handleSubmit = () => {
         post(route("dashboard.selectMetadataColumn"), {

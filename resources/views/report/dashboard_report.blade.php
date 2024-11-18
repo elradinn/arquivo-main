@@ -1,7 +1,7 @@
 <html>
     <head>
         <style>
-            /** 
+            /**
                 Set the margins of the page to 0, so the footer and the header
                 can be of the full height and width !
              **/
@@ -28,9 +28,9 @@
 
             /** Define the footer rules **/
             footer {
-                position: fixed; 
-                bottom: 0cm; 
-                left: 0cm; 
+                position: fixed;
+                bottom: 0cm;
+                left: 0cm;
                 right: 0cm;
                 height: 3.5cm;
             }
@@ -52,13 +52,13 @@
                 border-collapse: collapse;
                 margin-top: 20px;
             }
-            
+
             th, td {
                 border: 1px solid #000;
                 padding: 8px;
                 text-align: left;
             }
-            
+
             th {
                 background-color: #f2f2f2;
             }
@@ -96,7 +96,7 @@
                             <td>{{ $item->updated_at }}</td>
                             @foreach($selectedMetadata as $metadataColumn)
                                 @php
-                                    $meta = collect($item->metadata)->firstWhere('id', $metadataColumn->id);
+                                    $meta = collect($item->metadata)->firstWhere('metadata_id', $metadataColumn->metadata_id);
                                 @endphp
                                 <td>{{ $meta['value'] ?? 'N/A' }}</td>
                             @endforeach

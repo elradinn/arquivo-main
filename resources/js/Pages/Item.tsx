@@ -59,9 +59,6 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
         ellipsis: true,
     })) ?? [];
 
-    console.log(itemParent.metadata_columns?.map((metadata) => metadata));
-    console.log(records.map((record) => record.metadata));
-
     const metadataColumns: DataTableColumn<ItemContentsResourceData>[] = [
         {
             accessor: "name",

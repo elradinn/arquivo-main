@@ -3,7 +3,6 @@
 namespace Modules\Dashboard\Data;
 
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
 
 class DashboardReportParametersData extends Data
 {
@@ -11,7 +10,6 @@ class DashboardReportParametersData extends Data
         public ?string $document_status = null,
         public ?string $start_date = null,
         public ?string $end_date = null,
-        #[Required]
-        public array $metadata_ids = []
+        public ?array $metadata_ids = null
     ) {}
 }

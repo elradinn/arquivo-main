@@ -47,10 +47,10 @@ const SelectDashboardMetadataColumnForm: React.FC<SelectDashboardMetadataColumnF
                     <Text>Select the metadata columns you want to display in the dashboard report:</Text>
                     {availableMetadata.map((meta) => (
                         <Checkbox
-                            key={meta.id}
+                            key={meta.metadata_id}
                             label={meta.name}
-                            checked={data.metadata_ids.includes(meta.id)}
-                            onChange={() => handleCheckboxChange(meta.id)}
+                            checked={data.metadata_ids.includes(meta.metadata_id)}
+                            onChange={() => handleCheckboxChange(meta.metadata_id)}
                         />
                     ))}
                     {errors.metadata_ids && (
