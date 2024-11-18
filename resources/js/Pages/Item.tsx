@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { sortBy } from "lodash";
 import { Head } from "@inertiajs/react";
 import { Group, Stack, Text } from "@mantine/core";
-import { DataTable, DataTableColumn } from "mantine-datatable";
+import { DataTable, DataTableColumn, type DataTableSortStatus } from "mantine-datatable";
 
 import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
@@ -36,6 +37,17 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
     const { openFolder } = useOpenFolder();
     const { openDocument } = useDocumentProperties();
 
+    const [sortStatus, setSortStatus] = useState<DataTableSortStatus<ItemContentsResourceData>>({
+        columnAccessor: 'name',
+        direction: 'asc',
+    });
+    const [records, setRecords] = useState(sortBy(itemContents, 'name'));
+
+    useEffect(() => {
+        const data = sortBy(itemContents, sortStatus.columnAccessor) as ItemContentsResourceData[];
+        setRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
+    }, [sortStatus]);
+
     const dynamicColumns = itemParent.metadata_columns?.map((metadata) => ({
         accessor: `metadata_${metadata.metadata_id}`,
         title: metadata.name,
@@ -59,10 +71,12 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
                     <span>{name}</span>
                 </Group>
             ),
+            sortable: true,
         },
         {
             accessor: "updated_at",
             title: "Last Modified",
+            sortable: true,
         },
         ...(dynamicColumns ?? []),
     ];
@@ -97,7 +111,7 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
                             <DataTable
                                 textSelectionDisabled
                                 columns={metadataColumns}
-                                records={itemContents}
+                                records={records}
                                 customRowAttributes={({ type, id }) => ({
                                     onDoubleClick: (e: MouseEvent) => {
                                         if (e.button === 0) {
@@ -115,6 +129,8 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
                                 horizontalSpacing="xl"
                                 selectedRecords={selectedRecord}
                                 onSelectedRecordsChange={setSelectedRecord}
+                                sortStatus={sortStatus}
+                                onSortStatusChange={setSortStatus}
                             />
                         )}
                     </Stack>
