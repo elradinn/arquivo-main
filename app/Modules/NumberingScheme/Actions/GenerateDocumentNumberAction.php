@@ -44,6 +44,9 @@ class GenerateDocumentNumberAction
 
             $number = $prefix;
 
+            // Remove curly braces from static text
+            $number = str_replace(['{', '}'], '', $number);
+
             // Replace date placeholders
             $number = str_replace('[DD]', $date->format('d'), $number);
             $number = str_replace('[MM]', $date->format('m'), $number);

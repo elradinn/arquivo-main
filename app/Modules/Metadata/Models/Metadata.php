@@ -12,6 +12,7 @@ class Metadata extends Model
     protected $fillable = [
         'name',
         'type',
+        'status',
     ];
 
     /**

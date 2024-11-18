@@ -2,6 +2,10 @@
 
 namespace Modules\DocumentApproval\Actions;
 
+use Modules\Document\States\DocumentApprovalAccepted as StatesDocumentApprovalAccepted;
+use Modules\Document\States\DocumentApprovalRejected as StatesDocumentApprovalRejected;
+use Modules\Document\States\DocumentReviewalAccepted as StatesDocumentReviewalAccepted;
+use Modules\Document\States\DocumentReviewalRejected as StatesDocumentReviewalRejected;
 use Modules\DocumentApproval\Models\DocumentApproval;
 
 use Modules\DocumentApproval\States\DocumentApprovalRejected;
@@ -30,11 +34,11 @@ class RecalculateDocumentStateAction
             if ($documentApprovalUsers->contains('user_state', UserReviewalRejected::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentReviewalRejected::class);
 
-                $documentApproval->document->status->transitionTo(DocumentReviewalRejected::class);
+                $documentApproval->document->status->transitionTo(StatesDocumentReviewalRejected::class);
             } elseif ($documentApprovalUsers->every('user_state', UserReviewalAccepted::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentReviewalAccepted::class);
 
-                $documentApproval->document->status->transitionTo(DocumentReviewalAccepted::class);
+                $documentApproval->document->status->transitionTo(StatesDocumentReviewalAccepted::class);
             }
         } else if ($documentApproval->type == 'approval') {
             if ($documentApprovalUsers->contains('user_state', UserApprovalPending::class)) {
@@ -44,11 +48,11 @@ class RecalculateDocumentStateAction
             if ($documentApprovalUsers->contains('user_state', UserApprovalRejected::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentApprovalRejected::class);
 
-                $documentApproval->document->status->transitionTo(DocumentApprovalRejected::class);
+                $documentApproval->document->status->transitionTo(StatesDocumentApprovalRejected::class);
             } elseif ($documentApprovalUsers->every('user_state', UserApprovalAccepted::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentApprovalAccepted::class);
 
-                $documentApproval->document->status->transitionTo(DocumentApprovalAccepted::class);
+                $documentApproval->document->status->transitionTo(StatesDocumentApprovalAccepted::class);
             }
         }
     }

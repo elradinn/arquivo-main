@@ -75,30 +75,49 @@ class DatabaseSeeder extends Seeder
         $testUser5->assignRole('admin');
 
 
-        // Create Metadata
+
+        // Create System Metadata
+        Metadata::create([
+            'name' => 'Document Number',
+            'type' => 'string',
+            'status' => 'system',
+        ]);
+
+        Metadata::create([
+            'name' => 'Due In',
+            'type' => 'date',
+            'status' => 'system',
+        ]);
+
+        // Create Custom Metadata
         Metadata::create([
             'name' => 'Country',
             'type' => 'string',
+            'status' => 'custom',
         ]);
 
         Metadata::create([
             'name' => 'Published Year',
             'type' => 'integer',
+            'status' => 'custom',
         ]);
 
         Metadata::create([
             'name' => 'Is Confidential',
             'type' => 'boolean',
+            'status' => 'custom',
         ]);
 
         Metadata::create([
             'name' => 'Subject',
             'type' => 'string',
+            'status' => 'custom',
         ]);
 
         Metadata::create([
             'name' => 'For',
             'type' => 'boolean',
+            'status' => 'custom',
         ]);
 
         // Create Workspace through folder

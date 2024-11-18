@@ -1,4 +1,5 @@
 export interface RecentlyUploadedDocument {
+    id: string;
     name: string;
     status: string;
     date_uploaded: string;

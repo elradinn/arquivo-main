@@ -10,6 +10,7 @@ import {
     NumberInput,
     Group,
     Paper,
+    Switch,
 } from "@mantine/core";
 import { useUpdateNumberingScheme } from "../Hooks/use-update-numbering-scheme";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
@@ -75,7 +76,14 @@ export const UpdateNumberingSchemeForm: React.FC<IProps> = ({
                             required
                         />
 
-                        <Text size="sm" fw={500}>Prefix</Text>
+                        <Switch
+                            label="Add Number Only If Approved"
+                            checked={data.add_if_approved}
+                            onChange={(event) => setData("add_if_approved", event.currentTarget.checked)}
+                            mt="md"
+                        />
+
+                        <Text size="sm" fw={500}>Prefix Builder</Text>
                         <Group>
                             <Button
                                 variant="subtle"
@@ -125,23 +133,23 @@ export const UpdateNumberingSchemeForm: React.FC<IProps> = ({
                         <Paper withBorder p={12} bg="#f9f9f9">
                             <Text>{prefixParts.map(part => {
                                 if (part.type === 'text') {
-                                    return part.value + ' ';
+                                    return part.value;
                                 } else {
-                                    // For preview purposes, replace dynamic parts with sample values
+                                    // Replace dynamic parts with sample values
                                     switch (part.value) {
                                         case 'YY':
-                                            return new Date().getFullYear().toString().slice(2) + ' ';
+                                            return new Date().getFullYear().toString().slice(2);
                                         case 'MM':
-                                            return (new Date().getMonth() + 1).toString().padStart(2, '0') + ' ';
+                                            return (new Date().getMonth() + 1).toString().padStart(2, '0');
                                         case 'DD':
-                                            return new Date().getDate().toString().padStart(2, '0') + ' ';
+                                            return new Date().getDate().toString().padStart(2, '0');
                                         case 'INC':
-                                            return data.next_number.toString().padStart(3, '0') + ' ';
+                                            return data.next_number.toString().padStart(3, '0');
                                         default:
                                             return '';
                                     }
                                 }
-                            }).join(' ')}</Text>
+                            }).join(' ').trim()}</Text>
                         </Paper>
 
                         <Group justify="space-between">

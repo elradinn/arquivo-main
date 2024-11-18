@@ -4,17 +4,18 @@ import { DashboardMetadataResourceData } from "../Types/DashboardMetadataResourc
 import { notifications } from "@mantine/notifications";
 
 interface UseDashboardMetadataProps {
-    folderId: string;
     closeModal: () => void;
 }
 
-export function useDashboardMetadata({ folderId, closeModal }: UseDashboardMetadataProps) {
+export function useDashboardMetadata({
+    closeModal,
+}: UseDashboardMetadataProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         metadata_ids: [] as number[],
     });
 
     const handleSubmit = () => {
-        post(route("dashboard.selectMetadataColumn", folderId), {
+        post(route("dashboard.selectMetadataColumn"), {
             onSuccess: () => {
                 notifications.show({
                     title: "Success",

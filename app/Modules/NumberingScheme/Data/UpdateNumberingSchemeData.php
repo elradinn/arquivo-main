@@ -11,5 +11,6 @@ class UpdateNumberingSchemeData extends Data
         public string $prefix,
         public int $next_number,
         public string $reset_frequency,
+        public bool $add_if_approved,
     ) {}
 }

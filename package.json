@@ -15,7 +15,10 @@
         "@mantine/notifications": "^7.13.4",
         "@tabler/icons-react": "^3.11.0",
         "axios": "^1.6.4",
+        "clsx": "^2.1.1",
         "dayjs": "^1.11.13",
+        "lodash": "^4.17.21",
+        "mantine-contextmenu": "^7.12.2",
         "mantine-datatable": "^7.12.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
@@ -23,6 +26,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.10.0",
+        "@types/lodash": "^4.17.13",
         "@types/node": "^18.13.0",
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.10",

@@ -1,5 +1,5 @@
 export interface DashboardMetadataResourceData {
-    id: number;
+    metadata_id: number;
     name: string;
     type: string;
 }

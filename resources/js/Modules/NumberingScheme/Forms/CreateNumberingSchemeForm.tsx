@@ -1,4 +1,4 @@
-import { Modal, Text, TextInput, Button, Stack, Flex, NumberInput, Select, Group, Paper, ActionIcon } from "@mantine/core";
+import { Modal, Text, TextInput, Button, Stack, Flex, NumberInput, Select, Group, Paper, ActionIcon, Switch } from "@mantine/core";
 import { useState, useEffect } from "react";
 import { NumberingSchemeResourceData } from "../Types/NumberingSchemeResourceData";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
@@ -29,7 +29,7 @@ const CreateNumberingSchemeForm: React.FC<IProps> = ({ itemParent }) => {
     useEffect(() => {
         const prefixString = prefixParts.map(part => {
             if (part.type === 'text') {
-                return part.value;
+                return `{${part.value}}`;
             } else {
                 // Represent dynamic parts with placeholders
                 return `[${part.value}]`;
@@ -83,7 +83,14 @@ const CreateNumberingSchemeForm: React.FC<IProps> = ({ itemParent }) => {
                         required
                     />
 
-                    <Text size="sm" fw={500}>Prefix</Text>
+                    <Switch
+                        label="Add Number Only If Approved"
+                        checked={data.add_if_approved}
+                        onChange={(event) => setData("add_if_approved", event.currentTarget.checked)}
+                        mt="md"
+                    />
+
+                    <Text size="sm" fw={500}>Prefix Builder</Text>
                     <Group>
                         <Button variant="subtle" size="sm" leftSection={<IconPlus size={16} />} onClick={addTextPart}>
                             Add Text
@@ -125,21 +132,21 @@ const CreateNumberingSchemeForm: React.FC<IProps> = ({ itemParent }) => {
                             if (part.type === 'text') {
                                 return part.value + ' ';
                             } else {
-                                // For preview purposes, replace dynamic parts with sample values
+                                // Replace dynamic parts with sample values
                                 switch (part.value) {
                                     case 'YY':
                                         return new Date().getFullYear().toString().slice(2) + ' ';
                                     case 'MM':
-                                        return (new Date().getMonth() + 1).toString() + ' ';
+                                        return (new Date().getMonth() + 1).toString().padStart(2, '0') + ' ';
                                     case 'DD':
-                                        return new Date().getDate().toString() + ' ';
+                                        return new Date().getDate().toString().padStart(2, '0') + ' ';
                                     case 'INC':
                                         return data.next_number.toString() + ' ';
                                     default:
                                         return '';
                                 }
                             }
-                        }).join(' ')}</Text>
+                        }).join('').trim()}</Text>
                     </Paper>
 
                     <Group justify="space-between">
@@ -152,31 +159,6 @@ const CreateNumberingSchemeForm: React.FC<IProps> = ({ itemParent }) => {
                             required
                             style={{ flex: 1 }}
                         />
-
-                        {/* <TextInput
-                            label="Preview Numbering Scheme"
-                            readOnly
-                            value={data.name + prefixParts.map(part => {
-                                if (part.type === 'text') {
-                                    return part.value;
-                                } else {
-                                    // Replace dynamic parts with sample values
-                                    switch (part.value) {
-                                        case 'YEAR':
-                                            return '2023';
-                                        case 'MONTH':
-                                            return '09';
-                                        case 'DAY':
-                                            return '30';
-                                        case 'INCREMENT':
-                                            return '001';
-                                        default:
-                                            return '';
-                                    }
-                                }
-                            }).join('') + data.next_number}
-                            style={{ flex: 1 }}
-                        /> */}
                     </Group>
 
                     <Select

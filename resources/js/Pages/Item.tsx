@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { sortBy } from "lodash";
 import { Head } from "@inertiajs/react";
 import { Group, Stack, Text } from "@mantine/core";
-import { DataTable, DataTableColumn } from "mantine-datatable";
+import { DataTable, DataTableColumn, type DataTableSortStatus } from "mantine-datatable";
 
 import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
@@ -36,20 +37,33 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
     const { openFolder } = useOpenFolder();
     const { openDocument } = useDocumentProperties();
 
-    const dynamicColumns = itemParent.metadata_columns?.map((metadata) => ({
-        accessor: `metadata_${metadata.metadata_id}`,
+    const [sortStatus, setSortStatus] = useState<DataTableSortStatus<ItemContentsResourceData>>({
+        columnAccessor: 'name',
+        direction: 'asc',
+    });
+    const [records, setRecords] = useState(sortBy(itemContents, 'name'));
+
+    useEffect(() => {
+        const data = sortBy(itemContents, sortStatus.columnAccessor) as ItemContentsResourceData[];
+        setRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
+    }, [sortStatus, itemContents]);
+
+    const dynamicColumns: DataTableColumn<ItemContentsResourceData>[] = itemParent.metadata_columns?.map((metadata) => ({
+        accessor: `metadata_${metadata.metadata_id}`, // Changed accessor to include metadata_id
         title: metadata.name,
         render: (record: ItemContentsResourceData) => {
             const metadataItem = record.metadata?.find((m) => m.metadata_id === metadata.metadata_id);
             return metadataItem ? metadataItem.value : null;
         },
-    }));
+        sortable: true,
+        ellipsis: true,
+    })) ?? [];
 
     const metadataColumns: DataTableColumn<ItemContentsResourceData>[] = [
         {
             accessor: "name",
             render: ({ mime, type, name, status, missing_required_metadata }) => (
-                <Group align="center" gap={12}>
+                <Group align="center" gap={12} preventGrowOverflow>
                     <ItemIcon
                         mime={mime ?? ""}
                         isFolder={type === "folder"}
@@ -59,10 +73,14 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
                     <span>{name}</span>
                 </Group>
             ),
+            sortable: true,
+            ellipsis: true
         },
         {
             accessor: "updated_at",
             title: "Last Modified",
+            sortable: true,
+            ellipsis: true,
         },
         ...(dynamicColumns ?? []),
     ];
@@ -97,7 +115,7 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
                             <DataTable
                                 textSelectionDisabled
                                 columns={metadataColumns}
-                                records={itemContents}
+                                records={records}
                                 customRowAttributes={({ type, id }) => ({
                                     onDoubleClick: (e: MouseEvent) => {
                                         if (e.button === 0) {
@@ -115,6 +133,8 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
                                 horizontalSpacing="xl"
                                 selectedRecords={selectedRecord}
                                 onSelectedRecordsChange={setSelectedRecord}
+                                sortStatus={sortStatus}
+                                onSortStatusChange={setSortStatus}
                             />
                         )}
                     </Stack>

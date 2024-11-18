@@ -10,8 +10,16 @@ class GetTrashedItemAction
 {
     public function execute()
     {
+        // Get all trashed items
+        $trashedItems = Item::onlyTrashed()->get();
+
+        // Filter out items that have a trashed parent
+        $filteredItems = $trashedItems->filter(function ($item) use ($trashedItems) {
+            return !$trashedItems->contains('id', $item->parent_id);
+        });
+
         return [
-            'trashedItems' => TrashedItemsResourceData::collect(Item::onlyTrashed()->get(), DataCollection::class),
+            'trashedItems' => TrashedItemsResourceData::collect($filteredItems, DataCollection::class),
         ];
     }
 }

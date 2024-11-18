@@ -3,6 +3,7 @@
 namespace Modules\Item\Data;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Spatie\LaravelData\Resource;
 use Modules\Item\Models\Item;
 
@@ -41,7 +42,7 @@ class ItemContentsResourceData extends Resource
             due_in: $item->document?->due_date ? Carbon::parse($item->document->due_date)->diffInDays(Carbon::now()) : null,
             file_path: $item->document->file_path ?? null,
             metadata: $item->document ? $item->document->metadata()->get()->map(fn($metadata) => [
-                'id' => $metadata->id,
+                'metadata_id' => $metadata->id,
                 'name' => $metadata->name,
                 'value' => $metadata->pivot->value,
             ])->toArray() : null,

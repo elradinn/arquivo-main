@@ -67,6 +67,7 @@ class DashboardController extends Controller
             ->get()
             ->map(function ($doc) {
                 return new RecentlyUploadedDocumentResource(
+                    id: $doc->item_id,
                     name: $doc->name,
                     status: $doc->status ? $doc->status->label() : 'No Status',
                     date_uploaded: $doc->updated_at->format('Y-m-d H:i:s')

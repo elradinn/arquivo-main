@@ -15,6 +15,8 @@ class CreateMetadataData extends Data
         public string $name,
 
         #[Required, StringType, In(['String', 'Integer', 'Float', 'Boolean', 'Date', 'DateTime'])]
-        public string $type
+        public string $type,
+
+        public ?string $status = 'custom'
     ) {}
 }

@@ -12,6 +12,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->string('type'); // e.g., string, integer, etc.
+            $table->string('status');
             $table->timestamps();
         });
     }

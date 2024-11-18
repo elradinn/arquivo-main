@@ -10,20 +10,23 @@ interface IProps {
 }
 
 export function useCreateNumberingScheme({ itemParent }: IProps) {
-    const { data, setData, post, processing, errors, reset } = useForm<CreateNumberingSchemeData>({
-        folder_item_id: itemParent?.item_id ?? "",
-        name: "",
-        prefix: "",
-        next_number: 1,
-        reset_frequency: "none",
-    });
+    const { data, setData, post, processing, errors, reset } =
+        useForm<CreateNumberingSchemeData>({
+            folder_item_id: itemParent?.item_id ?? "",
+            name: "",
+            prefix: "",
+            next_number: 1,
+            reset_frequency: "none",
+            add_if_approved: false,
+        });
 
     const { closeModal } = useModalStore();
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        data.folder_item_id = itemParent?.item_id ?? "";
+        const formattedPrefix = formatPrefix(data.prefix);
+        setData("prefix", formattedPrefix);
 
         post(route("numbering-scheme.store"), {
             preserveScroll: true,
@@ -42,6 +45,10 @@ export function useCreateNumberingScheme({ itemParent }: IProps) {
             },
             onFinish: () => reset(),
         });
+    };
+
+    const formatPrefix = (prefix: string): string => {
+        return prefix;
     };
 
     return { data, setData, handleSubmit, processing, errors };
