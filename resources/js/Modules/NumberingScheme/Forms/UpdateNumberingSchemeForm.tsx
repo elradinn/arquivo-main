@@ -133,23 +133,23 @@ export const UpdateNumberingSchemeForm: React.FC<IProps> = ({
                         <Paper withBorder p={12} bg="#f9f9f9">
                             <Text>{prefixParts.map(part => {
                                 if (part.type === 'text') {
-                                    return part.value + ' ';
+                                    return part.value;
                                 } else {
-                                    // For preview purposes, replace dynamic parts with sample values
+                                    // Replace dynamic parts with sample values
                                     switch (part.value) {
                                         case 'YY':
-                                            return new Date().getFullYear().toString().slice(2) + ' ';
+                                            return new Date().getFullYear().toString().slice(2);
                                         case 'MM':
-                                            return (new Date().getMonth() + 1).toString().padStart(2, '0') + ' ';
+                                            return (new Date().getMonth() + 1).toString().padStart(2, '0');
                                         case 'DD':
-                                            return new Date().getDate().toString().padStart(2, '0') + ' ';
+                                            return new Date().getDate().toString().padStart(2, '0');
                                         case 'INC':
-                                            return data.next_number.toString().padStart(3, '0') + ' ';
+                                            return data.next_number.toString().padStart(3, '0');
                                         default:
                                             return '';
                                     }
                                 }
-                            }).join(' ')}</Text>
+                            }).join(' ').trim()}</Text>
                         </Paper>
 
                         <Group justify="space-between">

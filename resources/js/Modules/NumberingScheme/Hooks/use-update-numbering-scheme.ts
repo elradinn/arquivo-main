@@ -41,22 +41,29 @@ export function useUpdateNumberingScheme({
 
     useEffect(() => {
         if (numberingScheme) {
-            // Parse the prefix string back into prefixParts
-            const parts = numberingScheme.prefix.split(" ").map((part) => {
-                if (part.startsWith("[") && part.endsWith("]")) {
-                    return {
-                        id: Date.now() + Math.random(), // Unique ID
-                        type: "dynamic" as const,
-                        value: part.slice(1, -1),
-                    };
-                } else {
-                    return {
-                        id: Date.now() + Math.random(), // Unique ID
-                        type: "text" as const,
-                        value: part,
-                    };
-                }
-            });
+            // Parse the prefix string back into prefixParts using regex
+            const regex = /(\{[^}]+\}|\[[^\]]+\])/g;
+            const matches = numberingScheme.prefix.match(regex);
+            const parts: PrefixPart[] = [];
+
+            if (matches) {
+                matches.forEach((match) => {
+                    if (match.startsWith("{") && match.endsWith("}")) {
+                        parts.push({
+                            id: Date.now() + Math.random(),
+                            type: "text",
+                            value: match.slice(1, -1),
+                        });
+                    } else if (match.startsWith("[") && match.endsWith("]")) {
+                        parts.push({
+                            id: Date.now() + Math.random(),
+                            type: "dynamic",
+                            value: match.slice(1, -1),
+                        });
+                    }
+                });
+            }
+
             setPrefixParts(parts);
             setData({
                 name: numberingScheme.name || "",
@@ -73,7 +80,7 @@ export function useUpdateNumberingScheme({
         const prefixString = prefixParts
             .map((part) => {
                 if (part.type === "text") {
-                    return part.value;
+                    return `{${part.value}}`;
                 } else {
                     // Represent dynamic parts with placeholders
                     return `[${part.value}]`;

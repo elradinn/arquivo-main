@@ -29,7 +29,7 @@ const CreateNumberingSchemeForm: React.FC<IProps> = ({ itemParent }) => {
     useEffect(() => {
         const prefixString = prefixParts.map(part => {
             if (part.type === 'text') {
-                return part.value;
+                return `{${part.value}}`;
             } else {
                 // Represent dynamic parts with placeholders
                 return `[${part.value}]`;
@@ -132,21 +132,21 @@ const CreateNumberingSchemeForm: React.FC<IProps> = ({ itemParent }) => {
                             if (part.type === 'text') {
                                 return part.value + ' ';
                             } else {
-                                // For preview purposes, replace dynamic parts with sample values
+                                // Replace dynamic parts with sample values
                                 switch (part.value) {
                                     case 'YY':
                                         return new Date().getFullYear().toString().slice(2) + ' ';
                                     case 'MM':
-                                        return (new Date().getMonth() + 1).toString() + ' ';
+                                        return (new Date().getMonth() + 1).toString().padStart(2, '0') + ' ';
                                     case 'DD':
-                                        return new Date().getDate().toString() + ' ';
+                                        return new Date().getDate().toString().padStart(2, '0') + ' ';
                                     case 'INC':
                                         return data.next_number.toString() + ' ';
                                     default:
                                         return '';
                                 }
                             }
-                        }).join(' ')}</Text>
+                        }).join('').trim()}</Text>
                     </Paper>
 
                     <Group justify="space-between">
@@ -159,31 +159,6 @@ const CreateNumberingSchemeForm: React.FC<IProps> = ({ itemParent }) => {
                             required
                             style={{ flex: 1 }}
                         />
-
-                        {/* <TextInput
-                            label="Preview Numbering Scheme"
-                            readOnly
-                            value={data.name + prefixParts.map(part => {
-                                if (part.type === 'text') {
-                                    return part.value;
-                                } else {
-                                    // Replace dynamic parts with sample values
-                                    switch (part.value) {
-                                        case 'YEAR':
-                                            return '2023';
-                                        case 'MONTH':
-                                            return '09';
-                                        case 'DAY':
-                                            return '30';
-                                        case 'INCREMENT':
-                                            return '001';
-                                        default:
-                                            return '';
-                                    }
-                                }
-                            }).join('') + data.next_number}
-                            style={{ flex: 1 }}
-                        /> */}
                     </Group>
 
                     <Select
