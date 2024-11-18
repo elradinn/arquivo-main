@@ -90,7 +90,7 @@ const CreateNumberingSchemeForm: React.FC<IProps> = ({ itemParent }) => {
                         mt="md"
                     />
 
-                    <Text size="sm" fw={500}>Prefix</Text>
+                    <Text size="sm" fw={500}>Prefix Builder</Text>
                     <Group>
                         <Button variant="subtle" size="sm" leftSection={<IconPlus size={16} />} onClick={addTextPart}>
                             Add Text

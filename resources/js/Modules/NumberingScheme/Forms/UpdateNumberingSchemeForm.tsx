@@ -83,7 +83,7 @@ export const UpdateNumberingSchemeForm: React.FC<IProps> = ({
                             mt="md"
                         />
 
-                        <Text size="sm" fw={500}>Prefix</Text>
+                        <Text size="sm" fw={500}>Prefix Builder</Text>
                         <Group>
                             <Button
                                 variant="subtle"
