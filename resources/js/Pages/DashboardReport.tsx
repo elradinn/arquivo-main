@@ -9,8 +9,9 @@ import {
     Stack,
     Text,
     Flex,
+    TextInput,
 } from "@mantine/core";
-import { IconDownload, IconTable } from "@tabler/icons-react";
+import { IconDownload, IconSearch, IconTable } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
@@ -61,8 +62,30 @@ export default function DashboardReportPage({
 
     const { openModal } = useModalStore();
 
-    const handleFilter = (updatedFilters: { document_status?: string | null; start_date?: string | null; end_date?: string | null }) => {
-        const query: any = { ...updatedFilters };
+    /**
+     * Consolidated handleFilter function that merges all active filters.
+     */
+    const handleFilter = (updatedFilters: Partial<{
+        document_status: string | null;
+        start_date: string | null;
+        end_date: string | null;
+        search: string;
+        page: number;
+    }>) => {
+        const query: any = {
+            document_status: documentStatus,
+            start_date: dateRange[0] ? dateRange[0].toISOString().split('T')[0] : null,
+            end_date: dateRange[1] ? dateRange[1].toISOString().split('T')[0] : null,
+            page: page || undefined,
+            ...updatedFilters, // Override with any updated filters
+        };
+
+        // Remove null or undefined query parameters
+        Object.keys(query).forEach(key => {
+            if (query[key] === null || query[key] === undefined) {
+                delete query[key];
+            }
+        });
 
         // Navigate with Inertia to apply filters
         router.get(route("dashboard.reports"), query, { replace: true, preserveState: true });
@@ -70,7 +93,7 @@ export default function DashboardReportPage({
 
     const handleDocumentStatusChange = (value: string | null) => {
         setDocumentStatus(value);
-        handleFilter({ document_status: value });
+        handleFilter({ document_status: value, page: 1 }); // Reset to first page on filter change
     };
 
     const handleDateRangeChange = (value: [Date | null, Date | null]) => {
@@ -78,7 +101,13 @@ export default function DashboardReportPage({
         handleFilter({
             start_date: value[0] ? value[0].toISOString().split('T')[0] : null,
             end_date: value[1] ? value[1].toISOString().split('T')[0] : null,
+            page: 1, // Reset to first page on filter change
         });
+    };
+
+    const handlePageChangeInternal = (newPage: number) => {
+        setPage(newPage);
+        handleFilter({ page: newPage });
     };
 
     const handleGenerateReport = () => {
@@ -207,7 +236,7 @@ export default function DashboardReportPage({
                         totalRecords={documents.total}
                         recordsPerPage={documents.per_page}
                         page={page}
-                        onPageChange={() => { }}
+                        onPageChange={handlePageChangeInternal}
                         highlightOnHover
                         verticalSpacing="lg"
                         horizontalSpacing="xl"
