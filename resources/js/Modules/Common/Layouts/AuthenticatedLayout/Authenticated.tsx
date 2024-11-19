@@ -9,6 +9,7 @@ import {
     Button,
     Center,
     Divider,
+    Drawer,
     Flex,
     Group,
     Indicator,
@@ -126,10 +127,16 @@ export function Authenticated({ children, toolbar }: IProps) {
                 {toolbar}
             </AppShell.Header>
 
+            {!opened && (
+                <AppShell.Navbar>
+                    <Sidebar />
+                </AppShell.Navbar>
+            )}
 
-            <AppShell.Navbar>
+            <Drawer opened={opened} onClose={toggle} size="sm">
                 <Sidebar />
-            </AppShell.Navbar>
+            </Drawer>
+
             <AppShell.Main>
                 <Box px={14}>{children}</Box>
             </AppShell.Main>
