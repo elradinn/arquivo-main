@@ -19,7 +19,7 @@ interface IProps {
 const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
     const { props } = usePage<PageProps>();
     const user = props.auth.user;
-    const isAdmin = props.auth.isAdmin;
+    const isAdmin = props.auth.systemRole === 'admin';
     const [opened, { toggle }] = useDisclosure();
 
     const { data, setData, post, processing } = useForm<DocumentApprovalHasUserData>({
@@ -208,15 +208,26 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
                         )}
 
                         {documentApproval.is_done && (
-                            <Text c="green" size="md" ta="center">
-                                You have already made a decision on this document.
-                            </Text>
+                            <Stack align="center" gap={16}>
+                                <Text c="green" size="md" ta="center">
+                                    You have already made a decision on this document.
+                                </Text>
+                                <Button
+                                    component={Link}
+                                    href="/dashboard" // Change this route as needed
+                                    variant="subtle"
+                                    color="blue"
+                                >
+                                    Back to Home
+                                </Button>
+                            </Stack>
                         )}
                     </Stack>
                 </div>
             </Flex>
         </>
     );
+
 };
 
 export default ApproveDocumentPage;
