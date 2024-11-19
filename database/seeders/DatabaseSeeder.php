@@ -94,6 +94,12 @@ class DatabaseSeeder extends Seeder
             'status' => 'system',
         ]);
 
+        Metadata::create([
+            'name' => 'Status',
+            'type' => 'string',
+            'status' => 'system',
+        ]);
+
         // Create Custom Metadata
         Metadata::create([
             'name' => 'Country',

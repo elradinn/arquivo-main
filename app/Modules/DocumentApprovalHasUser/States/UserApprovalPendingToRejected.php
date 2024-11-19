@@ -8,6 +8,7 @@ use Modules\DocumentApprovalHasUser\Models\DocumentApprovalHasUser;
 use Modules\DocumentApproval\Actions\SendDocumentApprovalNotificationAction;
 use Modules\DocumentApproval\Actions\RecalculateDocumentStateAction;
 use Modules\DocumentApprovalHasUser\States\UserApprovalRejected;
+use Modules\Metadata\Models\Metadata;
 
 class UserApprovalPendingToRejected extends Transition
 {
@@ -26,6 +27,14 @@ class UserApprovalPendingToRejected extends Transition
         // $sendDocumentApprovalNotification->execute($this->documentApprovalHasUser->documentApproval);
 
         $recalculateDocumentStateAction->execute($this->documentApprovalHasUser->documentApproval);
+
+        $metadata = Metadata::where('name', 'Status')->first();
+
+        $this->documentApprovalHasUser->documentApproval->document->metadata()->sync([
+            $metadata->id => [
+                'value' => $this->documentApprovalHasUser->documentApproval->document->status->label(),
+            ],
+        ]);
 
         activity()
             ->performedOn($this->documentApprovalHasUser->documentApproval->document)
