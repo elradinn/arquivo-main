@@ -11,7 +11,7 @@ import "mantine-datatable/styles.css";
 import "@mantine/dropzone/styles.css";
 import "@mantine/dates/styles.css";
 import 'mantine-contextmenu/styles.layer.css';
-import './layout.css';
+import '../css/layout.css';
 
 import { theme } from "./Modules/Common/Themes/theme";
 
