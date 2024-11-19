@@ -7,13 +7,17 @@ use Modules\DocumentApproval\Data\DocumentApprovalResourceData;
 use Modules\DocumentApproval\Models\DocumentApproval;
 use Modules\DocumentApprovalHasUser\States\UserApprovalPending;
 use Modules\DocumentApprovalHasUser\States\UserReviewalPending;
-use Modules\User\Models\User;
 
 class RetrieveNotificationAction
 {
     public function execute()
     {
         $user = Auth::user();
+
+        if (!$user) {
+            // Handle the case where there is no authenticated user
+            return collect(); // Return an empty collection or handle as needed
+        }
 
         $pendingApprovals = DocumentApproval::whereHas('documentApprovalUsers', function ($query) use ($user) {
             $query->where('user_id', $user->id)
