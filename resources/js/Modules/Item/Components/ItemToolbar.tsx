@@ -38,6 +38,8 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent, folderUserRo
     const { openModal } = useModalStore();
     const { generateReport } = useGenerateReport();
 
+    console.log(folderUserRole);
+
     return (
         <Group
             h="50%"

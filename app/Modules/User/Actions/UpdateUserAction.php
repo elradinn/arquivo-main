@@ -15,7 +15,7 @@ class UpdateUserAction
             'system_role' => $data->system_role,
         ]);
 
-        $user->assignRole($data->system_role);
+        $user->syncRoles($data->system_role);
 
         return $user;
     }
