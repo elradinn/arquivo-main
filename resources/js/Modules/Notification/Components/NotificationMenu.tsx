@@ -65,6 +65,12 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ handleDocumentActio
                         ))}
                     </ScrollArea>
                 )}
+
+                <Menu.Divider />
+
+                <Menu.Item component={Link} href={route('notification.index')}>
+                    View All Notifications
+                </Menu.Item>
             </Menu.Dropdown>
         </Menu>
     );

@@ -3,19 +3,25 @@
 namespace Modules\Notification\Actions;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Modules\Notification\Data\NotificationResource;
+use Modules\DocumentApproval\Data\DocumentApprovalResourceData;
 use Modules\User\Models\User;
-use Spatie\LaravelData\DataCollection;
 
 class RetrieveNotificationAction
 {
     public function execute()
     {
-        $user = User::find(Auth::user()->id);
+        $user = Auth::user();
+        $user = User::find($user->id);
 
-        $notifications = $user->notifications()->latest()->get();
+        $pendingApprovals = $user->documentApprovalUsers()
+            ->whereIn('user_state', [
+                'Modules\DocumentApprovalHasUser\States\UserApprovalPending',
+                'Modules\DocumentApprovalHasUser\States\UserReviewalPending',
+            ])
+            ->with('documentApproval.document')
+            ->get()
+            ->map(fn($approval) => DocumentApprovalResourceData::fromModel($approval->documentApproval));
 
-        return NotificationResource::collect($notifications);
+        return $pendingApprovals;
     }
 }
