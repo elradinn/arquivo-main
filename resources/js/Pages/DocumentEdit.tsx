@@ -21,6 +21,7 @@ import RelatedFilesInput from "@/Modules/Document/Components/RelatedFilesInput";
 import { useUpdateDocument } from "@/Modules/Document/Hooks/use-update-document";
 import { DocumentMetadata } from "@/Modules/Document/Types/DocumentMetadata";
 import { DatePickerInput } from "@mantine/dates";
+import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 
 interface IProps {
     document: DocumentResourceData;
@@ -65,7 +66,7 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
             <Head title="Document Properties" />
             <Stack px={8} py={8} gap={24} w={550} mb={72}>
                 <Group mt={24} align="center">
-                    <IconFile size={56} stroke={1.5} color="gray" />
+                    <ItemIcon mime={document.mime} isFolder={false} approvalStatus={document.status} />
                     <Text fw={500}>{data.name}</Text>
                     <ActionIcon variant="subtle" color="gray">
                         <IconEdit size={24} />

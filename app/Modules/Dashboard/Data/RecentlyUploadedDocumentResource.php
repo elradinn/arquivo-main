@@ -11,6 +11,7 @@ class RecentlyUploadedDocumentResource extends Data
         public string $id,
         public string $name,
         public string $status,
-        public string $date_uploaded
+        public string $date_uploaded,
+        public string $mime
     ) {}
 }

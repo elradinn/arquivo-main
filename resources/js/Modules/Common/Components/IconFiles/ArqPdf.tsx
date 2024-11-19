@@ -1,3 +1,4 @@
+
 import { SVGAttributes } from "react";
 
 export interface ArqPdfProps extends SVGAttributes<SVGElement> {

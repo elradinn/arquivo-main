@@ -46,9 +46,9 @@ export default function DashboardPage({ dashboard }: DashboardPageProps) {
                         columns={[
                             {
                                 accessor: "name",
-                                render: ({ name, status }) => (
+                                render: ({ name, status, mime }) => (
                                     <Group align="center" gap={12}>
-                                        <ItemIcon mime="application/pdf" isFolder={false} approvalStatus={status} />
+                                        <ItemIcon mime={mime} isFolder={false} approvalStatus={status} />
                                         <span>{name}</span>
                                     </Group>
                                 ),
