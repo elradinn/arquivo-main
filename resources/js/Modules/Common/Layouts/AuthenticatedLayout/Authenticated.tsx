@@ -41,7 +41,7 @@ export function Authenticated({ children, toolbar }: IProps) {
 
     const { props } = usePage<PageProps>();
     const user = props.auth.user;
-    const isAdmin = props.auth.isAdmin;
+    const systemRole = props.auth.systemRole;
 
     return (
         <AppShell
@@ -61,7 +61,7 @@ export function Authenticated({ children, toolbar }: IProps) {
                     <GlobalSearch />
 
                     <Group align="center" gap={8}>
-                        {isAdmin && (
+                        {systemRole === 'admin' && (
                             <Button
                                 component={Link}
                                 href={route('admin.tools')}

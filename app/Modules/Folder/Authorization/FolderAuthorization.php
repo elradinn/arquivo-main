@@ -19,7 +19,7 @@ class FolderAuthorization
 
     private function before(User $user): ?bool
     {
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->hasRole('viewer')) {
             return true;
         }
 
@@ -28,7 +28,7 @@ class FolderAuthorization
 
     public function isAdmin(User $user)
     {
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->hasRole('viewer')) {
             return true;
         }
 

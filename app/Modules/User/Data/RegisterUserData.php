@@ -20,6 +20,13 @@ class RegisterUserData extends Data
         public string $email,
 
         #[Required, Confirmed, Password(min: 8)]
-        public string $password
+        public string $password,
+
+        public ?string $office_position,
+
+        public ?string $workflow_role,
+
+        #[Required, Max(255)]
+        public string $system_role,
     ) {}
 }

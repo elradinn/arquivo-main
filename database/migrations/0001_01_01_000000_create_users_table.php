@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('office_position')->nullable();
             $table->string('workflow_role')->nullable();
+            $table->string('system_role')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

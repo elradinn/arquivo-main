@@ -16,7 +16,7 @@ class DashboardAuthorization
      */
     public function isAdmin(User $user): bool
     {
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->hasRole('viewer')) {
             return true;
         }
 

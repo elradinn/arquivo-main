@@ -49,23 +49,38 @@ class FolderController extends Controller
 
     public function show(Folder $folder)
     {
+        // Authorize the user can view the folder
         $this->folderAuthorization->canView(Auth::user(), $folder);
 
         $user = Auth::user();
+
         $user = User::find($user->id);
 
-        // Determine the user's role: 'admin' takes precedence
-        if ($user->hasRole('admin')) {
-            $role = 'admin';
+        // Check for specific folder permissions
+        $userAccess = $folder->userAccess()->where('user_id', $user->id)->first();
+
+        if ($userAccess) {
+            // User has specific permissions for this folder
+            $role = $userAccess->pivot->role; // e.g., 'editor' or 'viewer'
         } else {
-            $userAccess = $folder->userAccess()->where('user_id', $user->id)->first();
-            $role = $userAccess ? $userAccess->pivot->role : null;
+            // Fallback to system-level permissions
+            if ($user->hasRole('admin')) {
+                $role = 'admin';
+            } elseif ($user->hasRole('viewer')) {
+                $role = 'viewer';
+            } else {
+                // If user has no relevant roles, deny access
+                abort(403, 'Unauthorized.');
+            }
         }
 
-        $items = Item::find($folder->item->id);
+        // Retrieve the associated item
+        $item = Item::find($folder->item->id);
 
-        $data = $this->getItemDataAction->execute($items);
+        // Execute action to get item data
+        $data = $this->getItemDataAction->execute($item);
 
+        // Render the Inertia view with the relevant data and user role
         return Inertia::render('Item', array_merge($data, [
             'folderUserRole' => $role,
         ]));

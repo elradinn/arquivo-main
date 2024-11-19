@@ -49,6 +49,10 @@ const UserTable: React.FC<UserTableProps> = ({
                     title: "Workflow Role",
                 },
                 {
+                    accessor: "system_role",
+                    title: "System Role",
+                },
+                {
                     accessor: "actions",
                     title: <Box mr={6}>Actions</Box>,
                     textAlign: "right",

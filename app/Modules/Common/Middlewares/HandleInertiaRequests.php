@@ -35,7 +35,7 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
 
-        if ($user && $user->hasRole('admin')) {
+        if ($user && ($user->hasRole('admin') || $user->hasRole('viewer'))) {
             // If the user is an admin, retrieve all root items with their folders
             $workspaces = Item::whereNull('parent_id')
                 ->with('folder')
@@ -56,7 +56,7 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,
-                'isAdmin' => $user ? $user->hasRole('admin') : false,
+                'systemRole' => $user->hasRole('admin') || $user->hasRole('viewer') ? $user->system_role : null,
             ],
             'workspaces' => FolderLinksData::collect($workspaces, DataCollection::class),
             'csrf_token' => csrf_token(),
