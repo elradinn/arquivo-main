@@ -154,7 +154,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                                     openModal(document.document_approval_id ? "viewDocumentApproval" : "createDocumentApproval");
                                 }}
                             >
-                                {document.document_approval_id ? "View" : "Start"} Approval Process
+                                {document.document_approval_id ? "View" : "Start"} Workflow Process
                             </Button>
                         )}
 

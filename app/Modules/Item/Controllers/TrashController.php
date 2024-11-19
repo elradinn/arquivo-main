@@ -12,6 +12,7 @@ use Modules\Item\Data\DeleteTrashedItemsData;
 use Modules\Item\Data\RestoreTrashedItemsData;
 use App\Modules\Item\Authorization\TrashAuthorization;
 use Illuminate\Support\Facades\Auth;
+use Modules\User\Models\User;
 
 class TrashController extends Controller
 {
@@ -26,6 +27,24 @@ class TrashController extends Controller
     {
         // Enforce admin authorization
         $this->trashAuthorization->isAdmin(Auth::user());
+
+        $user = Auth::user();
+
+        $user = User::find($user->id);
+
+        if ($user->hasRole('admin')) {
+            $role = 'admin';
+        } else {
+            // Fallback to system-level permissions
+            if ($user->hasRole('admin')) {
+                $role = 'admin';
+            } elseif ($user->hasRole('viewer')) {
+                $role = 'viewer';
+            } else {
+                // If user has no relevant roles, deny access
+                abort(403, 'Unauthorized.');
+            }
+        }
 
         $data = $this->getTrashedItemAction->execute();
 

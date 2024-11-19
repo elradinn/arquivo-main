@@ -106,7 +106,7 @@ const Sidebar: React.FC = () => {
                             Sections
                         </Text>
 
-                        {auth.systemRole === 'admin' || auth.systemRole === 'viewer' && (
+                        {auth.systemRole === 'admin' && (
                             <Tooltip label="New section" withArrow position="right">
                                 <ActionIcon variant="default" size={18} onClick={() => openModal("workspace")}>
                                     <IconPlus

@@ -7,12 +7,14 @@ import { StatCards } from "@/Modules/Common/Components/StatCards/StatCards";
 import { DashboardResource } from "@/Modules/Dashboard/Types/DashboardResource";
 import { IconArrowRight } from "@tabler/icons-react";
 import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
+import { useDocumentProperties } from "@/Modules/Item/Hooks/use-document-properties";
 
 interface DashboardPageProps {
     dashboard: DashboardResource;
 }
 
 export default function DashboardPage({ dashboard }: DashboardPageProps) {
+    const { openDocument } = useDocumentProperties();
     return (
         <Authenticated>
             <Head title="Dashboard" />
@@ -60,6 +62,13 @@ export default function DashboardPage({ dashboard }: DashboardPageProps) {
                         highlightOnHover
                         verticalSpacing="lg"
                         horizontalSpacing="xl"
+                        customRowAttributes={({ id }) => ({
+                            onDoubleClick: (e: MouseEvent) => {
+                                if (e.button === 0) {
+                                    openDocument(id);
+                                }
+                            },
+                        })}
                     />
                 </Stack>
             </Stack>

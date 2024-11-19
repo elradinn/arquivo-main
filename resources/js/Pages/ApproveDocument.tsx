@@ -11,6 +11,7 @@ import { useDisclosure } from "@mantine/hooks";
 import NotificationMenu from "@/Modules/Notification/Components/NotificationMenu";
 import OfficeLogo from "@/Modules/Common/Components/OfficeLogo/OfficeLogo";
 import { DocumentApprovalHasUserData } from "@/Modules/DocumentApproval/Types/DocumentApprovalHasUserData";
+import { useDownloadFiles } from "@/Modules/Common/Hooks/use-download-files";
 
 interface IProps {
     documentApproval: DocumentApprovalResourceData;
@@ -25,6 +26,9 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
     const { data, setData, post, processing } = useForm<DocumentApprovalHasUserData>({
         comment: "",
     });
+
+    const { downloadFiles } = useDownloadFiles();
+
 
     const handleDocumentAction = (action: "accept" | "reject") => {
         post(route(`document_user_approval.${action}`, { userApproval: documentApproval.current_user_approval_id }), {
@@ -150,7 +154,9 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
                                         </Text>
                                     </div>
                                 </Group>
-                                <IconDownload />
+                                <ActionIcon onClick={() => downloadFiles({ all: false, ids: [documentApproval.document_id] })}>
+                                    <IconDownload />
+                                </ActionIcon>
                             </Group>
                         </Card>
 
