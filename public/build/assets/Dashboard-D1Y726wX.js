@@ -1,0 +1,36 @@
+import{j as e,P as u,y as g,Y as _,a as f}from"./app-DqTnIQj_.js";import{A as x}from"./Authenticated-CuGi8Hhf.js";import{Y as j}from"./index-RcbpkNz8.js";import{G as c,c as y}from"./NotificationMenu-CMJ6fWuy.js";import{G as d}from"./Grid-Cdyx8aHk.js";import{S as k}from"./SimpleGrid-CteXxwhz.js";import{T as n}from"./OfficeLogo-C166eSRI.js";import{c as o}from"./IconUser-mmuwD0_U.js";import{I as M}from"./IconFile-pyi8S5Yg.js";import{S as w}from"./StateBadge-DnsMtxJj.js";import{u as b}from"./use-document-properties-Y7CtGWix.js";import{S as p}from"./Stack-Cdb0nrIE.js";import{B as I}from"./Button-C8DTT-dZ.js";import"./TextInput-CQiDUXwe.js";import"./InputBase-CidyMfNr.js";import"./Popover-CED7MNX1.js";import"./use-uncontrolled-3nX5unxe.js";import"./get-sorted-breakpoints-CCxPk3qr.js";import"./Checkbox-DSXGamgC.js";import"./CheckIcon-BF7o1FLo.js";import"./get-base-value-JqT_q0U7.js";import"./Badge-COfw8wbl.js";/**
+ * @license @tabler/icons-react v3.11.0 - MIT
+ *
+ * This source code is licensed under the MIT license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var P=o("outline","arrow-right","IconArrowRight",[["path",{d:"M5 12l14 0",key:"svg-0"}],["path",{d:"M13 18l6 -6",key:"svg-1"}],["path",{d:"M13 6l6 6",key:"svg-2"}]]);/**
+ * @license @tabler/icons-react v3.11.0 - MIT
+ *
+ * This source code is licensed under the MIT license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var D=o("outline","file-check","IconFileCheck",[["path",{d:"M14 3v4a1 1 0 0 0 1 1h4",key:"svg-0"}],["path",{d:"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z",key:"svg-1"}],["path",{d:"M9 15l2 2l4 -4",key:"svg-2"}]]);/**
+ * @license @tabler/icons-react v3.11.0 - MIT
+ *
+ * This source code is licensed under the MIT license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var C=o("outline","file-description","IconFileDescription",[["path",{d:"M14 3v4a1 1 0 0 0 1 1h4",key:"svg-0"}],["path",{d:"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z",key:"svg-1"}],["path",{d:"M9 17h6",key:"svg-2"}],["path",{d:"M9 13h6",key:"svg-3"}]]);/**
+ * @license @tabler/icons-react v3.11.0 - MIT
+ *
+ * This source code is licensed under the MIT license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var R=o("outline","file-x","IconFileX",[["path",{d:"M14 3v4a1 1 0 0 0 1 1h4",key:"svg-0"}],["path",{d:"M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z",key:"svg-1"}],["path",{d:"M10 12l4 4m0 -4l-4 4",key:"svg-2"}]]);/**
+ * @license @tabler/icons-react v3.11.0 - MIT
+ *
+ * This source code is licensed under the MIT license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var S=o("outline","message-check","IconMessageCheck",[["path",{d:"M8 9h8",key:"svg-0"}],["path",{d:"M8 13h6",key:"svg-1"}],["path",{d:"M10.99 19.206l-2.99 1.794v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6",key:"svg-2"}],["path",{d:"M15 19l2 2l4 -4",key:"svg-3"}]]);/**
+ * @license @tabler/icons-react v3.11.0 - MIT
+ *
+ * This source code is licensed under the MIT license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var A=o("outline","message-x","IconMessageX",[["path",{d:"M8 9h8",key:"svg-0"}],["path",{d:"M8 13h6",key:"svg-1"}],["path",{d:"M13 18l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6",key:"svg-2"}],["path",{d:"M22 22l-5 -5",key:"svg-3"}],["path",{d:"M17 22l5 -5",key:"svg-4"}]]);/**
+ * @license @tabler/icons-react v3.11.0 - MIT
+ *
+ * This source code is licensed under the MIT license.
+ * See the LICENSE file in the root directory of this source tree.
+ */var z=o("outline","message","IconMessage",[["path",{d:"M8 9h8",key:"svg-0"}],["path",{d:"M8 13h6",key:"svg-1"}],["path",{d:"M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z",key:"svg-2"}]]);const F="_value_10x7p_1",G="_diff_10x7p_5",H="_doubleHeight_10x7p_11",N="_card_10x7p_15",T="_title_10x7p_23",s={value:F,diff:G,doubleHeight:H,card:N,title:T},$={review_pending:z,review_accepted:S,review_rejected:A,approval_pending:M,approval_accepted:D,approval_rejected:R,total_documents:C};function B({dashboard:a}){const l=[{title:"Review Accepted",icon:"review_accepted",value:a.number_of_review_accepted,color:"teal",statusParam:"reviewal_accepted"},{title:"Review Pending",icon:"review_pending",value:a.number_of_review_pending,color:"orange",statusParam:"reviewal_pending"},{title:"Review Rejected",icon:"review_rejected",value:a.number_of_review_rejected,color:"red",statusParam:"reviewal_rejected"},{title:"Approval Accepted",icon:"approval_accepted",value:a.number_of_approval_accepted,color:"green",statusParam:"approval_accepted"},{title:"Approval Pending",icon:"approval_pending",value:a.number_of_approval_pending,color:"orange",statusParam:"approval_pending"},{title:"Approval Rejected",icon:"approval_rejected",value:a.number_of_approval_rejected,color:"red",statusParam:"approval_rejected"},{title:"Total Documents",icon:"total_documents",value:a.number_of_documents,color:"violet",statusParam:null}];l.find(t=>t.title==="Total Documents");const r=l.filter(t=>t.title!=="Total Documents"),i=(t,v=!1)=>{const h=$[t.icon],m=()=>{t.statusParam&&g.visit(`/dashboard/reports?document_status=${t.statusParam}`)};return e.jsxs(u,{withBorder:!0,p:"lg",radius:"md",onClick:m,shadow:"xs",style:{cursor:t.statusParam?"pointer":"default"},className:`${s.card} ${v?s.doubleHeight:""}`,children:[e.jsx(c,{justify:"left",mb:"sm",children:e.jsx("div",{style:{backgroundColor:`var(--mantine-color-${t.color}-light)`,borderRadius:"50%",padding:"10px",display:"flex",justifyContent:"center",alignItems:"center"},children:e.jsx(h,{className:s.icon,size:"1.4rem",color:`var(--mantine-color-${t.color}-light-color)`,height:32,width:32})})}),e.jsx(n,{size:"sm",c:"dimmed",className:s.title,children:t.title}),e.jsx(c,{align:"center",mt:10,children:e.jsx(n,{className:s.value,size:"lg",children:t.value})})]},t.title)};return e.jsx("div",{className:s.root,children:e.jsx(d,{children:e.jsx(d.Col,{children:e.jsx(k,{cols:{base:1,lg:3},children:r.map(t=>i(t))})})})})}function ne({dashboard:a}){const{openDocument:l}=b();return e.jsxs(x,{children:[e.jsx(_,{title:"Dashboard"}),e.jsxs(p,{px:8,gap:48,py:8,children:[e.jsxs(p,{gap:24,children:[e.jsxs(c,{align:"center",justify:"space-between",children:[e.jsx(n,{component:"h2",size:"xl",fw:600,color:"gray.8",children:"Dashboard"}),e.jsx(I,{component:f,href:"/dashboard/reports",variant:"subtle",color:"blue",rightSection:e.jsx(P,{size:16}),children:"All Documents Report"})]}),e.jsx(B,{dashboard:a})]}),e.jsxs(p,{gap:24,children:[e.jsx(n,{c:"gray.7",fw:500,children:"Recently Uploaded Documents"}),e.jsx(j,{textSelectionDisabled:!0,columns:[{accessor:"name",render:({name:r,status:i,mime:t})=>e.jsxs(c,{align:"center",gap:12,children:[e.jsx(y,{mime:t,isFolder:!1,approvalStatus:i}),e.jsx("span",{children:r})]})},{accessor:"status",render:({status:r})=>e.jsx(w,{state:r})},{accessor:"date_uploaded",title:"Date Uploaded"}],records:a.recently_uploaded_documents,highlightOnHover:!0,verticalSpacing:"lg",horizontalSpacing:"xl",customRowAttributes:({id:r})=>({onDoubleClick:i=>{i.button===0&&l(r)}})})]})]})]})}export{ne as default};
