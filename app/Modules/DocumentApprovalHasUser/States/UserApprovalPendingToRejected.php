@@ -28,7 +28,7 @@ class UserApprovalPendingToRejected extends Transition
         $recalculateDocumentStateAction->execute($this->documentApprovalHasUser->documentApproval);
 
         activity()
-            ->performedOn($this->documentApprovalHasUser)
+            ->performedOn($this->documentApprovalHasUser->documentApproval->document)
             ->causedBy(Auth::id())
             ->log("Document approval rejected");
 

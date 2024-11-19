@@ -2,6 +2,7 @@
 
 namespace Modules\Folder\Actions;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\Folder\Data\UpdateFolderData;
 use Modules\Folder\Models\Folder;
 
@@ -12,6 +13,11 @@ class UpdateFolderAction
         $folder->update([
             'name' => $data->name,
         ]);
+
+        activity()
+            ->performedOn($folder)
+            ->causedBy(Auth::id())
+            ->log("Folder updated");
 
         return $folder;
     }

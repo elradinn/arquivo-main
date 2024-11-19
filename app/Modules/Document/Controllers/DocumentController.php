@@ -76,8 +76,10 @@ class DocumentController extends Controller
             $userRole = $userAccess ? $userAccess->pivot->role : null;
         }
 
+        $activityLogs = $document->activityLogs()->latest()->get();
+
         return Inertia::render('DocumentProperties', [
-            'activityLog' => ActivityLogResourceData::collect($document->activityLogs),
+            'activityLog' => ActivityLogResourceData::collect($activityLogs),
             'itemAncestors' => ItemAncestorsResourceData::collect($itemAncestors, DataCollection::class),
             'document' => DocumentResourceData::fromModel($document),
             'userRole' => $userRole,

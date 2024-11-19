@@ -1,6 +1,7 @@
 import { rem } from "@mantine/core";
 import { Dropzone, FileWithPath } from "@mantine/dropzone";
-import { IconUpload } from "@tabler/icons-react";
+import { IconUpload, IconX } from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 
 interface ItemDropzoneProps {
     onDrop: (files: FileWithPath[]) => void;
@@ -14,7 +15,12 @@ export default function ItemDropzone({ onDrop, openRef, children }: ItemDropzone
             openRef={openRef}
             onDrop={onDrop}
             activateOnClick={false}
-            acceptColor="var(--mantine-color-white)"
+            accept={{
+                "application/pdf": [],
+                "image/png": [],
+                "image/jpeg": [],
+            }}
+            maxSize={10 * 1024 ** 2} // Optional: Set a maximum file size (e.g., 10MB)
             styles={{
                 root: {
                     border: "none",
