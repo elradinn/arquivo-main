@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ActionIcon, Button, Group, Menu, Tooltip, rem } from "@mantine/core";
 import {
     IconPlus,
@@ -6,7 +6,6 @@ import {
     IconGitBranch,
     IconFolderPlus,
     IconFileIsr,
-    IconFolderUp,
     IconAdjustments,
     IconArticle,
     IconListTree,
@@ -16,6 +15,7 @@ import {
     IconFileReport,
     IconTag,
     IconShare,
+    IconDotsVertical,
 } from "@tabler/icons-react";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { ItemParentResourceData } from "../Types/ItemParentResourceData";
@@ -37,6 +37,113 @@ interface IProps {
 const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent, folderUserRole }) => {
     const { openModal } = useModalStore();
     const { generateReport } = useGenerateReport();
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Initial check
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const renderActions = () => (
+        <>
+            <Tooltip label="Properties" position="bottom" withArrow>
+                <ActionIcon
+                    component={Link}
+                    size="lg"
+                    href={route("folder.edit", { id: itemParent?.item_id })}
+                    variant="transparent"
+                    color="dark.3"
+                >
+                    <IconAdjustments size={18} />
+                </ActionIcon>
+            </Tooltip>
+
+            <Tooltip label="Workflow" position="bottom" withArrow>
+                <ActionIcon
+                    variant="transparent"
+                    size="lg"
+                    color={itemParent?.workflow_id ? "green.8" : "dark.3"}
+                    onClick={() => openModal(itemParent?.workflow_id ? "updateWorkflow" : "createWorkflow")}
+                >
+                    <IconGitBranch size={18} />
+                </ActionIcon>
+            </Tooltip>
+
+            <Tooltip label="Share" position="bottom" withArrow>
+                <ActionIcon
+                    variant="transparent"
+                    size="lg"
+                    color={itemParent?.is_shared ? "green.8" : "dark.3"}
+                    onClick={() => openModal("shareFolder")}
+                >
+                    <IconShare size={18} />
+                </ActionIcon>
+            </Tooltip>
+
+            <Tooltip label="Metadata" position="bottom" withArrow>
+                <ActionIcon
+                    component={Link}
+                    size="lg"
+                    href={route("folder.showRequiredMetadata", { id: itemParent?.item_id })}
+                    variant="transparent"
+                    color={itemParent?.required_metadata?.length ? "green.8" : "dark.3"}
+                >
+                    <IconTag size={18} />
+                </ActionIcon>
+            </Tooltip>
+
+            <Tooltip label="Activity" position="bottom" withArrow>
+                <ActionIcon
+                    component={Link}
+                    size="lg"
+                    href={route("folder.activity-log", { id: itemParent?.item_id })}
+                    variant="transparent"
+                    color="dark.3"
+                >
+                    <IconArticle size={18} />
+                </ActionIcon>
+            </Tooltip>
+
+            <Tooltip label="Numbering" position="bottom" withArrow>
+                <ActionIcon
+                    size="lg"
+                    variant="transparent"
+                    color={itemParent?.numbering_scheme_id ? "green.8" : "dark.3"}
+                    onClick={() => openModal(itemParent?.numbering_scheme_id ? "updateNumberingScheme" : "createNumberingScheme")}
+                >
+                    <IconListTree size={18} />
+                </ActionIcon>
+            </Tooltip>
+
+            <Tooltip label="Column" position="bottom" withArrow>
+                <ActionIcon
+                    variant="transparent"
+                    color="dark.3"
+                    size="lg"
+                    onClick={() => openModal("selectMetadataColumns")}
+                >
+                    <IconTable size={18} />
+                </ActionIcon>
+            </Tooltip>
+
+            <Tooltip label="Report" position="bottom" withArrow>
+                <ActionIcon
+                    variant="transparent"
+                    color="dark.3"
+                    size="lg"
+                    onClick={() => generateReport(itemParent?.item_id ?? "")}
+                >
+                    <IconFileReport size={18} />
+                </ActionIcon>
+            </Tooltip>
+        </>
+    );
 
     return (
         <Group
@@ -93,111 +200,23 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent, folderUserRo
                             >
                                 Upload Files
                             </Menu.Item>
-                            {/* <Menu.Item
-                                leftSection={
-                                    <IconFolderUp
-                                        style={{
-                                            width: rem(14),
-                                            height: rem(14),
-                                        }}
-                                    />
-                                }
-                            >
-                                Upload Folder
-                            </Menu.Item> */}
                         </Menu.Dropdown>
                     </Menu>
 
-                    <Tooltip label="Properties" position="bottom" withArrow>
-                        <ActionIcon
-                            component={Link}
-                            size="lg"
-                            href={route("folder.edit", { id: itemParent?.item_id })}
-                            variant="transparent"
-                            color="dark.3"
-                        >
-                            <IconAdjustments size={18} />
-                        </ActionIcon>
-                    </Tooltip>
-
-                    <Tooltip label="Workflow" position="bottom" withArrow>
-                        <ActionIcon
-                            variant="transparent"
-                            size="lg"
-                            color={itemParent?.workflow_id ? "green.8" : "dark.3"}
-                            onClick={() => openModal(itemParent?.workflow_id ? "updateWorkflow" : "createWorkflow")}
-                        >
-                            <IconGitBranch size={18} />
-                        </ActionIcon>
-                    </Tooltip>
-
-                    <Tooltip label="Share" position="bottom" withArrow>
-                        <ActionIcon
-                            variant="transparent"
-                            size="lg"
-                            color={itemParent?.is_shared ? "green.8" : "dark.3"}
-                            onClick={() => openModal("shareFolder")}
-                        >
-                            <IconShare size={18} />
-                        </ActionIcon>
-                    </Tooltip>
-
-                    <Tooltip label="Metadata" position="bottom" withArrow>
-                        <ActionIcon
-                            component={Link}
-                            size="lg"
-                            href={route("folder.showRequiredMetadata", { id: itemParent?.item_id })}
-                            variant="transparent"
-                            color={itemParent?.required_metadata?.length ? "green.8" : "dark.3"}
-                        >
-                            <IconTag size={18} />
-                        </ActionIcon>
-                    </Tooltip>
-
-                    <Tooltip label="Activity" position="bottom" withArrow>
-                        <ActionIcon
-                            component={Link}
-                            size="lg"
-                            href={route("folder.activity-log", { id: itemParent?.item_id })}
-                            variant="transparent"
-                            color="dark.3"
-                        >
-                            <IconArticle size={18} />
-                        </ActionIcon>
-                    </Tooltip>
-
-                    <Tooltip label="Numbering" position="bottom" withArrow>
-                        <ActionIcon
-                            size="lg"
-                            variant="transparent"
-                            color={itemParent?.numbering_scheme_id ? "green.8" : "dark.3"}
-                            onClick={() => openModal(itemParent?.numbering_scheme_id ? "updateNumberingScheme" : "createNumberingScheme")}
-                        >
-                            <IconListTree size={18} />
-                        </ActionIcon>
-                    </Tooltip>
-
-                    <Tooltip label="Column" position="bottom" withArrow>
-                        <ActionIcon
-                            variant="transparent"
-                            color="dark.3"
-                            size="lg"
-                            onClick={() => openModal("selectMetadataColumns")}
-                        >
-                            <IconTable size={18} />
-                        </ActionIcon>
-                    </Tooltip>
-
-                    <Tooltip label="Report" position="bottom" withArrow>
-                        <ActionIcon
-                            variant="transparent"
-                            color="dark.3"
-                            size="lg"
-                            onClick={() => generateReport(itemParent?.item_id ?? "")}
-                        >
-                            <IconFileReport size={18} />
-                        </ActionIcon>
-                    </Tooltip>
+                    {isMobile ? (
+                        <Menu shadow="md" width={200}>
+                            <Menu.Target>
+                                <ActionIcon variant="transparent" color="dark.3" size="lg">
+                                    <IconDotsVertical size={18} />
+                                </ActionIcon>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                                {renderActions()}
+                            </Menu.Dropdown>
+                        </Menu>
+                    ) : (
+                        renderActions()
+                    )}
                 </Group>
             )}
 
@@ -217,7 +236,7 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent, folderUserRo
                 </Group>
             )}
 
-            <Group gap="xs">
+            {/* <Group gap="xs">
                 <Tooltip label="Sort" position="bottom" withArrow>
                     <ActionIcon variant="transparent" color="dark.3" size="lg">
                         <IconSelector size={18} />
@@ -231,7 +250,7 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent, folderUserRo
                         <IconChevronDown size={12} style={{ marginLeft: rem(4) }} />
                     </ActionIcon>
                 </Tooltip>
-            </Group>
+            </Group> */}
 
             {/* Forms */}
             <CreateFolderForm itemParent={itemParent} />
@@ -242,7 +261,6 @@ const ItemToolbar: React.FC<IProps> = ({ uploadFileRef, itemParent, folderUserRo
             <ShareModalForm folderId={itemParent?.item_id ?? ""} />
         </Group>
     );
-
 };
 
 export default ItemToolbar;

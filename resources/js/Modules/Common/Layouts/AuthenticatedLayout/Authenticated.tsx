@@ -50,14 +50,14 @@ export function Authenticated({ children, toolbar }: IProps) {
             header={{ height: toolbar ? 120 : 60 }}
             navbar={{
                 width: 250,
-                breakpoint: "sm",
+                breakpoint: "md",
                 collapsed: { mobile: !opened },
             }}
             padding="md"
         >
             <AppShell.Header>
                 <Flex h={toolbar ? "50%" : "100%"} px={32} justify="space-between" align="center">
-                    <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+                    <Burger opened={opened} onClick={toggle} hiddenFrom="md" size="sm" />
 
                     <GlobalSearch />
 
