@@ -97,7 +97,12 @@ class DocumentController extends Controller
     {
         $this->documentAuthorization->canEdit(Auth::user(), $document);
 
+        $item = Item::find($document->item_id);
+
+        $itemAncestors = $item->ancestorsWithSelf()->get()->load('workspace', 'folder');
+
         return Inertia::render('DocumentEdit', [
+            'itemAncestors' => ItemAncestorsResourceData::collect($itemAncestors, DataCollection::class),
             'document' => DocumentResourceData::fromModel($document),
         ]);
 

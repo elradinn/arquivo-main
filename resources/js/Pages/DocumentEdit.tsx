@@ -64,6 +64,9 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
     return (
         <Authenticated>
             <Head title="Document Properties" />
+            <Box px={8} py={8}>
+                <ItemBreadcrumbs ancestors={itemAncestors} />
+            </Box>
             <Stack px={8} py={8} gap={24} w={550} mb={72}>
                 <Group mt={24} align="center">
                     <ItemIcon mime={document.mime} isFolder={false} approvalStatus={document.status} />
