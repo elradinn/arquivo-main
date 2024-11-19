@@ -112,6 +112,20 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                         </Text>
 
                         {(userRole === 'editor' || userRole === 'admin') && (
+                            <Button
+                                variant="subtle"
+                                color="blue.5"
+                                leftSection={<IconShare size={18} />}
+                                fullWidth
+                                justify="left"
+                                component={Link}
+                                href={route('document.edit', { document: document.item_id })}
+                            >
+                                Edit Document
+                            </Button>
+                        )}
+
+                        {(userRole === 'editor' || userRole === 'admin') && (
                             <FileButton onChange={handleFileUpload}>
                                 {(props) => (
                                     <Button

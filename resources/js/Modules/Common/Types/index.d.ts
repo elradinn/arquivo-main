@@ -1,3 +1,5 @@
+import { DocumentApprovalResourceData } from "@/Modules/DocumentApproval/Types/DocumentApprovalResourceData";
+
 export interface User {
     id: number;
     name: string;
@@ -12,4 +14,5 @@ export type PageProps<
         user: User;
         systemRole: string;
     };
+    notifications: DocumentApprovalResourceData[];
 };

@@ -7,10 +7,12 @@ use Inertia\Middleware;
 use Modules\Folder\Data\FolderLinksData;
 use Modules\Folder\Models\Folder;
 use Modules\Item\Models\Item;
+use Modules\Notification\Actions\RetrieveNotificationAction;
 use Spatie\LaravelData\DataCollection;
 
 class HandleInertiaRequests extends Middleware
 {
+    public function __construct(private RetrieveNotificationAction $retrieveNotificationAction) {}
     /**
      * The root template that is loaded on the first page visit.
      *
@@ -53,6 +55,8 @@ class HandleInertiaRequests extends Middleware
             $workspaces = collect(); // Empty collection or define as needed
         }
 
+        $notifications = $this->retrieveNotificationAction->execute();
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,
@@ -60,6 +64,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'workspaces' => FolderLinksData::collect($workspaces, DataCollection::class),
             'csrf_token' => csrf_token(),
+            'notifications' => $notifications,
         ]);
     }
 }

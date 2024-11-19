@@ -73,7 +73,7 @@ export function Authenticated({ children, toolbar }: IProps) {
                                 Admin Tools
                             </Button>
                         )}
-                        <NotificationMenu />
+                        <NotificationMenu notifications={props.notifications} />
                         <Menu
                             width={200}
                             transitionProps={{
