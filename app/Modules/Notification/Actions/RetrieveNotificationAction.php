@@ -3,19 +3,34 @@
 namespace Modules\Notification\Actions;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Modules\Notification\Data\NotificationResource;
+use Modules\DocumentApproval\Data\DocumentApprovalResourceData;
+use Modules\DocumentApproval\Models\DocumentApproval;
+use Modules\DocumentApprovalHasUser\States\UserApprovalPending;
+use Modules\DocumentApprovalHasUser\States\UserReviewalPending;
 use Modules\User\Models\User;
-use Spatie\LaravelData\DataCollection;
 
 class RetrieveNotificationAction
 {
     public function execute()
     {
-        $user = User::find(Auth::user()->id);
+        $user = Auth::user();
 
-        $notifications = $user->notifications()->latest()->get();
+        $pendingApprovals = DocumentApproval::whereHas('documentApprovalUsers', function ($query) use ($user) {
+            $query->where('user_id', $user->id)
+                ->whereIn('user_state', [
+                    UserApprovalPending::class,
+                    UserReviewalPending::class,
+                ]);
+        })
+            ->whereHas('document', function ($query) {
+                // No need to check for 'deleted_at' on Document, since it doesn't use soft deletes.
+                $query->whereHas('item', function ($query) {
+                    $query->whereNull('deleted_at'); // Ensure the related Item is not soft-deleted
+                });
+            })
+            ->get()
+            ->map(fn($approval) => DocumentApprovalResourceData::fromModel($approval));
 
-        return NotificationResource::collect($notifications);
+        return $pendingApprovals;
     }
 }

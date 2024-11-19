@@ -40,8 +40,11 @@ class GenerateDashboardReportAction
             });
         }
 
-        // Fetch documents
-        $documents = $documentsQuery->paginate(15);
+        // Fetch total documents count
+        $totalDocuments = $documentsQuery->count();
+
+        // Fetch all documents (remove pagination for comprehensive report)
+        $documents = $documentsQuery->get();
 
         // Render the report view
         $headerPath = public_path() . '/images/report-header.png';
@@ -61,6 +64,9 @@ class GenerateDashboardReportAction
             'selectedMetadata' => DashboardMetadataResourceData::collect($selectedMetadata),
             'header' => $headerImage,
             'footer' => $footerImage,
+            'totalDocuments' => $totalDocuments, // Pass total documents to the view
+            'start_date' => $data->start_date,   // Pass start date
+            'end_date' => $data->end_date      // Pass end date
         ])->setPaper('a4');
 
         // Generate a unique filename

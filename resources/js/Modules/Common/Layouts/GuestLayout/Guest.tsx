@@ -9,17 +9,18 @@ export default function Guest({ children }: PropsWithChildren) {
         <Flex
             direction="column"
             align="center"
-            mih="100vh"
+            mih={{ md: "100vh", base: "auto" }}
             justify="center"
-            pt={24}
+            pt={{ base: 40, md: 24 }}
             style={{
                 backgroundColor:
                     "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))",
+                padding: '0 16px', // Add padding for mobile
             }}
         >
             <div>
                 <Link href="/">
-                    <OfficeLogo h={96} w={96} />
+                    <OfficeLogo h={72} w={72} /> {/* Adjust logo size for mobile */}
                 </Link>
             </div>
 

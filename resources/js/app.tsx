@@ -3,12 +3,15 @@ import "./Modules/Common/Http/bootstrap";
 import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+import { ContextMenuProvider } from 'mantine-contextmenu';
 
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "mantine-datatable/styles.css";
 import "@mantine/dropzone/styles.css";
 import "@mantine/dates/styles.css";
+import 'mantine-contextmenu/styles.layer.css';
+import '../css/layout.css';
 
 import { theme } from "./Modules/Common/Themes/theme";
 
@@ -29,8 +32,10 @@ createInertiaApp({
 
         root.render(
             <MantineProvider theme={theme}>
-                <Notifications />
-                <App {...props} />
+                <ContextMenuProvider>
+                    <Notifications />
+                    <App {...props} />
+                </ContextMenuProvider>
             </MantineProvider>
         );
 

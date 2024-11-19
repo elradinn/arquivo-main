@@ -10,16 +10,19 @@ interface IProps {
 }
 
 export function useUpdateUser({ user, close }: IProps) {
-    const { data, setData, put, processing, errors, reset } = useForm<UpdateUserData>({
-        office_position: "",
-        workflow_role: "",
-    });
+    const { data, setData, put, processing, errors, reset } =
+        useForm<UpdateUserData>({
+            office_position: "",
+            workflow_role: "",
+            system_role: "",
+        });
 
     useEffect(() => {
         if (user) {
             setData({
                 workflow_role: user.workflow_role,
                 office_position: user.office_position,
+                system_role: user.system_role,
             });
         }
     }, [user]);

@@ -5,4 +5,5 @@ export interface RegisterUserData {
     password_confirmation: string;
     workflow_role?: string;
     office_position?: string;
+    system_role?: string;
 }

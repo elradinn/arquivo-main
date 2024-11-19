@@ -78,6 +78,12 @@
         <main>
             <h1>Dashboard Report</h1>
 
+            <!-- Display Date Range -->
+            <p><strong>Date Range:</strong> {{ $start_date }} - {{ $end_date }}</p>
+
+            <!-- Display Total Documents -->
+            <p><strong>Total Documents:</strong> {{ $totalDocuments }}</p>
+
             <h2>Documents</h2>
             <table>
                 <thead>

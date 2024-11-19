@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'workflow_role',
         'office_position',
+        'system_role',
     ];
 
     /**

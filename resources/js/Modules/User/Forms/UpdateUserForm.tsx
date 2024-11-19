@@ -36,6 +36,20 @@ const UpdateUserForm: React.FC<IProps> = ({ isOpened, close, user }) => {
                         data={["reviewer", "approver"]}
                         onChange={(_value, option) => setData("workflow_role", option.value)}
                     />
+
+                    <Select
+                        id="role"
+                        name="role"
+                        label="Role"
+                        placeholder="Select role"
+                        data={[
+                            { value: "admin", label: "Admin" },
+                            { value: "viewer", label: "Viewer" },
+                        ]}
+                        value={data.system_role}
+                        onChange={(_value, option) => setData("system_role", option.value)}
+                        error={errors.system_role}
+                    />
                 </Stack>
 
                 <Flex align="center" justify="end" mt={16}>

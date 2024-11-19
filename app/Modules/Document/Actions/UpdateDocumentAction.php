@@ -2,6 +2,7 @@
 
 namespace Modules\Document\Actions;
 
+use Illuminate\Support\Facades\Auth;
 use Modules\Document\Actions\UpdateDocumentMetadataAction;
 use Modules\Document\Data\UpdateDocumentData;
 use Modules\Document\Models\Document;
@@ -31,6 +32,11 @@ class UpdateDocumentAction
         $document->metadata()->attach($metadata->id, [
             'value' => $data->due_date,
         ]);
+
+        activity()
+            ->performedOn($document)
+            ->causedBy(Auth::id())
+            ->log("Document updated");
 
         return $document;
     }

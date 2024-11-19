@@ -47,7 +47,7 @@ const NAV_LINKS = [
 const Sidebar: React.FC = () => {
     const { workspaces, auth } = usePage<{
         workspaces: WorkspaceLinksData[],
-        auth: { isAdmin: boolean }
+        auth: { systemRole: string }
     }>().props;
     const { openModal } = useModalStore();
 
@@ -56,10 +56,10 @@ const Sidebar: React.FC = () => {
     const renderNavLinks = NAV_LINKS
         .filter(link => {
             // Show link if it's not adminOnly or the user is admin
-            const isAllowed = !link.adminOnly || auth.isAdmin;
+            const isAllowed = auth.systemRole === 'admin' || auth.systemRole === 'viewer';
             // Additionally, hide "Shared with me" if the user is admin
             const isSharedWithMe = link.label === "Shared with me";
-            const shouldHideSharedWithMe = isSharedWithMe && auth.isAdmin;
+            const shouldHideSharedWithMe = isSharedWithMe && (auth.systemRole === 'admin' || auth.systemRole === 'viewer');
             return isAllowed && !shouldHideSharedWithMe;
         })
         .map(({ label, icon: Icon, href }) => (
@@ -106,7 +106,7 @@ const Sidebar: React.FC = () => {
                             Sections
                         </Text>
 
-                        {auth.isAdmin && (
+                        {auth.systemRole === 'admin' || auth.systemRole === 'viewer' && (
                             <Tooltip label="New section" withArrow position="right">
                                 <ActionIcon variant="default" size={18} onClick={() => openModal("workspace")}>
                                     <IconPlus

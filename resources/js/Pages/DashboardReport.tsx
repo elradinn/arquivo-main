@@ -12,7 +12,7 @@ import {
     TextInput,
 } from "@mantine/core";
 import { IconDownload, IconSearch, IconTable } from "@tabler/icons-react";
-import { DataTable } from "mantine-datatable";
+import { DataTable, DataTableColumn } from "mantine-datatable";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
 import { usePaginateDataTable } from "@/Modules/Common/Hooks/use-paginate-datatable";
@@ -121,19 +121,64 @@ export default function DashboardReportPage({
         generateDashboardReport(payload);
     };
 
+    /**
+     * Function to render dynamic columns with special handling for 'status' and 'due_in'.
+     */
+    const renderDynamicColumns = (): DataTableColumn<ItemContentsResourceData>[] => {
+        return selectedMetadata.map((meta) => {
+            // Check if the metadata corresponds to 'status'
+            if (meta.name.toLowerCase() === 'status') {
+                return {
+                    accessor: `status`,
+                    title: 'Status',
+                    render: ({ status }) => <StateBadge state={status} />,
+                };
+            }
+
+            // Check if the metadata corresponds to 'due_in'
+            if (meta.name.toLowerCase() === 'due_in') {
+                return {
+                    accessor: `due_in`,
+                    title: "Due in",
+                    render: ({ due_in }) => {
+                        return due_in !== undefined && due_in !== null ? (
+                            due_in < 0 ? (
+                                <Text color="red" size="sm">{Math.abs(due_in)} days overdue</Text>
+                            ) : (
+                                <Text size="sm">{`${due_in} day${due_in !== 1 ? 's' : ''} remaining`}</Text>
+                            )
+                        ) : (
+                            "Deadline not set"
+                        );
+                    },
+                };
+            }
+
+            // Default rendering for other metadata columns
+            return {
+                accessor: `metadata_${meta.metadata_id}`,
+                title: meta.name,
+                render: (record: ItemContentsResourceData) => {
+                    const metaValue = record.metadata?.find((m) => m.metadata_id === meta.metadata_id);
+                    return metaValue ? metaValue.value : "N/A";
+                },
+            };
+        });
+    };
+
     return (
         <Authenticated>
             <Head title="Dashboard Report" />
             <Stack px={8} gap={24} py={8}>
                 <Group>
-                    <Text component="h2" size="xl" fw={600} c="gray.8">
+                    <Text component="h2" size="xl" c="gray.8">
                         Dashboard Report
                     </Text>
                 </Group>
 
                 <Stack>
                     {/* Filter Options */}
-                    <Group justify="space-between">
+                    <Group gap="md">
                         <Flex
                             gap="md"
                             justify="flex-start"
@@ -175,12 +220,17 @@ export default function DashboardReportPage({
                         </Flex>
 
                         {/* Generate Report Button */}
-                        <Button onClick={handleGenerateReport} leftSection={<IconDownload size={16} />} color="blue" variant="subtle">
+                        <Button
+                            onClick={handleGenerateReport}
+                            leftSection={<IconDownload size={16} />}
+                            color="blue"
+                            variant="subtle"
+                        >
                             Generate Report
                         </Button>
                     </Group>
 
-                    {/* Existing SelectMetadataColumnForm */}
+                    {/* Select Dashboard Metadata Columns Modal */}
                     <SelectDashboardMetadataColumnForm
                         availableMetadata={availableMetadata}
                         existingMetadataIds={existingMetadataIds}
@@ -203,34 +253,8 @@ export default function DashboardReportPage({
                                 ),
                             },
                             { accessor: "updated_at", title: "Last Modified" },
-                            {
-                                accessor: "status",
-                                render: ({ status }) => <StateBadge state={status} />,
-                            },
-                            {
-                                accessor: "due_in",
-                                title: "Due in",
-                                render: ({ due_in }) => {
-                                    return due_in !== undefined && due_in !== null ? (
-                                        due_in < 0 ? (
-                                            <Text c="red" size="sm">{Math.abs(due_in)} days overdue</Text>
-                                        ) : (
-                                            <Text size="sm">{`${due_in} day${due_in !== 1 ? 's' : ''} remaining`}</Text>
-                                        )
-                                    ) : (
-                                        "Deadline not set"
-                                    );
-                                },
-                            },
-                            // Dynamic columns based on selected metadata
-                            ...selectedMetadata.map((meta) => ({
-                                accessor: `metadata_${meta.metadata_id}`,
-                                title: meta.name,
-                                render: (record: ItemContentsResourceData) => {
-                                    const metaValue = record.metadata?.find((m) => m.metadata_id === meta.metadata_id);
-                                    return metaValue ? metaValue.value : "N/A";
-                                },
-                            })),
+                            // Dynamic columns including 'status' and 'due_in'
+                            ...renderDynamicColumns(),
                         ]}
                         records={documents.data}
                         totalRecords={documents.total}

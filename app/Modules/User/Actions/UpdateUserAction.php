@@ -12,7 +12,10 @@ class UpdateUserAction
         $user->update([
             'workflow_role' => $data->workflow_role,
             'office_position' => $data->office_position,
+            'system_role' => $data->system_role,
         ]);
+
+        $user->syncRoles($data->system_role);
 
         return $user;
     }

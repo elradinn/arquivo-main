@@ -9,6 +9,7 @@ import {
     Button,
     Center,
     Divider,
+    Drawer,
     Flex,
     Group,
     Indicator,
@@ -41,7 +42,7 @@ export function Authenticated({ children, toolbar }: IProps) {
 
     const { props } = usePage<PageProps>();
     const user = props.auth.user;
-    const isAdmin = props.auth.isAdmin;
+    const systemRole = props.auth.systemRole;
 
     return (
         <AppShell
@@ -49,19 +50,19 @@ export function Authenticated({ children, toolbar }: IProps) {
             header={{ height: toolbar ? 120 : 60 }}
             navbar={{
                 width: 250,
-                breakpoint: "sm",
+                breakpoint: "md",
                 collapsed: { mobile: !opened },
             }}
             padding="md"
         >
             <AppShell.Header>
                 <Flex h={toolbar ? "50%" : "100%"} px={32} justify="space-between" align="center">
-                    <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+                    <Burger opened={opened} onClick={toggle} hiddenFrom="md" size="sm" />
 
                     <GlobalSearch />
 
                     <Group align="center" gap={8}>
-                        {isAdmin && (
+                        {systemRole === 'admin' && (
                             <Button
                                 component={Link}
                                 href={route('admin.tools')}
@@ -72,7 +73,7 @@ export function Authenticated({ children, toolbar }: IProps) {
                                 Admin Tools
                             </Button>
                         )}
-                        <NotificationMenu />
+                        <NotificationMenu notifications={props.notifications} />
                         <Menu
                             width={200}
                             transitionProps={{
@@ -126,10 +127,16 @@ export function Authenticated({ children, toolbar }: IProps) {
                 {toolbar}
             </AppShell.Header>
 
+            {!opened && (
+                <AppShell.Navbar>
+                    <Sidebar />
+                </AppShell.Navbar>
+            )}
 
-            <AppShell.Navbar>
+            <Drawer opened={opened} onClose={toggle} size="sm">
                 <Sidebar />
-            </AppShell.Navbar>
+            </Drawer>
+
             <AppShell.Main>
                 <Box px={14}>{children}</Box>
             </AppShell.Main>

@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             'password' => '12345678',
             'office_position' => 'Admin Staff',
             'workflow_role' => 'unassigned',
+            'system_role' => 'admin',
         ]);
 
         // Director
@@ -39,6 +40,7 @@ class DatabaseSeeder extends Seeder
             'password' => '12345678',
             'office_position' => 'Director',
             'workflow_role' => 'approver',
+            'system_role' => 'viewer',
         ]);
 
         // Admin Staff
@@ -48,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'password' => '12345678',
             'office_position' => 'Admin Staff',
             'workflow_role' => 'unassigned',
+            'system_role' => 'viewer',
         ]);
 
         // Coordinator
@@ -57,6 +60,7 @@ class DatabaseSeeder extends Seeder
             'password' => '12345678',
             'office_position' => 'Coordinator',
             'workflow_role' => 'reviewer',
+            'system_role' => 'viewer',
         ]);
 
         // Coordinator
@@ -66,13 +70,14 @@ class DatabaseSeeder extends Seeder
             'password' => '12345678',
             'office_position' => 'Coordinator',
             'workflow_role' => 'reviewer',
+            'system_role' => 'viewer',
         ]);
 
         $testUser1->assignRole('admin');
-        $testUser2->assignRole('admin');
-        $testUser3->assignRole('admin');
-        $testUser4->assignRole('admin');
-        $testUser5->assignRole('admin');
+        $testUser2->assignRole('viewer');
+        $testUser3->assignRole('viewer');
+        $testUser4->assignRole('viewer');
+        $testUser5->assignRole('viewer');
 
 
 
@@ -86,6 +91,12 @@ class DatabaseSeeder extends Seeder
         Metadata::create([
             'name' => 'Due In',
             'type' => 'date',
+            'status' => 'system',
+        ]);
+
+        Metadata::create([
+            'name' => 'Status',
+            'type' => 'string',
             'status' => 'system',
         ]);
 

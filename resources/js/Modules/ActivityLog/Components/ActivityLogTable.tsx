@@ -32,11 +32,11 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
             onPageChange={onPageChange}
             columns={[
                 { accessor: "date", title: "Date", noWrap: true },
-                { accessor: "time", title: "Time", noWrap: true },
-                { accessor: "user_name", title: "User", noWrap: true },
-                { accessor: "subject_type", title: "Object Type", noWrap: true },
-                { accessor: "subject_name", title: "Object", noWrap: true },
-                { accessor: "description", title: "Description", noWrap: true },
+                { accessor: "time", title: "Time" },
+                { accessor: "user_name", title: "User" },
+                { accessor: "subject_type", title: "Object Type" },
+                { accessor: "subject_name", title: "Object" },
+                { accessor: "description", title: "Description" },
             ]}
             records={records}
         />

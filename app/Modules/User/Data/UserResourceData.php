@@ -13,6 +13,7 @@ class UserResourceData extends Resource
         public string $email,
         public string $workflow_role,
         public string $office_position,
+        public string $system_role,
     ) {}
 
     public static function fromModel(User $user): self
@@ -23,6 +24,7 @@ class UserResourceData extends Resource
             email: $user->email,
             workflow_role: $user->workflow_role ?? "",
             office_position: $user->office_position ?? "",
+            system_role: $user->system_role ?? "",
         );
     }
 }

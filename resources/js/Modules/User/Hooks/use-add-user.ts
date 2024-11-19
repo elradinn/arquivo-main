@@ -3,14 +3,16 @@ import { RegisterUserData } from "../Types/RegisterUserData";
 import { notifications } from "@mantine/notifications";
 
 export function useAddUser() {
-    const { data, setData, post, processing, errors, reset } = useForm<RegisterUserData>({
-        name: "",
-        email: "",
-        password: "",
-        password_confirmation: "",
-        workflow_role: "",
-        office_position: ""
-    });
+    const { data, setData, post, processing, errors, reset } =
+        useForm<RegisterUserData>({
+            name: "",
+            email: "",
+            password: "",
+            password_confirmation: "",
+            workflow_role: "",
+            office_position: "",
+            system_role: "",
+        });
 
     const submit: React.FormEventHandler = (e) => {
         e.preventDefault();

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import {
     ActionIcon,
     Box,
@@ -102,7 +102,7 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
                         />
                     </Stack>
 
-                    <Stack gap={12}>
+                    <Stack gap={12} mt={16}>
                         <Text size="sm" fw={500}>
                             Custom Metadata Field
                         </Text>
@@ -117,7 +117,7 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
                         />
                     </Stack>
 
-                    <Stack gap={12}>
+                    <Stack gap={12} mt={16}>
                         <Text size="sm" fw={500}>
                             Related Documents
                         </Text>
@@ -129,7 +129,7 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
                     </Stack>
 
                     <Flex align="center" justify="end" mt={16}>
-                        <Button variant="light" onClick={() => reset()}>
+                        <Button variant="light" onClick={() => router.visit(route('document.show', { document: document.item_id }))}>
                             Cancel
                         </Button>
 
