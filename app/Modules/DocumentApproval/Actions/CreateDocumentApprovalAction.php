@@ -13,6 +13,7 @@ use Modules\DocumentApproval\Models\DocumentApproval;
 use Modules\DocumentApprovalHasUser\Models\DocumentApprovalHasUser;
 use Modules\DocumentApprovalHasUser\States\UserApprovalPending;
 use Modules\DocumentApprovalHasUser\States\UserReviewalPending;
+use Modules\Metadata\Models\Metadata;
 
 class CreateDocumentApprovalAction
 {
@@ -44,6 +45,12 @@ class CreateDocumentApprovalAction
         // Document lang to yung sa taas document workflow yan hayst
         $documentApproval->document->update([
             'status' => $approvalType === 'reviewal' ? StatesDocumentReviewalPending::class : StatesDocumentApprovalPending::class,
+        ]);
+
+        $metadata = Metadata::where('name', 'Status')->first();
+
+        $documentApproval->document->metadata()->attach($metadata->id, [
+            'value' => $documentApproval->document->status->label(),
         ]);
 
         $this->sendDocumentApprovalNotificationAction->execute($documentApproval);
