@@ -10,7 +10,13 @@ use Spatie\LaravelData\Attributes\Validation\Required;
 class FileData extends Data
 {
     public function __construct(
-        #[Required, MimeTypes(['application/pdf', 'image/png', 'image/jpeg'])]
+        #[Required, MimeTypes([
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'image/png',
+            'image/jpeg'
+        ])]
         public UploadedFile $file
     ) {}
 

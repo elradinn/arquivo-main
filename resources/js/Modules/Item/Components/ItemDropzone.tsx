@@ -17,6 +17,8 @@ export default function ItemDropzone({ onDrop, openRef, children }: ItemDropzone
             activateOnClick={false}
             accept={{
                 "application/pdf": [],
+                "application/msword": [],
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
                 "image/png": [],
                 "image/jpeg": [],
             }}
