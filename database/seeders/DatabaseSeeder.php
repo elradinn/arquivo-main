@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'johnalfredalfonso12@gmail.com',
             'password' => '12345678',
             'office_position' => 'Admin Staff',
-            'workflow_role' => 'unassigned',
+            'workflow_role' => 'reviewer',
             'system_role' => 'admin',
         ]);
 
