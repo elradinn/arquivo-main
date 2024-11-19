@@ -124,22 +124,58 @@ class FolderController extends Controller
         return response()->json(['message' => 'Folder deleted successfully']);
     }
 
+    /**
+     * Share a folder with specified users and recursively share its contents.
+     *
+     * @param ShareFolderData $data
+     * @param Folder $folder
+     * @return RedirectResponse
+     */
     public function share(ShareFolderData $data, Folder $folder): RedirectResponse
     {
-        // $this->folderAuthorization->canShare(Auth::user(), $folder);
+        // Authorize the user can share the folder
+        $this->folderAuthorization->canShare(Auth::user(), $folder);
 
-        // Delete all users first
+        // Detach all existing users from the folder
         $folder->userAccess()->detach();
 
+        // Prepare an array to hold user IDs and their roles
+        $userAttachments = [];
         foreach ($data->users as $userData) {
             $user = User::where('email', $userData->email)->firstOrFail();
-
-            if (!$folder->userAccess()->where('user_id', $user->id)->exists()) {
-                $folder->userAccess()->attach($user->id, ['role' => $userData->role]);
-            }
+            $userAttachments[$user->id] = ['role' => $userData->role];
         }
 
-        return redirect()->back();
+        // Attach new users with roles to the folder
+        $folder->userAccess()->sync($userAttachments);
+
+        // Recursively share all subfolders and documents using the children relationship
+        $this->shareContentsRecursively($folder->item, $userAttachments);
+
+        return redirect()->back()->with('success', 'Folder and its contents shared successfully.');
+    }
+
+    /**
+     * Recursively share subfolders and documents with specified users using the children relationship.
+     *
+     * @param Item $item
+     * @param array $userAttachments
+     * @return void
+     */
+    protected function shareContentsRecursively(Item $item, array $userAttachments): void
+    {
+        foreach ($item->getChildren() as $child) {
+            if ($child->folder) {
+                // If the child is a folder
+                $child->folder->userAccess()->sync($userAttachments);
+
+                // Recursively share its children
+                $this->shareContentsRecursively($child, $userAttachments);
+            } elseif ($child->document) {
+                // If the child is a document
+                $child->document->userAccess()->sync($userAttachments);
+            }
+        }
     }
 
     public function fetchUserShareFolder(Folder $folder): JsonResponse
@@ -150,15 +186,49 @@ class FolderController extends Controller
         return response()->json($sharedUsers);
     }
 
+    /**
+     * Remove a user's share from a folder and its contents.
+     *
+     * @param RemoveShareFolderData $data
+     * @param Folder $folder
+     * @return JsonResponse
+     */
     public function removeShare(RemoveShareFolderData $data, Folder $folder): JsonResponse
     {
         $this->folderAuthorization->canShare(Auth::user(), $folder);
 
         $user = User::where('email', $data->email)->firstOrFail();
 
+        // Detach the user from the folder
         $folder->userAccess()->detach($user->id);
 
-        return response()->json(['message' => 'Folder unshared successfully.'], 200);
+        // Recursively remove the user's access from all subfolders and documents
+        $this->unshareContentsRecursively($folder->item, $user->id);
+
+        return response()->json(['message' => 'Folder and its contents unshared successfully.'], 200);
+    }
+
+    /**
+     * Recursively remove a user's access from subfolders and documents.
+     *
+     * @param Item $item
+     * @param int $userId
+     * @return void
+     */
+    protected function unshareContentsRecursively(Item $item, int $userId): void
+    {
+        foreach ($item->children as $child) {
+            if ($child->folder) {
+                // If the child is a folder
+                $child->folder->userAccess()->detach($userId);
+
+                // Recursively remove access from its children
+                $this->unshareContentsRecursively($child, $userId);
+            } elseif ($child->document) {
+                // If the child is a document
+                $child->document->userAccess()->detach($userId);
+            }
+        }
     }
 
     /**
