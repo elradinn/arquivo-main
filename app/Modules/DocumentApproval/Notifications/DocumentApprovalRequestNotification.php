@@ -42,8 +42,12 @@ class DocumentApprovalRequestNotification extends Notification implements Should
 
     public function toMail($notifiable)
     {
+        $documentName = $this->documentApproval->document->name ?? 'Unnamed Document';
+
         return (new MailMessage)
-            ->line('You have a new document approval request.')
+            ->subject('New Document Approval Request')
+            ->greeting('Hello!')
+            ->line('You have a new document approval request for the document: ' . $documentName)
             ->action('View Document Approval', url('/document_approval/' . $this->documentApproval->id))
             ->line('Thank you for using our application!');
     }
