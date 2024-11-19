@@ -28,6 +28,8 @@ import ArqPdf from "../IconFiles/ArqPdf";
 import ArqDefault from "../IconFiles/ArqDefault";
 import ArqFolder from "../IconFiles/ArqFolder";
 import { StatusIcon } from "../StatusIcon/StatusIcon";
+import ArqImage from "../IconFiles/ArqImage";
+import ArqDoc from "../IconFiles/ArqDoc";
 
 interface ItemIconProps {
     mime: string;
@@ -41,7 +43,7 @@ export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, approvalStat
         if (isFolder) {
             return <ArqFolder size={32} />;
         } else if (isImage(mime)) {
-            return <IconPhoto size={20} />;
+            return <ArqImage size={32} />;
         } else if (isPDF(mime)) {
             return <ArqPdf size={32} />;
         } else if (isAudio(mime)) {
@@ -49,13 +51,7 @@ export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, approvalStat
         } else if (isVideo(mime)) {
             return <IconVideo size={20} />;
         } else if (isWord(mime)) {
-            return <IconFileWord size={20} />;
-        } else if (isExcel(mime)) {
-            return <IconFileSpreadsheet size={20} />;
-        } else if (isZip(mime)) {
-            return <IconFileZip size={20} />;
-        } else if (isText(mime)) {
-            return <IconFileText size={20} />;
+            return <ArqDoc size={32} />;
         }
         return <ArqDefault size={36} />;
     };

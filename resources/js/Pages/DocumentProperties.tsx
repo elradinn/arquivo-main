@@ -22,6 +22,7 @@ import DocumentVersionsDataTable from "@/Modules/Document/Components/DocumentVer
 import { FileWithPath } from "@mantine/dropzone";
 import useUploadDocumentVersion from "@/Modules/Document/Hooks/use-upload-document-version";
 import ShareDocumentModalForm from "@/Modules/Document/Components/ShareDocumentModalForm";
+import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 
 interface IProps {
     document: DocumentResourceData;
@@ -50,7 +51,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                 <Grid.Col span={8}>
                     <Stack px={8} py={8} gap={48} mb={48}>
                         <Group>
-                            <IconFile size={56} stroke={1} color="gray" />
+                            <ItemIcon mime={document.mime} isFolder={false} approvalStatus={document.status} />
                             <Text fw={500}>{document.name}</Text>
                         </Group>
 

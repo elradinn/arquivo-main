@@ -70,7 +70,8 @@ class DashboardController extends Controller
                     id: $doc->item_id,
                     name: $doc->name,
                     status: $doc->status ? $doc->status->label() : 'No Status',
-                    date_uploaded: $doc->updated_at->format('Y-m-d H:i:s')
+                    date_uploaded: $doc->updated_at->format('Y-m-d H:i:s'),
+                    mime: $doc->mime
                 );
             })
             ->toArray();

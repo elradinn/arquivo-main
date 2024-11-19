@@ -3,6 +3,7 @@ export interface RecentlyUploadedDocument {
     name: string;
     status: string;
     date_uploaded: string;
+    mime: string;
 }
 
 export interface DashboardResource {

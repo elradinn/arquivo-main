@@ -5,6 +5,7 @@ import { DocumentVersionResourceData } from "./DocumentVersionResourceData";
 export type DocumentResourceData = {
     item_id: string;
     name: string;
+    mime: string;
     document_number?: string;
     status?: string;
     description?: string;
