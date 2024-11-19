@@ -22,6 +22,7 @@ export function useUpdateUser({ user, close }: IProps) {
             setData({
                 workflow_role: user.workflow_role,
                 office_position: user.office_position,
+                system_role: user.system_role,
             });
         }
     }, [user]);

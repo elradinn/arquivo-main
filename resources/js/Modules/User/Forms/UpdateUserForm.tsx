@@ -47,7 +47,7 @@ const UpdateUserForm: React.FC<IProps> = ({ isOpened, close, user }) => {
                             { value: "viewer", label: "Viewer" },
                         ]}
                         value={data.system_role}
-                        onChange={(value) => setData("system_role", value || "")}
+                        onChange={(_value, option) => setData("system_role", option.value)}
                         error={errors.system_role}
                     />
                 </Stack>
