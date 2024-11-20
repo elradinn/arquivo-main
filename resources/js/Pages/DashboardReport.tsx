@@ -171,14 +171,14 @@ export default function DashboardReportPage({
             <Head title="Dashboard Report" />
             <Stack px={8} gap={24} py={8}>
                 <Group>
-                    <Text component="h2" size="xl" c="gray.8">
+                    <Text component="h2" size="xl" color="gray.8">
                         Dashboard Report
                     </Text>
                 </Group>
 
                 <Stack>
                     {/* Filter Options */}
-                    <Group gap="md">
+                    <Group justify="space-between">
                         <Flex
                             gap="md"
                             justify="flex-start"
