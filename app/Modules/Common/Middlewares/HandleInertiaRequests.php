@@ -3,6 +3,7 @@
 namespace Modules\Common\Middlewares;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Middleware;
 use Modules\Folder\Data\FolderLinksData;
 use Modules\Folder\Models\Folder;
@@ -55,6 +56,39 @@ class HandleInertiaRequests extends Middleware
             $workspaces = collect(); // Empty collection or define as needed
         }
 
+        $currentPath = $request->path();
+        $pathSegments = explode('/', $currentPath);
+
+        // dd($pathSegments);
+
+        if ($pathSegments[0] === 'dashboard' || $pathSegments[0] === 'trash') {
+            $currentWorkspace = '/' . $pathSegments[0];
+        } elseif (isset($pathSegments[1])) {
+            $currentFolderId = $pathSegments[1];
+            $currentFolder = Item::find($currentFolderId);
+
+            if ($currentFolder) {
+                if ($currentFolder->ancestors()->get()->isEmpty()) {
+                    $currentWorkspace = '/folder/' . $currentFolder->id;
+                } else {
+                    $parentAncestor = $currentFolder->ancestors()->whereNull('parent_id')->first();
+                    $currentWorkspace = $parentAncestor
+                        ? '/folder/' . $parentAncestor->id
+                        : '/folder/' . $currentFolder->id; // Fallback if no parent ancestor found
+                }
+            } else {
+                // Handle the case where the folder is not found
+                // You can choose to set a default workspace or handle it as per your application's requirement
+                $currentWorkspace = null;
+                // Optionally, log the incident for debugging
+                Log::warning("HandleInertiaRequests: Folder with ID {$currentFolderId} not found.");
+            }
+        } else {
+            // If the path doesn't have the expected structure, handle accordingly
+            $currentWorkspace = null;
+            Log::warning("HandleInertiaRequests: Unexpected path structure '{$currentPath}'.");
+        }
+
         $notifications = $this->retrieveNotificationAction->execute();
 
         return array_merge(parent::share($request), [
@@ -65,6 +99,7 @@ class HandleInertiaRequests extends Middleware
             'workspaces' => FolderLinksData::collect($workspaces, DataCollection::class),
             'csrf_token' => csrf_token(),
             'notifications' => $notifications,
+            'currentWorkspace' => $currentWorkspace,
         ]);
     }
 }

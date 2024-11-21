@@ -45,13 +45,14 @@ const NAV_LINKS = [
 ];
 
 const Sidebar: React.FC = () => {
-    const { workspaces, auth } = usePage<{
+    const { workspaces, auth, currentWorkspace } = usePage<{
         workspaces: WorkspaceLinksData[],
-        auth: { systemRole: string }
+        auth: { systemRole: string },
+        currentWorkspace: string
     }>().props;
     const { openModal } = useModalStore();
 
-    const currentPath = window.location.pathname;
+    // const currentPath = window.location.pathname;
 
     const renderNavLinks = NAV_LINKS
         .filter(link => {
@@ -65,7 +66,7 @@ const Sidebar: React.FC = () => {
         .map(({ label, icon: Icon, href }) => (
             <Link
                 className={classes.link}
-                data-active={currentPath === href || undefined}
+                data-active={currentWorkspace === href || undefined}
                 href={href}
                 key={label}
             >
@@ -78,7 +79,7 @@ const Sidebar: React.FC = () => {
         <Link
             className={classes.workspaceLinkWrapper}
             key={workspace.item_id}
-            data-active={currentPath === workspace.url || undefined}
+            data-active={currentWorkspace === workspace.url || undefined}
             href={workspace.url}
         >
             {/* <Link className={classes.workspaceLinkDesign} href={workspace.url}> */}
