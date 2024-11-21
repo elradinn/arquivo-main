@@ -11,6 +11,7 @@ class MoveItemContentsResource extends Resource
         public string $item_id,
         public ?string $name,
         public ?string $type,
+        public ?string $mime,
     ) {}
 
     public static function fromModel(Item $item): self
@@ -19,6 +20,7 @@ class MoveItemContentsResource extends Resource
             item_id: $item->id,
             name: $item->workspace ?? $item->folder->name ?? $item->document->name ?? null,
             type: $item->workspace ? 'workspace' : ($item->document ? 'document' : 'folder'),
+            mime: $item->document->mime ?? null
         );
     }
 }

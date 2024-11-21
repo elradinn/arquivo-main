@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Modal, Button, Stack, Group, Text, ActionIcon, Box } from "@mantine/core";
+import { Modal, Button, Stack, Group, Text, ActionIcon, Box, Divider } from "@mantine/core";
 import { IconChevronLeft, IconFolder } from "@tabler/icons-react";
 import useShowItems from "../Hooks/use-show-items-for-moving";
 import useMoveDocuments from "../Hooks/use-move-document";
 import { notifications } from "@mantine/notifications";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
+import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 
 interface MoveModalProps {
     selectedDocumentIds: string[];
@@ -50,7 +51,7 @@ const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds, setSelectedR
         <Modal
             opened={isOpen}
             onClose={() => closeModal("moveModal")}
-            title="Move Documents"
+            title={<Text fw={500}>Move Documents</Text>}
             size="lg"
         >
             <Stack gap="md">
@@ -60,8 +61,12 @@ const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds, setSelectedR
                             <IconChevronLeft size={16} />
                         </ActionIcon>
                     )}
-                    <Text>Choose Destination Folder</Text>
+                    <Text c="dark.5" fw={500}>Choose Destination Folder</Text>
+
                 </Group>
+
+                <Divider />
+
                 {loading ? (
                     <Text>Loading...</Text>
                 ) : error ? (
@@ -73,9 +78,12 @@ const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds, setSelectedR
                                 key={item.item_id}
                                 gap="sm"
                                 style={{ cursor: "pointer" }}
-                                onDoubleClick={() => handleFolderClick(item.item_id)}
+                                onClick={() => handleFolderClick(item.item_id)}
                             >
-                                <IconFolder />
+                                <ItemIcon
+                                    mime={item.mime ?? ""}
+                                    isFolder={item.type === "folder"}
+                                />
                                 <Text>{item.name}</Text>
                             </Group>
                         ))}

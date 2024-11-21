@@ -122,6 +122,20 @@ export default function DashboardReportPage({
     };
 
     /**
+     * Handle clearing all filters.
+     */
+    const handleClearFilters = () => {
+        setDocumentStatus(null);
+        setDateRange([null, null]);
+        setSearch("");
+        handleFilter({
+            document_status: null,
+            start_date: null,
+            end_date: null,
+        });
+    };
+
+    /**
      * Function to render dynamic columns with special handling for 'status' and 'due_in'.
      */
     const renderDynamicColumns = (): DataTableColumn<ItemContentsResourceData>[] => {
@@ -206,7 +220,8 @@ export default function DashboardReportPage({
                                 placeholder="Select date range"
                                 value={dateRange}
                                 onChange={handleDateRangeChange}
-                                style={{ width: 300 }}
+                                style={{ width: 400 }}
+                                allowSingleDateInRange
                             />
 
                             <Button
@@ -219,15 +234,26 @@ export default function DashboardReportPage({
                             </Button>
                         </Flex>
 
-                        {/* Generate Report Button */}
-                        <Button
-                            onClick={handleGenerateReport}
-                            leftSection={<IconDownload size={16} />}
-                            color="blue"
-                            variant="subtle"
-                        >
-                            Generate Report
-                        </Button>
+                        <Flex gap="sm">
+                            {/* Clear Filters Button */}
+                            <Button
+                                onClick={handleClearFilters}
+                                variant="subtle"
+                                color="gray"
+                            >
+                                Clear Filters
+                            </Button>
+
+                            {/* Generate Report Button */}
+                            <Button
+                                onClick={handleGenerateReport}
+                                leftSection={<IconDownload size={16} />}
+                                color="blue"
+                                variant="subtle"
+                            >
+                                Generate Report
+                            </Button>
+                        </Flex>
                     </Group>
 
                     {/* Select Dashboard Metadata Columns Modal */}
