@@ -53,16 +53,17 @@ class CreateDocumentApprovalAction
             ]);
         }
 
-        $reviewStatusMetadata = Metadata::where('name', 'Review Status')->first();
-        $approvalStatusMetadata = Metadata::where('name', 'Approval Status')->first();
-
-        $documentApproval->document->metadata()->attach($reviewStatusMetadata->id, [
-            'value' => $documentApproval->document->review_status->label(),
-        ]);
-
-        $documentApproval->document->metadata()->attach($approvalStatusMetadata->id, [
-            'value' => $documentApproval->document->approval_status->label(),
-        ]);
+        if ($approvalType === 'reviewal') {
+            $reviewStatusMetadata = Metadata::where('name', 'Review Status')->first();
+            $documentApproval->document->metadata()->attach($reviewStatusMetadata->id, [
+                'value' => $documentApproval->document->review_status->label(),
+            ]);
+        } else {
+            $approvalStatusMetadata = Metadata::where('name', 'Approval Status')->first();
+            $documentApproval->document->metadata()->attach($approvalStatusMetadata->id, [
+                'value' => $documentApproval->document->approval_status->label(),
+            ]);
+        }
 
         $this->sendDocumentApprovalNotificationAction->execute($documentApproval);
 

@@ -3,18 +3,16 @@ import { IconSquareCheckFilled, IconMessageFilled } from "@tabler/icons-react";
 import { getColorStatus } from "@/Modules/Common/Helpers/get-color-status";
 
 interface StatusIconProps {
-    approvalStatus?: string;
-    reviewStatus?: string;
+    state?: string;
 }
 
-export const StatusIcon: React.FC<StatusIconProps> = ({ reviewStatus, approvalStatus }) => {
-    const reviewIndicatorColor = getColorStatus(reviewStatus);
-    const approvalIndicatorColor = getColorStatus(approvalStatus);
+export const StatusIcon: React.FC<StatusIconProps> = ({ state }) => {
+    const indicatorColor = getColorStatus(state);
 
-    return (
-        <>
-            {approvalStatus && <IconSquareCheckFilled color={reviewIndicatorColor} />}
-            {reviewStatus && <IconMessageFilled color={approvalIndicatorColor} />}
-        </>
-    );
+    if (state?.includes("Approval")) {
+        return <IconSquareCheckFilled color={indicatorColor} />;
+    } else if (state?.includes("Reviewal")) {
+        return <IconMessageFilled color={indicatorColor} />;
+    }
+    return null;
 };

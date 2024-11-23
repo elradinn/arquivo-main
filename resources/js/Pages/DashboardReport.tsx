@@ -145,7 +145,7 @@ export default function DashboardReportPage({
                 return {
                     accessor: `review status`,
                     title: 'Review Status',
-                    render: ({ review_status }) => <StateBadge reviewStatus={review_status} />,
+                    render: ({ review_status }) => <StateBadge state={review_status} />,
                 };
             }
 
@@ -154,7 +154,7 @@ export default function DashboardReportPage({
                 return {
                     accessor: `approval status`,
                     title: 'Approval Status',
-                    render: ({ approval_status }) => <StateBadge approvalStatus={approval_status} />,
+                    render: ({ approval_status }) => <StateBadge state={approval_status} />,
                 };
             }
 

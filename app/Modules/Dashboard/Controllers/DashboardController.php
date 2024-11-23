@@ -85,8 +85,8 @@ class DashboardController extends Controller
                 return new RecentlyUploadedDocumentResource(
                     id: $doc->item_id,
                     name: $doc->name,
-                    review_status: $doc->review_status ? $doc->review_status->label() : 'No Status',
-                    approval_status: $doc->approval_status ? $doc->approval_status->label() : 'No Status',
+                    review_status: $doc->review_status ? $doc->review_status->label() : null,
+                    approval_status: $doc->approval_status ? $doc->approval_status->label() : null,
                     date_uploaded: $doc->updated_at->format('Y-m-d H:i:s'),
                     mime: $doc->mime
                 );
