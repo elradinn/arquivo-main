@@ -48,11 +48,11 @@ class RecalculateDocumentStateAction
             if ($documentApprovalUsers->contains('user_state', UserApprovalRejected::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentApprovalRejected::class);
 
-                $documentApproval->document->review_status->transitionTo(StatesDocumentApprovalRejected::class);
+                $documentApproval->document->approval_status->transitionTo(StatesDocumentApprovalRejected::class);
             } elseif ($documentApprovalUsers->every('user_state', UserApprovalAccepted::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentApprovalAccepted::class);
 
-                $documentApproval->document->review_status->transitionTo(StatesDocumentApprovalAccepted::class);
+                $documentApproval->document->approval_status->transitionTo(StatesDocumentApprovalAccepted::class);
             }
         }
     }
