@@ -1,7 +1,8 @@
 export interface RecentlyUploadedDocument {
     id: string;
     name: string;
-    status: string;
+    review_status: string;
+    approval_status: string;
     date_uploaded: string;
     mime: string;
 }

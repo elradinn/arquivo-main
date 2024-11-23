@@ -31,7 +31,8 @@ class Document extends Model
         'name',
         'owned_by',
         'document_number',
-        'status',
+        'review_status',
+        'approval_status',
         'description',
         'due_date',
         'mime',
@@ -40,7 +41,8 @@ class Document extends Model
     ];
 
     protected $casts = [
-        'status' => DocumentState::class,
+        'review_status' => DocumentState::class,
+        'approval_status' => DocumentState::class,
         // 'due_date' => 'date',
     ];
 

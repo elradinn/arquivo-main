@@ -15,7 +15,6 @@ class TrashedItemsResourceData extends Resource
         public ?string $size,
         public ?string $type,
         public ?string $document_number,
-        public ?string $status,
         public ?string $description,
         public ?string $file_path,
         public ?string $deleted_at,
@@ -31,7 +30,6 @@ class TrashedItemsResourceData extends Resource
             size: $item->document->size ?? null,
             type: $item->document ? 'document' : 'folder',
             document_number: $item->document->document_number ?? null,
-            status: $item->document->status ?? null,
             description: $item->document->description ?? null,
             file_path: $item->document->file_path ?? null,
             deleted_at: $item->deleted_at?->format('Y-m-d H:i:s')

@@ -62,12 +62,13 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
     const metadataColumns: DataTableColumn<ItemContentsResourceData>[] = [
         {
             accessor: "name",
-            render: ({ mime, type, name, status, missing_required_metadata }) => (
+            render: ({ mime, type, name, approval_status, review_status, missing_required_metadata }) => (
                 <Group align="center" gap={12} preventGrowOverflow>
                     <ItemIcon
                         mime={mime ?? ""}
                         isFolder={type === "folder"}
-                        approvalStatus={status}
+                        reviewStatus={review_status}
+                        approvalStatus={approval_status}
                         missingRequiredMetadata={missing_required_metadata}
                     />
                     <span>{name}</span>

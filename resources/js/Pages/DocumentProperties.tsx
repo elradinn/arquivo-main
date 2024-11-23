@@ -51,7 +51,12 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                 <Grid.Col span={8}>
                     <Stack px={8} py={8} gap={48} mb={48}>
                         <Group>
-                            <ItemIcon mime={document.mime} isFolder={false} approvalStatus={document.status} />
+                            <ItemIcon
+                                mime={document.mime}
+                                isFolder={false}
+                                reviewStatus={document.review_status}
+                                approvalStatus={document.approval_status}
+                            />
                             <Text fw={500}>{document.name}</Text>
                         </Group>
 

@@ -140,12 +140,21 @@ export default function DashboardReportPage({
      */
     const renderDynamicColumns = (): DataTableColumn<ItemContentsResourceData>[] => {
         return selectedMetadata.map((meta) => {
-            // Check if the metadata corresponds to 'status'
-            if (meta.name.toLowerCase() === 'status') {
+            // Check if the metadata corresponds to 'review status'
+            if (meta.name.toLowerCase() === 'review status') {
                 return {
-                    accessor: `status`,
-                    title: 'Status',
-                    render: ({ status }) => <StateBadge state={status} />,
+                    accessor: `review status`,
+                    title: 'Review Status',
+                    render: ({ review_status }) => <StateBadge reviewStatus={review_status} />,
+                };
+            }
+
+            // Check if the metadata corresponds to 'approval status'
+            if (meta.name.toLowerCase() === 'approval status') {
+                return {
+                    accessor: `approval status`,
+                    title: 'Approval Status',
+                    render: ({ approval_status }) => <StateBadge approvalStatus={approval_status} />,
                 };
             }
 
@@ -157,7 +166,7 @@ export default function DashboardReportPage({
                     render: ({ due_in }) => {
                         return due_in !== undefined && due_in !== null ? (
                             due_in < 0 ? (
-                                <Text color="red" size="sm">{Math.abs(due_in)} days overdue</Text>
+                                <Text c="red" size="sm">{Math.abs(due_in)} days overdue</Text>
                             ) : (
                                 <Text size="sm">{`${due_in} day${due_in !== 1 ? 's' : ''} remaining`}</Text>
                             )

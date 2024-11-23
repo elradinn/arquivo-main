@@ -34,29 +34,45 @@ class DashboardController extends Controller
         $this->dashboardAuthorization->isAdmin(Auth::user());
 
         // Define the statuses to count
-        $statuses = [
+        $reviewStatuses = [
             'reviewal_pending',
             'reviewal_accepted',
             'reviewal_rejected',
+        ];
+
+        $approvalStatuses = [
             'approval_pending',
             'approval_accepted',
             'approval_rejected',
         ];
 
-        // Initialize an array to hold counts
-        $statusCounts = [];
+        // Initialize arrays to hold counts
+        $reviewStatusCounts = [];
+        $approvalStatusCounts = [];
 
-        // Loop through each status and count using the helper
-        foreach ($statuses as $statusKey) {
+        // Count review statuses
+        foreach ($reviewStatuses as $statusKey) {
             $statusClass = DocumentStatusHelper::getStatusClass($statusKey);
             if ($statusClass) {
-                // Ensure the Document's associated Item is not soft-deleted
-                $count = Document::where('status', $statusClass)
-                    ->whereHas('item') // This ensures the related Item is not soft-deleted
+                $count = Document::where('review_status', $statusClass)
+                    ->whereHas('item')
                     ->count();
-                $statusCounts[$statusKey] = $count;
+                $reviewStatusCounts[$statusKey] = $count;
             } else {
-                $statusCounts[$statusKey] = 0;
+                $reviewStatusCounts[$statusKey] = 0;
+            }
+        }
+
+        // Count approval statuses
+        foreach ($approvalStatuses as $statusKey) {
+            $statusClass = DocumentStatusHelper::getStatusClass($statusKey);
+            if ($statusClass) {
+                $count = Document::where('approval_status', $statusClass)
+                    ->whereHas('item')
+                    ->count();
+                $approvalStatusCounts[$statusKey] = $count;
+            } else {
+                $approvalStatusCounts[$statusKey] = 0;
             }
         }
 
@@ -69,7 +85,8 @@ class DashboardController extends Controller
                 return new RecentlyUploadedDocumentResource(
                     id: $doc->item_id,
                     name: $doc->name,
-                    status: $doc->status ? $doc->status->label() : 'No Status',
+                    review_status: $doc->review_status ? $doc->review_status->label() : 'No Status',
+                    approval_status: $doc->approval_status ? $doc->approval_status->label() : 'No Status',
                     date_uploaded: $doc->updated_at->format('Y-m-d H:i:s'),
                     mime: $doc->mime
                 );
@@ -78,12 +95,12 @@ class DashboardController extends Controller
 
         // Create DashboardResource instance
         $dashboardData = new DashboardResource(
-            number_of_review_pending: $statusCounts['reviewal_pending'],
-            number_of_review_accepted: $statusCounts['reviewal_accepted'],
-            number_of_review_rejected: $statusCounts['reviewal_rejected'],
-            number_of_approval_pending: $statusCounts['approval_pending'],
-            number_of_approval_accepted: $statusCounts['approval_accepted'],
-            number_of_approval_rejected: $statusCounts['approval_rejected'],
+            number_of_review_pending: $reviewStatusCounts['reviewal_pending'],
+            number_of_review_accepted: $reviewStatusCounts['reviewal_accepted'],
+            number_of_review_rejected: $reviewStatusCounts['reviewal_rejected'],
+            number_of_approval_pending: $approvalStatusCounts['approval_pending'],
+            number_of_approval_accepted: $approvalStatusCounts['approval_accepted'],
+            number_of_approval_rejected: $approvalStatusCounts['approval_rejected'],
             number_of_documents: Document::whereHas('item')->count(),
             recently_uploaded_documents: $recently_uploaded_documents
         );
@@ -123,7 +140,10 @@ class DashboardController extends Controller
             $statusClass = DocumentStatusHelper::getStatusClass($documentStatus);
             if ($statusClass) {
                 $documentsQuery->whereHas('document', function ($query) use ($statusClass) {
-                    $query->where('status', $statusClass);
+                    $query->where(function ($query) use ($statusClass) {
+                        $query->where('review_status', $statusClass)
+                            ->orWhere('approval_status', $statusClass);
+                    });
                 });
             }
         }

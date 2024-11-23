@@ -8,7 +8,8 @@ export type ItemContentsResourceData = {
     size?: string;
     type?: string;
     document_number?: string;
-    status?: string;
+    review_status?: string;
+    approval_status?: string;
     description?: string;
     updated_at?: string;
     due_in?: number;

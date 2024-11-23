@@ -7,7 +7,8 @@ export type DocumentResourceData = {
     name: string;
     mime: string;
     document_number?: string;
-    status?: string;
+    review_status?: string;
+    approval_status: string;
     description?: string;
     due_date?: string;
     file_path?: string;

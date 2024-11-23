@@ -95,7 +95,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Metadata::create([
-            'name' => 'Status',
+            'name' => 'Review Status',
+            'type' => 'string',
+            'status' => 'system',
+        ]);
+
+        Metadata::create([
+            'name' => 'Approval Status',
             'type' => 'string',
             'status' => 'system',
         ]);

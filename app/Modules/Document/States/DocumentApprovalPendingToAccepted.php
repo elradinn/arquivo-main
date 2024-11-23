@@ -23,7 +23,7 @@ class DocumentApprovalPendingToAccepted extends Transition
         $folder = Folder::find($this->document->item->parent_id);
 
         // $this->document->documentApproval->overall_state->transitionTo(DocumentApprovalAccepted::class);
-        $this->document->status = new StatesDocumentApprovalAccepted($this->document);
+        $this->document->approval_status = new StatesDocumentApprovalAccepted($this->document);
         $this->document->save();
 
         // dd($folder->numberingScheme->add_if_approved);

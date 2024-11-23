@@ -4,15 +4,17 @@ import { getColorStatus } from "@/Modules/Common/Helpers/get-color-status";
 
 interface StatusIconProps {
     approvalStatus?: string;
+    reviewStatus?: string;
 }
 
-export const StatusIcon: React.FC<StatusIconProps> = ({ approvalStatus }) => {
-    const indicatorColor = getColorStatus(approvalStatus);
+export const StatusIcon: React.FC<StatusIconProps> = ({ reviewStatus, approvalStatus }) => {
+    const reviewIndicatorColor = getColorStatus(reviewStatus);
+    const approvalIndicatorColor = getColorStatus(approvalStatus);
 
-    if (approvalStatus?.includes("Approval")) {
-        return <IconSquareCheckFilled color={indicatorColor} />;
-    } else if (approvalStatus?.includes("Reviewal")) {
-        return <IconMessageFilled color={indicatorColor} />;
-    }
-    return null;
+    return (
+        <>
+            {approvalStatus && <IconSquareCheckFilled color={reviewIndicatorColor} />}
+            {reviewStatus && <IconMessageFilled color={approvalIndicatorColor} />}
+        </>
+    );
 };

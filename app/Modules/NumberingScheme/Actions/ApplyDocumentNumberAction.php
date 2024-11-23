@@ -21,7 +21,7 @@ class ApplyDocumentNumberAction
         if ($folder) {
             $numberingScheme = $folder->numberingScheme;
 
-            if ($numberingScheme && (!$numberingScheme->add_if_approved || $document->status == DocumentApprovalAccepted::class)) {
+            if ($numberingScheme && (!$numberingScheme->add_if_approved || $document->approval_status == DocumentApprovalAccepted::class)) {
                 $documentNumber = $this->generateDocumentNumberAction->execute($numberingScheme);
 
                 $document->update([

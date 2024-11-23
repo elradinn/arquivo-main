@@ -48,14 +48,20 @@ export default function DashboardPage({ dashboard }: DashboardPageProps) {
                         columns={[
                             {
                                 accessor: "name",
-                                render: ({ name, status, mime }) => (
+                                render: ({ name, review_status, approval_status, mime }) => (
                                     <Group align="center" gap={12}>
-                                        <ItemIcon mime={mime} isFolder={false} approvalStatus={status} />
+                                        <ItemIcon
+                                            mime={mime}
+                                            isFolder={false}
+                                            reviewStatus={review_status}
+                                            approvalStatus={approval_status}
+                                        />
                                         <span>{name}</span>
                                     </Group>
                                 ),
                             },
-                            { accessor: "status", render: ({ status }) => <StateBadge state={status} /> },
+                            { accessor: "review_status", render: ({ review_status, }) => <StateBadge reviewStatus={review_status} /> },
+                            { accessor: "approval_status", render: ({ approval_status, }) => <StateBadge approvalStatus={approval_status} /> },
                             { accessor: "date_uploaded", title: "Date Uploaded" },
                         ]}
                         records={dashboard.recently_uploaded_documents}

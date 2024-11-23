@@ -34,11 +34,11 @@ class RecalculateDocumentStateAction
             if ($documentApprovalUsers->contains('user_state', UserReviewalRejected::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentReviewalRejected::class);
 
-                $documentApproval->document->status->transitionTo(StatesDocumentReviewalRejected::class);
+                $documentApproval->document->review_status->transitionTo(StatesDocumentReviewalRejected::class);
             } elseif ($documentApprovalUsers->every('user_state', UserReviewalAccepted::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentReviewalAccepted::class);
 
-                $documentApproval->document->status->transitionTo(StatesDocumentReviewalAccepted::class);
+                $documentApproval->document->review_status->transitionTo(StatesDocumentReviewalAccepted::class);
             }
         } else if ($documentApproval->type == 'approval') {
             if ($documentApprovalUsers->contains('user_state', UserApprovalPending::class)) {
@@ -48,11 +48,11 @@ class RecalculateDocumentStateAction
             if ($documentApprovalUsers->contains('user_state', UserApprovalRejected::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentApprovalRejected::class);
 
-                $documentApproval->document->status->transitionTo(StatesDocumentApprovalRejected::class);
+                $documentApproval->document->review_status->transitionTo(StatesDocumentApprovalRejected::class);
             } elseif ($documentApprovalUsers->every('user_state', UserApprovalAccepted::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentApprovalAccepted::class);
 
-                $documentApproval->document->status->transitionTo(StatesDocumentApprovalAccepted::class);
+                $documentApproval->document->review_status->transitionTo(StatesDocumentApprovalAccepted::class);
             }
         }
     }

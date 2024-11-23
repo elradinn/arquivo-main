@@ -34,11 +34,12 @@ import ArqDoc from "../IconFiles/ArqDoc";
 interface ItemIconProps {
     mime: string;
     isFolder: boolean;
+    reviewStatus?: string | undefined;
     approvalStatus?: string | undefined;
     missingRequiredMetadata?: boolean;
 }
 
-export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, approvalStatus, missingRequiredMetadata }) => {
+export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, reviewStatus, approvalStatus, missingRequiredMetadata }) => {
     const renderIcon = () => {
         if (isFolder) {
             return <ArqFolder size={32} />;
@@ -60,7 +61,7 @@ export const ItemIcon: React.FC<ItemIconProps> = ({ mime, isFolder, approvalStat
         <Group gap={4}>
             {renderIcon()}
             {missingRequiredMetadata && <IconTag color="red" />}
-            <StatusIcon approvalStatus={approvalStatus} />
+            <StatusIcon approvalStatus={approvalStatus} reviewStatus={reviewStatus} />
         </Group>
     );
 };
