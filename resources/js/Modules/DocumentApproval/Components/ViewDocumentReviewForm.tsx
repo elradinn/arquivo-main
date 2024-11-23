@@ -23,13 +23,13 @@ interface IFormProps {
     document?: DocumentResourceData;
 }
 
-const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
+const ViewDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
     const { modals, closeModal, openModal } = useModalStore();
-    const isOpen = modals["viewDocumentApproval"];
+    const isOpen = modals["viewDocumentReview"];
 
     // Assuming you want to handle the first approval for simplicity
     const documentApprovalId = document?.document_approval_ids?.find(
-        (approval) => approval.type === 'approval'
+        (approval) => approval.type === 'reviewal'
     )?.id;
 
     const {
@@ -81,10 +81,10 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
         <>
             <Modal
                 opened={isOpen}
-                onClose={() => closeModal("viewDocumentApproval")}
+                onClose={() => closeModal("viewDocumentReview")}
                 title={
                     <Text fw="bold" size="lg">
-                        Document Approval Workflow Process
+                        Document Review Workflow Process
                     </Text>
                 }
                 size={550}
@@ -192,7 +192,7 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                     </Stack>
 
                     <Flex align="center" justify="end" mt={16}>
-                        <Button variant="light" onClick={() => closeModal("viewDocumentApproval")}>
+                        <Button variant="light" onClick={() => closeModal("viewDocumentReview")}>
                             {allUsersDecided ? "Close" : "Cancel"}
                         </Button>
 
@@ -206,7 +206,7 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                                     variant="transparent"
                                     color="red"
                                     onClick={() => {
-                                        closeModal("viewDocumentApproval");
+                                        closeModal("viewDocumentReview");
                                         openModal("confirmDeleteDocumentApproval");
                                     }}
                                     title="Delete Document Approval"
@@ -224,4 +224,4 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
     );
 };
 
-export default ViewDocumentApprovalForm;
+export default ViewDocumentReviewForm;

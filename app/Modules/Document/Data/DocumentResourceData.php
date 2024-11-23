@@ -18,7 +18,7 @@ class DocumentResourceData extends Resource
         public ?string $mime,
         public ?string $due_date,
         public ?string $file_path,
-        public ?string $document_approval_id,
+        public ?array $document_approval_ids,
         public array $related_documents,
         public array $metadata,
         public array $required_folder_metadata,
@@ -45,7 +45,10 @@ class DocumentResourceData extends Resource
             mime: $document->mime,
             due_date: $document->due_date,
             file_path: $document->file_path,
-            document_approval_id: $document->documentApproval?->id,
+            document_approval_ids: $document->documentApprovals->map(fn($documentApproval) => [
+                'id' => $documentApproval->id,
+                'type' => $documentApproval->type,
+            ])->toArray(),
             related_documents: $document->relatedDocuments->map(fn($relatedDocument) => [
                 'id' => $relatedDocument->id,
                 'item_id' => $relatedDocument->item_id,

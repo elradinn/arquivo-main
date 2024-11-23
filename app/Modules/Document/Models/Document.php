@@ -73,9 +73,9 @@ class Document extends Model
     /**
      * Get the document's approval.
      */
-    public function documentApproval(): HasOne
+    public function documentApprovals(): HasMany
     {
-        return $this->hasOne(DocumentApproval::class, 'document_id', 'item_id');
+        return $this->hasMany(DocumentApproval::class, 'document_id', 'item_id');
     }
 
     /**

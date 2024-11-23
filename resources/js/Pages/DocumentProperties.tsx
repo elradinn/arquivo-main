@@ -1,3 +1,4 @@
+import React from "react";
 import { Head, Link, router } from "@inertiajs/react";
 import { Anchor, Box, Breadcrumbs, Button, FileButton, Grid, Group, Paper, Stack, Text } from "@mantine/core";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
@@ -23,6 +24,7 @@ import { FileWithPath } from "@mantine/dropzone";
 import useUploadDocumentVersion from "@/Modules/Document/Hooks/use-upload-document-version";
 import ShareDocumentModalForm from "@/Modules/Document/Components/ShareDocumentModalForm";
 import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
+import ViewDocumentReviewForm from "@/Modules/DocumentApproval/Components/ViewDocumentReviewForm";
 
 interface IProps {
     document: DocumentResourceData;
@@ -40,6 +42,9 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
             uploadVersion(file as FileWithPath);
         }
     };
+
+    const hasReviewal = document.document_approval_ids?.some(approval => approval.type === "reviewal");
+    const hasApproval = document.document_approval_ids?.some(approval => approval.type === "approval");
 
     return (
         <Authenticated>
@@ -156,10 +161,25 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                                 fullWidth
                                 justify="left"
                                 onClick={() => {
-                                    openModal(document.document_approval_id ? "viewDocumentApproval" : "createDocumentApproval");
+                                    openModal(hasReviewal ? "viewDocumentReview" : "createDocumentApproval");
                                 }}
                             >
-                                {document.document_approval_id ? "View" : "Start"} Workflow Process
+                                {hasReviewal ? "View" : "Start"} Review Process
+                            </Button>
+                        )}
+
+                        {(userRole === 'editor' || userRole === 'admin') && (
+                            <Button
+                                variant="subtle"
+                                color="blue.5"
+                                leftSection={<IconGitBranch size={18} />}
+                                fullWidth
+                                justify="left"
+                                onClick={() => {
+                                    openModal(hasApproval ? "viewDocumentApproval" : "createDocumentApproval");
+                                }}
+                            >
+                                {hasApproval ? "View" : "Start"} Approval Process
                             </Button>
                         )}
 
@@ -194,6 +214,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
 
             <CreateDocumentApprovalForm document={document} />
             <ViewDocumentApprovalForm document={document} />
+            <ViewDocumentReviewForm document={document} />
             <ShareDocumentModalForm documentId={document.item_id} />
         </Authenticated>
     );
