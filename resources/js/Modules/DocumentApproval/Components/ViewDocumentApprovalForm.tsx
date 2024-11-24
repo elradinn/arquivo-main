@@ -103,6 +103,7 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                                     setData("type", value);
                                     setDocumentApprovalType(value);
                                 }}
+                                hidden
                             >
                                 <Group mt="xs">
                                     <Radio value="reviewal" label="Review" />

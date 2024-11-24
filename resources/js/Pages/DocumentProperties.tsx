@@ -25,6 +25,7 @@ import useUploadDocumentVersion from "@/Modules/Document/Hooks/use-upload-docume
 import ShareDocumentModalForm from "@/Modules/Document/Components/ShareDocumentModalForm";
 import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 import ViewDocumentReviewForm from "@/Modules/DocumentApproval/Components/ViewDocumentReviewForm";
+import CreateDocumentReviewForm from "@/Modules/DocumentApproval/Components/CreateDocumentReviewForm";
 
 interface IProps {
     document: DocumentResourceData;
@@ -213,6 +214,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
             </Grid>
 
             <CreateDocumentApprovalForm document={document} />
+            <CreateDocumentReviewForm document={document} />
             <ViewDocumentApprovalForm document={document} />
             <ViewDocumentReviewForm document={document} />
             <ShareDocumentModalForm documentId={document.item_id} />

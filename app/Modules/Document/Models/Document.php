@@ -46,21 +46,21 @@ class Document extends Model
         // 'due_date' => 'date',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        // Ensure that when retrieving the document, it fetches the current version
-        static::retrieved(function ($document) {
-            $currentVersion = $document->versions()->where('current', true)->first();
-            if ($currentVersion) {
-                $document->file_path = $currentVersion->file_path;
-                $document->mime = $currentVersion->mime;
-                $document->size = $currentVersion->size;
-                // Add other attributes if necessary
-            }
-        });
-    }
+    //     // Ensure that when retrieving the document, it fetches the current version
+    //     static::retrieved(function ($document) {
+    //         $currentVersion = $document->versions()->where('current', true)->first();
+    //         if ($currentVersion) {
+    //             $document->file_path = $currentVersion->file_path;
+    //             $document->mime = $currentVersion->mime;
+    //             $document->size = $currentVersion->size;
+    //             // Add other attributes if necessary
+    //         }
+    //     });
+    // }
 
     /**
      * Get the document's items.

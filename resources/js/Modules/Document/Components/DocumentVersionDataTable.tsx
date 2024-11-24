@@ -14,6 +14,8 @@ const DocumentVersionsDataTable: React.FC<DocumentVersionsDataTableProps> = ({ v
     const { restoreVersion } = useRestoreDocumentVersion();
     const { deleteVersion } = useDeleteDocumentVersion();
 
+    console.log("versions", versions);
+
     return (
         <DataTable
             columns={[
@@ -30,13 +32,16 @@ const DocumentVersionsDataTable: React.FC<DocumentVersionsDataTableProps> = ({ v
                             >
                                 <IconRefresh size={16} />
                             </ActionIcon>
-                            <ActionIcon
-                                variant="subtle"
-                                color="red"
-                                onClick={() => deleteVersion(record.id)}
-                            >
-                                <IconTrash size={16} />
-                            </ActionIcon>
+                            {
+                                !record.current &&
+                                <ActionIcon
+                                    variant="subtle"
+                                    color="red"
+                                    onClick={() => deleteVersion(record.id)}
+                                >
+                                    <IconTrash size={16} />
+                                </ActionIcon>
+                            }
                             <a href={record.file_path} download>
                                 <ActionIcon
                                     variant="subtle"

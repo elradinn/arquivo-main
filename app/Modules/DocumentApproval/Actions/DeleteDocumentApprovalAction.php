@@ -15,9 +15,15 @@ class DeleteDocumentApprovalAction
 
         $user->notifications()->where('data->document_approval_id', $documentApproval->id)->delete();
 
-        $documentApproval->document()->update([
-            'status' => null
-        ]);
+        if ($documentApproval->type === 'reviewal') {
+            $documentApproval->document()->update([
+                'review_status' => null
+            ]);
+        } elseif ($documentApproval->type === 'approval') {
+            $documentApproval->document()->update([
+                'approval_status' => null
+            ]);
+        }
 
         $documentApproval->delete();
     }

@@ -65,6 +65,7 @@ class DocumentResourceData extends Resource
                 'file_path' => $version->file_path,
                 'uploaded_at' => $version->created_at->toDateTimeString(),
                 'name' => $version->name,
+                'current' => $version->current
             ])->toArray(),
             created_at: $document->created_at,
             updated_at: $document->updated_at

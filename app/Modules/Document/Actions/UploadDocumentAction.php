@@ -62,6 +62,15 @@ class UploadDocumentAction
                 'file_path' => $filePath,
             ]);
 
+            // Create the initial version
+            $document->versions()->create([
+                'file_path' => $filePath,
+                'name' => $newName,
+                'current' => true,
+                'mime' => $uploadedFile->getMimeType(),
+                'size' => $uploadedFile->getSize(),
+            ]);
+
             // Log activity
             activity()
                 ->performedOn($document)
