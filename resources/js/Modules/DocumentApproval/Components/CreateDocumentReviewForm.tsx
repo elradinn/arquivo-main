@@ -17,12 +17,16 @@ import { IconTrash, IconPlus } from "@tabler/icons-react";
 import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
 import { useCreateDocumentApproval } from "../Hooks/use-create-document-approval";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
+import { useCreateDocumentReviewal } from "../Hooks/use-create-document-reviewal";
 
 interface IFormProps {
     document?: DocumentResourceData;
 }
 
 const CreateDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
+    const { modals, closeModal } = useModalStore();
+    const isOpen = modals["createDocumentReview"];
+
     const {
         data,
         setData,
@@ -38,17 +42,20 @@ const CreateDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
         maxUsers,
         selectedUserIds,
         fetchedUsers,
-    } = useCreateDocumentApproval({
+    } = useCreateDocumentReviewal({
         documentId: document?.item_id,
+        isOpen,
     });
-
-    const { modals, closeModal } = useModalStore();
 
     // Function to generate options for each Select, excluding already selected users
     const getOptions = (currentIndex: number) => {
         return fetchedUsers
-            .filter(user => !selectedUserIds.includes(user.id.toString()) || user.id.toString() === users[currentIndex].selectedUser)
-            .map(user => ({
+            .filter(
+                (user) =>
+                    !selectedUserIds.includes(user.id.toString()) ||
+                    user.id.toString() === users[currentIndex].selectedUser
+            )
+            .map((user) => ({
                 value: user.id.toString(),
                 label: `${user.name} (${user.email})`,
             }));
@@ -67,11 +74,6 @@ const CreateDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
         >
             <form onSubmit={createApprovalSubmit}>
                 <Stack gap={16}>
-                    <Text size="sm" c="dimmed">
-                        Routinely directs any uploaded file in this folder through a predefined
-                        document approval process
-                    </Text>
-
                     <Radio.Group
                         name="status"
                         value={data.type}
@@ -79,6 +81,7 @@ const CreateDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
                             setData("type", value);
                             setDocumentApprovalType(value);
                         }}
+                        hidden
                     >
                         <Group mt="xs">
                             <Radio value="reviewal" label="Review" />
@@ -102,12 +105,18 @@ const CreateDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
                     </Text>
 
                     {users.map((user, index) => (
-                        <Group key={index} justify="space-between" align="flex-end">
+                        <Group
+                            key={index}
+                            justify="space-between"
+                            align="flex-end"
+                        >
                             <Select
                                 placeholder="Select a user"
                                 data={getOptions(index)}
                                 value={user.selectedUser}
-                                onChange={(value) => handleUserChange(index, value)}
+                                onChange={(value) =>
+                                    handleUserChange(index, value)
+                                }
                                 required
                                 style={{ flex: 1 }}
                                 allowDeselect={false}
@@ -151,7 +160,10 @@ const CreateDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
                 </Stack>
 
                 <Flex align="center" justify="end" mt={16}>
-                    <Button variant="light" onClick={() => closeModal("createDocumentReview")}>
+                    <Button
+                        variant="light"
+                        onClick={() => closeModal("createDocumentReview")}
+                    >
                         Cancel
                     </Button>
 

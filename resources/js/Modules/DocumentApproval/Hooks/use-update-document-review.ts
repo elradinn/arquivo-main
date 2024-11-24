@@ -1,40 +1,40 @@
-import { useState, FormEventHandler, useEffect } from "react";
 import { useForm } from "@inertiajs/react";
 import { notifications } from "@mantine/notifications";
-import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
+import { UpdateDocumentApprovalData } from "../Types/UpdateDocumentApprovalData";
 import { useFetchUsersApprovalRole } from "@/Modules/Common/Hooks/use-fetch-users-approval-role";
-import { CreateDocumentApprovalData } from "../Types/CreateDocumentApprovalData";
+import { useEffect, useState } from "react";
+import { useFetchDocumentApproval } from "./use-fetch-document-approval";
+import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
+import { DocumentUserApproval } from "../Types/DocumentApprovalResourceData";
 
 interface IProps {
-    documentId?: string;
+    documentApprovalId?: string;
     isOpen: boolean;
-}
-
-interface UserOption {
-    id: number;
-    name: string;
-    email: string;
 }
 
 interface DocumentApprovalUser {
     selectedUser: string;
 }
 
-export function useCreateDocumentApproval({ documentId, isOpen }: IProps) {
-    const [documentApprovalType, setDocumentApprovalType] =
-        useState("approval");
-    const { closeModal, modals } = useModalStore();
-    const fetchedUsers: UserOption[] = useFetchUsersApprovalRole(
+export function useUpdateDocumentReview({
+    documentApprovalId,
+    isOpen,
+}: IProps) {
+    const [documentApprovalType, setDocumentApprovalType] = useState("");
+    const documentApproval = useFetchDocumentApproval({
+        documentApprovalId,
+        isOpen,
+    });
+    const fetchedUsers = useFetchUsersApprovalRole(
         documentApprovalType,
         isOpen
     );
+    const { closeModal } = useModalStore();
 
-    const { data, setData, post, processing, errors, reset } =
-        useForm<CreateDocumentApprovalData>({
-            document_id: "",
+    const { data, setData, put, processing, errors, reset, clearErrors } =
+        useForm<UpdateDocumentApprovalData>({
             resolution: "",
-            destination: "",
-            type: "approval",
+            type: "",
             users: [],
         });
 
@@ -42,28 +42,52 @@ export function useCreateDocumentApproval({ documentId, isOpen }: IProps) {
     const maxUsers = fetchedUsers.length;
 
     useEffect(() => {
-        // Reset users when document approval type changes
-        if (isOpen) {
-            setUsers([]);
-        }
-    }, [documentApprovalType, fetchedUsers, isOpen]);
+        if (documentApproval) {
+            setDocumentApprovalType(documentApproval.type);
 
-    const createApprovalSubmit: FormEventHandler = (e) => {
+            setUsers(
+                (documentApproval.document_user_approvals || []).map(
+                    (user: DocumentUserApproval) => ({
+                        selectedUser: user.user_id.toString(),
+                    })
+                )
+            );
+
+            setData({
+                resolution: documentApproval.resolution || "",
+                type: documentApproval.type || "",
+                users: (documentApproval.document_user_approvals || []).map(
+                    (user: DocumentUserApproval) => ({
+                        user_id: user.user_id,
+                    })
+                ),
+            });
+        }
+    }, [documentApproval, isOpen, documentApprovalType]);
+
+    useEffect(() => {
+        if (!isOpen) setUsers([]);
+    }, [documentApprovalType]);
+
+    const handleClose = () => {
+        closeModal("viewDocumentReview");
+        reset();
+        clearErrors();
+    };
+
+    const handleUpdateDocumentApproval = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const selectedUserIds = users
+        data.users = users
             .map((user) => parseInt(user.selectedUser))
-            .filter((id) => !isNaN(id));
+            .filter((id) => !isNaN(id))
+            .map((id) => ({ user_id: id.toString() }));
 
-        data.document_id = documentId ?? "";
-        data.users = selectedUserIds.map((id) => ({ user_id: id.toString() }));
-
-        post(route("document_approvals.store"), {
-            preserveScroll: true,
+        put(route("document_approvals.update", documentApprovalId), {
             onSuccess: () => {
-                closeModal("createDocumentApproval");
+                handleClose();
                 notifications.show({
-                    message: "Document approval process created",
+                    message: "Document approval updated successfully",
                     color: "green",
                 });
             },
@@ -111,7 +135,6 @@ export function useCreateDocumentApproval({ documentId, isOpen }: IProps) {
         setUsers(updatedUsers);
     };
 
-    // Compute selected user IDs to exclude them from other Select options
     const selectedUserIds = users
         .map((user) => user.selectedUser)
         .filter((id) => id !== "");
@@ -119,10 +142,12 @@ export function useCreateDocumentApproval({ documentId, isOpen }: IProps) {
     return {
         data,
         setData,
-        createApprovalSubmit,
+        handleUpdateDocumentApproval,
         processing,
         errors,
+        handleClose,
         users,
+        documentApproval,
         setDocumentApprovalType,
         addUser,
         removeUser,

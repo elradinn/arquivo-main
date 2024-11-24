@@ -20,9 +20,9 @@ interface DocumentApprovalUser {
     selectedUser: string;
 }
 
-export function useCreateDocumentApproval({ documentId, isOpen }: IProps) {
+export function useCreateDocumentReviewal({ documentId, isOpen }: IProps) {
     const [documentApprovalType, setDocumentApprovalType] =
-        useState("approval");
+        useState("reviewal");
     const { closeModal, modals } = useModalStore();
     const fetchedUsers: UserOption[] = useFetchUsersApprovalRole(
         documentApprovalType,
@@ -34,7 +34,7 @@ export function useCreateDocumentApproval({ documentId, isOpen }: IProps) {
             document_id: "",
             resolution: "",
             destination: "",
-            type: "approval",
+            type: "reviewal",
             users: [],
         });
 
@@ -61,9 +61,9 @@ export function useCreateDocumentApproval({ documentId, isOpen }: IProps) {
         post(route("document_approvals.store"), {
             preserveScroll: true,
             onSuccess: () => {
-                closeModal("createDocumentApproval");
+                closeModal("createDocumentReview");
                 notifications.show({
-                    message: "Document approval process created",
+                    message: "Document review process created",
                     color: "green",
                 });
             },

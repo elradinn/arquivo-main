@@ -218,7 +218,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                                     openModal(
                                         hasReviewal
                                             ? "viewDocumentReview"
-                                            : "createDocumentApproval"
+                                            : "createDocumentReview"
                                     );
                                 }}
                             >

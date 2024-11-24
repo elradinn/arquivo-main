@@ -18,6 +18,8 @@ import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
 import ConfirmDeleteDocumentApprovalForm from "./ConfirmDeleteDocumentApprovalForm";
 import { StatusIcon } from "@/Modules/Common/Components/StatusIcon/StatusIcon";
+import { useUpdateDocumentReview } from "../Hooks/use-update-document-review";
+import ConfirmDeleteDocumentReviewForm from "./ConfirmDeleteDocumentReviewForm";
 
 interface IFormProps {
     document?: DocumentResourceData;
@@ -29,7 +31,7 @@ const ViewDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
 
     // Assuming you want to handle the first approval for simplicity
     const documentApprovalId = document?.document_approval_ids?.find(
-        (approval) => approval.type === 'reviewal'
+        (approval) => approval.type === "reviewal"
     )?.id;
 
     const {
@@ -48,7 +50,7 @@ const ViewDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
         maxUsers,
         selectedUserIds,
         fetchedUsers,
-    } = useUpdateDocumentApproval({
+    } = useUpdateDocumentReview({
         documentApprovalId,
         isOpen,
     });
@@ -68,13 +70,25 @@ const ViewDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
     };
 
     // Determine if any user has made a decision
-    const hasDecisionMade = documentApproval?.document_user_approvals.some((ua) =>
-        ["Reviewal Accepted", "Reviewal Rejected", "Approval Accepted", "Approval Rejected"].includes(ua.user_state)
+    const hasDecisionMade = documentApproval?.document_user_approvals.some(
+        (ua) =>
+            [
+                "Reviewal Accepted",
+                "Reviewal Rejected",
+                "Approval Accepted",
+                "Approval Rejected",
+            ].includes(ua.user_state)
     );
 
     // Determine if all users have made decisions
-    const allUsersDecided = documentApproval?.document_user_approvals.every((ua) =>
-        ["Reviewal Accepted", "Reviewal Rejected", "Approval Accepted", "Approval Rejected"].includes(ua.user_state)
+    const allUsersDecided = documentApproval?.document_user_approvals.every(
+        (ua) =>
+            [
+                "Reviewal Accepted",
+                "Reviewal Rejected",
+                "Approval Accepted",
+                "Approval Rejected",
+            ].includes(ua.user_state)
     );
 
     return (
@@ -116,7 +130,9 @@ const ViewDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
                             label="Resolution"
                             placeholder="Your resolution for this approval"
                             value={data.resolution ?? ""}
-                            onChange={(e) => setData("resolution", e.target.value)}
+                            onChange={(e) =>
+                                setData("resolution", e.target.value)
+                            }
                             error={errors.resolution}
                             autosize
                             minRows={2}
@@ -129,22 +145,40 @@ const ViewDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
                         </Text>
 
                         {users.map((user, index) => {
-                            const userApproval = documentApproval?.document_user_approvals.find(
-                                (ua) => ua.user_id.toString() === user.selectedUser
-                            );
+                            const userApproval =
+                                documentApproval?.document_user_approvals.find(
+                                    (ua) =>
+                                        ua.user_id.toString() ===
+                                        user.selectedUser
+                                );
 
-                            const isDecided = userApproval && ["Reviewal Accepted", "Reviewal Rejected", "Approval Accepted", "Approval Rejected"].includes(userApproval.user_state);
+                            const isDecided =
+                                userApproval &&
+                                [
+                                    "Reviewal Accepted",
+                                    "Reviewal Rejected",
+                                    "Approval Accepted",
+                                    "Approval Rejected",
+                                ].includes(userApproval.user_state);
 
                             return (
-                                <Group key={index} justify="space-between" align="flex-end">
+                                <Group
+                                    key={index}
+                                    justify="space-between"
+                                    align="flex-end"
+                                >
                                     <Group>
-                                        <StatusIcon state={userApproval?.user_state} />
+                                        <StatusIcon
+                                            state={userApproval?.user_state}
+                                        />
                                     </Group>
                                     <Select
                                         placeholder="Select a user"
                                         data={getOptions(index)}
                                         value={user.selectedUser}
-                                        onChange={(value) => handleUserChange(index, value)}
+                                        onChange={(value) =>
+                                            handleUserChange(index, value)
+                                        }
                                         required={!isDecided}
                                         style={{ flex: 1 }}
                                         allowDeselect={!isDecided}
@@ -193,13 +227,20 @@ const ViewDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
                     </Stack>
 
                     <Flex align="center" justify="end" mt={16}>
-                        <Button variant="light" onClick={() => closeModal("viewDocumentReview")}>
+                        <Button
+                            variant="light"
+                            onClick={() => closeModal("viewDocumentReview")}
+                        >
                             {allUsersDecided ? "Close" : "Cancel"}
                         </Button>
 
                         {!allUsersDecided && (
                             <>
-                                <Button ml={12} type="submit" loading={processing}>
+                                <Button
+                                    ml={12}
+                                    type="submit"
+                                    loading={processing}
+                                >
                                     Update
                                 </Button>
 
@@ -208,7 +249,9 @@ const ViewDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
                                     color="red"
                                     onClick={() => {
                                         closeModal("viewDocumentReview");
-                                        openModal("confirmDeleteDocumentApproval");
+                                        openModal(
+                                            "confirmDeleteDocumentReview"
+                                        );
                                     }}
                                     title="Delete Document Approval"
                                     ml={12}
@@ -220,7 +263,9 @@ const ViewDocumentReviewForm: React.FC<IFormProps> = ({ document }) => {
                     </Flex>
                 </form>
             </Modal>
-            <ConfirmDeleteDocumentApprovalForm documentApprovalId={documentApprovalId} />
+            <ConfirmDeleteDocumentReviewForm
+                documentReviewId={documentApprovalId}
+            />
         </>
     );
 };

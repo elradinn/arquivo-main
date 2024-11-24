@@ -4,8 +4,8 @@ namespace Modules\DocumentApproval\Actions;
 
 use Illuminate\Support\Facades\Auth;
 use Modules\DocumentApproval\Models\DocumentApproval;
-use Modules\DocumentApproval\States\DocumentState;
 use Modules\User\Models\User;
+use Modules\Metadata\Models\Metadata;
 
 class DeleteDocumentApprovalAction
 {
@@ -13,16 +13,28 @@ class DeleteDocumentApprovalAction
     {
         $user = User::find(Auth::user()->id);
 
-        $user->notifications()->where('data->document_approval_id', $documentApproval->id)->delete();
+        // $user->notifications()->where('data->document_approval_id', $documentApproval->id)->delete();
+
+        $document = $documentApproval->document;
 
         if ($documentApproval->type === 'reviewal') {
-            $documentApproval->document()->update([
-                'review_status' => null
+            $document->update([
+                'review_status' => null,
             ]);
+
+            $metadata = Metadata::where('name', 'Review Status')->first();
+            if ($metadata) {
+                $document->metadata()->detach($metadata->id);
+            }
         } elseif ($documentApproval->type === 'approval') {
-            $documentApproval->document()->update([
-                'approval_status' => null
+            $document->update([
+                'approval_status' => null,
             ]);
+
+            $metadata = Metadata::where('name', 'Approval Status')->first();
+            if ($metadata) {
+                $document->metadata()->detach($metadata->id);
+            }
         }
 
         $documentApproval->delete();
