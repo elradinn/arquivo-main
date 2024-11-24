@@ -7,8 +7,13 @@ interface UseDeleteFilesProps {
 }
 
 export function useDeleteFiles({ setSelectedRecord }: UseDeleteFilesProps) {
-    const { data, delete: destroy, processing } = useForm({
+    const {
+        data,
+        delete: destroy,
+        processing,
+    } = useForm({
         ids: [],
+        isWorkspace: false,
     });
 
     const { closeModal } = useModalStore();
@@ -31,7 +36,8 @@ export function useDeleteFiles({ setSelectedRecord }: UseDeleteFilesProps) {
                 });
             },
             onError: (errors) => {
-                let message = "Error during file deletion. Please try again later.";
+                let message =
+                    "Error during file deletion. Please try again later.";
                 if (Object.keys(errors).length > 0) {
                     message = errors[Object.keys(errors)[0]];
                 }

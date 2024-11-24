@@ -16,6 +16,7 @@ import {
     IconTag,
     IconShare,
     IconDotsVertical,
+    IconTrash,
 } from "@tabler/icons-react";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { ItemParentResourceData } from "../Types/ItemParentResourceData";
@@ -28,6 +29,7 @@ import UpdateWorkflowForm from "@/Modules/Workflow/Forms/UpdateWorkflowForm";
 import useGenerateReport from "@/Modules/Common/Hooks/use-generate-report";
 import ShareModalForm from "@/Modules/Folder/Forms/ShareModalForm";
 import FolderPropertiesModal from "@/Modules/Folder/Forms/FolderPropertiesModal";
+import DeleteFilesForm from "./DeleteFilesForm";
 import { FolderResourceData } from "@/Modules/Folder/Types/FolderResourceData";
 
 interface IProps {
@@ -169,6 +171,17 @@ const ItemToolbar: React.FC<IProps> = ({
                     <IconFileReport size={18} />
                 </ActionIcon>
             </Tooltip>
+
+            <Tooltip label="Delete Folder" position="bottom" withArrow>
+                <ActionIcon
+                    variant="transparent"
+                    size="lg"
+                    color="red"
+                    onClick={() => openModal("deleteFiles")}
+                >
+                    <IconTrash size={18} />
+                </ActionIcon>
+            </Tooltip>
         </>
     );
 
@@ -270,6 +283,10 @@ const ItemToolbar: React.FC<IProps> = ({
             <UpdateNumberingSchemeForm itemParent={itemParent} />
             <ShareModalForm folderId={itemParent?.item_id ?? ""} />
             <FolderPropertiesModal itemParent={itemParent} />
+            <DeleteFilesForm
+                selectedIds={[itemParent?.item_id ?? ""]}
+                setSelectedRecord={() => {}}
+            />
         </Group>
     );
 };
