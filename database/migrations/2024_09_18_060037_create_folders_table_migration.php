@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('folders', function (Blueprint $table) {
             $table->uuid('item_id')->primary();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->unsignedBigInteger('owned_by');
             $table->softDeletes();
             $table->timestamps();

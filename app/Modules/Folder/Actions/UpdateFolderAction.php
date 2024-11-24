@@ -12,6 +12,7 @@ class UpdateFolderAction
     {
         $folder->update([
             'name' => $data->name,
+            'description' => $data->description,
         ]);
 
         activity()

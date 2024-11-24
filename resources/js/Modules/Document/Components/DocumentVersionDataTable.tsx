@@ -10,11 +10,11 @@ interface DocumentVersionsDataTableProps {
     versions: DocumentVersionResourceData[];
 }
 
-const DocumentVersionsDataTable: React.FC<DocumentVersionsDataTableProps> = ({ versions }) => {
+const DocumentVersionsDataTable: React.FC<DocumentVersionsDataTableProps> = ({
+    versions,
+}) => {
     const { restoreVersion } = useRestoreDocumentVersion();
     const { deleteVersion } = useDeleteDocumentVersion();
-
-    console.log("versions", versions);
 
     return (
         <DataTable
@@ -26,14 +26,15 @@ const DocumentVersionsDataTable: React.FC<DocumentVersionsDataTableProps> = ({ v
                     title: "Actions",
                     render: (record: DocumentVersionResourceData) => (
                         <Group gap={4}>
-                            <ActionIcon
-                                variant="subtle"
-                                onClick={() => restoreVersion(record.id)}
-                            >
-                                <IconRefresh size={16} />
-                            </ActionIcon>
-                            {
-                                !record.current &&
+                            {!record.current && (
+                                <ActionIcon
+                                    variant="subtle"
+                                    onClick={() => restoreVersion(record.id)}
+                                >
+                                    <IconRefresh size={16} />
+                                </ActionIcon>
+                            )}
+                            {!record.current && (
                                 <ActionIcon
                                     variant="subtle"
                                     color="red"
@@ -41,11 +42,9 @@ const DocumentVersionsDataTable: React.FC<DocumentVersionsDataTableProps> = ({ v
                                 >
                                     <IconTrash size={16} />
                                 </ActionIcon>
-                            }
+                            )}
                             <a href={record.file_path} download>
-                                <ActionIcon
-                                    variant="subtle"
-                                >
+                                <ActionIcon variant="subtle">
                                     <IconDownload size={16} />
                                 </ActionIcon>
                             </a>
