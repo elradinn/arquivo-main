@@ -1,6 +1,17 @@
 import React from "react";
 import { Head, Link, router } from "@inertiajs/react";
-import { Anchor, Box, Breadcrumbs, Button, FileButton, Grid, Group, Paper, Stack, Text } from "@mantine/core";
+import {
+    Anchor,
+    Box,
+    Breadcrumbs,
+    Button,
+    FileButton,
+    Grid,
+    Group,
+    Paper,
+    Stack,
+    Text,
+} from "@mantine/core";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import {
     IconChevronRight,
@@ -8,6 +19,7 @@ import {
     IconFile,
     IconGitBranch,
     IconLock,
+    IconPencil,
     IconShare,
     IconUpload,
 } from "@tabler/icons-react";
@@ -34,9 +46,16 @@ interface IProps {
     userRole: string | null;
 }
 
-const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, activityLog, userRole }) => {
+const DocumentPropertiesPage: React.FC<IProps> = ({
+    document,
+    itemAncestors,
+    activityLog,
+    userRole,
+}) => {
     const { openModal } = useModalStore();
-    const { uploadVersion, processing, errors } = useUploadDocumentVersion(document.item_id);
+    const { uploadVersion, processing, errors } = useUploadDocumentVersion(
+        document.item_id
+    );
 
     const handleFileUpload = (file: File | null) => {
         if (file) {
@@ -44,8 +63,29 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
         }
     };
 
-    const hasReviewal = document.document_approval_ids?.some(approval => approval.type === "reviewal");
-    const hasApproval = document.document_approval_ids?.some(approval => approval.type === "approval");
+    console.log(document);
+
+    const hasReviewal = document.document_approval_ids?.some(
+        (approval) => approval.type === "reviewal"
+    );
+    const hasApproval = document.document_approval_ids?.some(
+        (approval) => approval.type === "approval"
+    );
+
+    // Combine default metadata with custom metadata
+    const defaultMetadata = [
+        { name: "Document ID", value: document.item_id },
+        { name: "Date", value: document.created_at },
+        { name: "Document Number", value: document.document_number },
+    ];
+
+    const combinedMetadata = [
+        ...defaultMetadata,
+        ...document.metadata.map((meta) => ({
+            name: meta.name,
+            value: meta.value || "N/A",
+        })),
+    ];
 
     return (
         <Authenticated>
@@ -66,26 +106,32 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                             <Text fw={500}>{document.name}</Text>
                         </Group>
 
-                        <Group justify="space-between" w={700}>
-                            <div>
-                                <Text size="sm" fw="bold">
-                                    Document ID
+                        {/* Combined Metadata */}
+                        <Stack gap={12} mt={24}>
+                            {combinedMetadata.length > 0 ? (
+                                <Grid gutter="lg">
+                                    {combinedMetadata.map((meta, index) => (
+                                        <Grid.Col
+                                            span={4}
+                                            key={`${meta.name}-${index}`}
+                                        >
+                                            <Stack gap={4}>
+                                                <Text size="sm" fw="bold">
+                                                    {meta.name}
+                                                </Text>
+                                                <Text size="sm">
+                                                    {meta.value}
+                                                </Text>
+                                            </Stack>
+                                        </Grid.Col>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                <Text size="sm" c="dimmed">
+                                    No metadata available.
                                 </Text>
-                                <Text size="sm">{document.item_id}</Text>
-                            </div>
-                            <div>
-                                <Text size="sm" fw="bold">
-                                    Date
-                                </Text>
-                                <Text size="sm">{document.created_at}</Text>
-                            </div>
-                            <div>
-                                <Text size="sm" fw="bold">
-                                    Document Number
-                                </Text>
-                                <Text size="sm">{document.document_number}</Text>
-                            </div>
-                        </Group>
+                            )}
+                        </Stack>
 
                         <Stack gap={12}>
                             {document.versions.length > 0 && (
@@ -93,7 +139,9 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                                     <Text size="sm" fw="bold">
                                         Document Versions
                                     </Text>
-                                    <DocumentVersionsDataTable versions={document.versions} />
+                                    <DocumentVersionsDataTable
+                                        versions={document.versions}
+                                    />
                                 </>
                             )}
 
@@ -106,7 +154,10 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                                     { accessor: "date" },
                                     { accessor: "time" },
                                     { accessor: "user_name", title: "User" },
-                                    { accessor: "description", title: "Action" },
+                                    {
+                                        accessor: "description",
+                                        title: "Action",
+                                    },
                                 ]}
                                 records={activityLog}
                                 highlightOnHover
@@ -123,21 +174,23 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                             Options
                         </Text>
 
-                        {(userRole === 'editor' || userRole === 'admin') && (
+                        {(userRole === "editor" || userRole === "admin") && (
                             <Button
                                 variant="subtle"
                                 color="blue.5"
-                                leftSection={<IconShare size={18} />}
+                                leftSection={<IconPencil size={18} />}
                                 fullWidth
                                 justify="left"
                                 component={Link}
-                                href={route('document.edit', { document: document.item_id })}
+                                href={route("document.edit", {
+                                    document: document.item_id,
+                                })}
                             >
                                 Edit Document
                             </Button>
                         )}
 
-                        {(userRole === 'editor' || userRole === 'admin') && (
+                        {(userRole === "editor" || userRole === "admin") && (
                             <FileButton onChange={handleFileUpload}>
                                 {(props) => (
                                     <Button
@@ -154,7 +207,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                             </FileButton>
                         )}
 
-                        {(userRole === 'editor' || userRole === 'admin') && (
+                        {(userRole === "editor" || userRole === "admin") && (
                             <Button
                                 variant="subtle"
                                 color="blue.5"
@@ -162,14 +215,18 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                                 fullWidth
                                 justify="left"
                                 onClick={() => {
-                                    openModal(hasReviewal ? "viewDocumentReview" : "createDocumentApproval");
+                                    openModal(
+                                        hasReviewal
+                                            ? "viewDocumentReview"
+                                            : "createDocumentApproval"
+                                    );
                                 }}
                             >
                                 {hasReviewal ? "View" : "Start"} Review Process
                             </Button>
                         )}
 
-                        {(userRole === 'editor' || userRole === 'admin') && (
+                        {(userRole === "editor" || userRole === "admin") && (
                             <Button
                                 variant="subtle"
                                 color="blue.5"
@@ -177,17 +234,24 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                                 fullWidth
                                 justify="left"
                                 onClick={() => {
-                                    openModal(hasApproval ? "viewDocumentApproval" : "createDocumentApproval");
+                                    openModal(
+                                        hasApproval
+                                            ? "viewDocumentApproval"
+                                            : "createDocumentApproval"
+                                    );
                                 }}
                             >
-                                {hasApproval ? "View" : "Start"} Approval Process
+                                {hasApproval ? "View" : "Start"} Approval
+                                Process
                             </Button>
                         )}
 
                         <Button
                             variant="subtle"
                             component="a"
-                            href={route('document.view', { document: document.item_id })}
+                            href={route("document.view", {
+                                document: document.item_id,
+                            })}
                             target="_blank"
                             color="blue.5"
                             leftSection={<IconEye size={18} />}
@@ -197,7 +261,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
                             View Document
                         </Button>
 
-                        {(userRole === 'editor' || userRole === 'admin') && (
+                        {(userRole === "editor" || userRole === "admin") && (
                             <Button
                                 variant="subtle"
                                 color="blue.5"
@@ -220,6 +284,6 @@ const DocumentPropertiesPage: React.FC<IProps> = ({ document, itemAncestors, act
             <ShareDocumentModalForm documentId={document.item_id} />
         </Authenticated>
     );
-}
+};
 
 export default DocumentPropertiesPage;
