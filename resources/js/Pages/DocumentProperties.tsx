@@ -134,7 +134,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                         </Stack>
 
                         <Stack gap={12}>
-                            {document.versions.length > 0 && (
+                            {/* {document.versions.length > 0 && (
                                 <>
                                     <Text size="sm" fw="bold">
                                         Document Versions
@@ -143,7 +143,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                                         versions={document.versions}
                                     />
                                 </>
-                            )}
+                            )} */}
 
                             <Text size="sm" fw="bold">
                                 Audit Log
@@ -190,7 +190,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                             </Button>
                         )}
 
-                        {(userRole === "editor" || userRole === "admin") && (
+                        {/* {(userRole === "editor" || userRole === "admin") && (
                             <FileButton onChange={handleFileUpload}>
                                 {(props) => (
                                     <Button
@@ -205,7 +205,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                                     </Button>
                                 )}
                             </FileButton>
-                        )}
+                        )} */}
 
                         {(userRole === "editor" || userRole === "admin") && (
                             <Button

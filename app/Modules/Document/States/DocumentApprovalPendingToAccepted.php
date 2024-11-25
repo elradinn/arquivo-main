@@ -32,7 +32,7 @@ class DocumentApprovalPendingToAccepted extends Transition
 
         // dd($folder->numberingScheme->add_if_approved);
 
-        if ($folder->numberingScheme->add_if_approved) {
+        if ($folder && $folder->numberingScheme && $folder->numberingScheme->add_if_approved) {
             $applyDocumentNumberAction->execute($this->document);
         }
 
