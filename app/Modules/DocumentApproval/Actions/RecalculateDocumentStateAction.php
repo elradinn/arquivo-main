@@ -35,10 +35,18 @@ class RecalculateDocumentStateAction
                 $documentApproval->overall_state->transitionTo(DocumentReviewalRejected::class);
 
                 $documentApproval->document->review_status->transitionTo(StatesDocumentReviewalRejected::class);
+
+                $documentApproval->document->versions()->where('current', true)->update([
+                    'review_status' => new StatesDocumentReviewalRejected($documentApproval->document),
+                ]);
             } elseif ($documentApprovalUsers->every('user_state', UserReviewalAccepted::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentReviewalAccepted::class);
 
                 $documentApproval->document->review_status->transitionTo(StatesDocumentReviewalAccepted::class);
+
+                $documentApproval->document->versions()->where('current', true)->update([
+                    'review_status' => new StatesDocumentReviewalAccepted($documentApproval->document),
+                ]);
             }
         } else if ($documentApproval->type == 'approval') {
             if ($documentApprovalUsers->contains('user_state', UserApprovalPending::class)) {
@@ -49,10 +57,18 @@ class RecalculateDocumentStateAction
                 $documentApproval->overall_state->transitionTo(DocumentApprovalRejected::class);
 
                 $documentApproval->document->approval_status->transitionTo(StatesDocumentApprovalRejected::class);
+
+                $documentApproval->document->versions()->where('current', true)->update([
+                    'approval_status' => new StatesDocumentApprovalRejected($documentApproval->document),
+                ]);
             } elseif ($documentApprovalUsers->every('user_state', UserApprovalAccepted::class)) {
                 $documentApproval->overall_state->transitionTo(DocumentApprovalAccepted::class);
 
                 $documentApproval->document->approval_status->transitionTo(StatesDocumentApprovalAccepted::class);
+
+                $documentApproval->document->versions()->where('current', true)->update([
+                    'approval_status' => new StatesDocumentApprovalAccepted($documentApproval->document),
+                ]);
             }
         }
     }

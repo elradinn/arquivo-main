@@ -39,8 +39,8 @@ class DocumentResourceData extends Resource
             item_id: $document->item_id,
             name: $document->name,
             document_number: $document->document_number,
-            review_status: $document->review_status,
-            approval_status: $document->approval_status,
+            review_status: $document->review_status?->label(),
+            approval_status: $document->approval_status?->label(),
             description: $document->description,
             mime: $document->mime,
             due_date: $document->due_date,
@@ -65,7 +65,10 @@ class DocumentResourceData extends Resource
                 'file_path' => $version->file_path,
                 'uploaded_at' => $version->created_at->toDateTimeString(),
                 'name' => $version->name,
-                'current' => $version->current
+                'mime' => $version->mime,
+                'current' => $version->current,
+                'review_status' => $version->review_status?->label(),
+                'approval_status' => $version->approval_status?->label(),
             ])->toArray(),
             created_at: $document->created_at,
             updated_at: $document->updated_at

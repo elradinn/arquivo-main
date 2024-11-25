@@ -5,6 +5,7 @@ import { IconDownload, IconTrash, IconRefresh } from "@tabler/icons-react";
 import { DocumentVersionResourceData } from "../Types/DocumentVersionResourceData";
 import useRestoreDocumentVersion from "../Hooks/use-restore-document-version";
 import useDeleteDocumentVersion from "../Hooks/use-delete-document-version";
+import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 
 interface DocumentVersionsDataTableProps {
     versions: DocumentVersionResourceData[];
@@ -19,7 +20,26 @@ const DocumentVersionsDataTable: React.FC<DocumentVersionsDataTableProps> = ({
     return (
         <DataTable
             columns={[
-                { accessor: "name", title: "Name" },
+                {
+                    accessor: "name",
+                    title: "Name",
+                    render: ({
+                        name,
+                        review_status,
+                        approval_status,
+                        mime,
+                    }) => (
+                        <Group align="center" gap={12}>
+                            <ItemIcon
+                                mime={mime}
+                                isFolder={false}
+                                reviewStatus={review_status}
+                                approvalStatus={approval_status}
+                            />
+                            <span>{name}</span>
+                        </Group>
+                    ),
+                },
                 { accessor: "uploaded_at", title: "Uploaded At" },
                 {
                     accessor: "actions",

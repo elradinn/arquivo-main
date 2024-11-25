@@ -26,6 +26,10 @@ class DocumentApprovalPendingToAccepted extends Transition
         $this->document->approval_status = new StatesDocumentApprovalAccepted($this->document);
         $this->document->save();
 
+        $this->document->versions()->where('current', true)->update([
+            'approval_status' => new StatesDocumentApprovalAccepted($this->document),
+        ]);
+
         // dd($folder->numberingScheme->add_if_approved);
 
         if ($folder->numberingScheme->add_if_approved) {

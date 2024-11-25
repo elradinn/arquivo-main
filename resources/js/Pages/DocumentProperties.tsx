@@ -63,8 +63,6 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
         }
     };
 
-    console.log(document);
-
     const hasReviewal = document.document_approval_ids?.some(
         (approval) => approval.type === "reviewal"
     );
@@ -86,6 +84,8 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
             value: meta.value || "N/A",
         })),
     ];
+
+    console.log(document);
 
     return (
         <Authenticated>
