@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Head } from "@inertiajs/react";
 import { DataTable, DataTableColumn } from "mantine-datatable";
 import { Group, Stack, Text } from "@mantine/core";
@@ -14,12 +14,20 @@ interface SharedWithMeProps {
 const columns: DataTableColumn<ItemContentsResourceData>[] = [
     {
         accessor: "name",
-        render: ({ mime, type, name, status, missing_required_metadata }) => (
+        render: ({
+            mime,
+            type,
+            name,
+            review_status,
+            approval_status,
+            missing_required_metadata,
+        }) => (
             <Group align="center" gap={12}>
                 <ItemIcon
                     mime={mime ?? ""}
                     isFolder={type === "folder"}
-                    approvalStatus={status}
+                    approvalStatus={approval_status}
+                    reviewStatus={review_status}
                     missingRequiredMetadata={missing_required_metadata}
                 />
                 <span>{name}</span>
@@ -71,4 +79,4 @@ const SharedWithMePage: React.FC<SharedWithMeProps> = ({ sharedContents }) => {
     );
 };
 
-export default SharedWithMePage; 
+export default SharedWithMePage;
