@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Modules\Common\Controllers\Controller;
 use Modules\User\Models\User;
 use Modules\User\Actions\DeleteUserAction;
@@ -16,17 +17,35 @@ use Modules\User\Data\RegisterUserData;
 use Modules\User\Data\UpdateUserData;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Modules\User\Authorization\UserAuthorization;
 
 class UserController extends Controller
 {
+    protected UserAuthorization $userAuthorization;
+
+    protected RegisterUserAction $registerUserAction;
+
+    protected UpdateUserAction $updateUserAction;
+
+    protected DeleteUserAction $deleteUserAction;
+
     public function __construct(
-        protected RegisterUserAction $registerUserAction,
-        protected UpdateUserAction $updateUserAction,
-        protected DeleteUserAction $deleteUserAction
-    ) {}
+        RegisterUserAction $registerUserAction,
+        UpdateUserAction $updateUserAction,
+        DeleteUserAction $deleteUserAction,
+        UserAuthorization $userAuthorization
+    ) {
+        $this->registerUserAction = $registerUserAction;
+        $this->updateUserAction = $updateUserAction;
+        $this->deleteUserAction = $deleteUserAction;
+        $this->userAuthorization = $userAuthorization;
+    }
 
     public function index(Request $request)
     {
+        // Authorize the user to view users
+        $this->userAuthorization->canView($request->user());
+
         $search = $request->input('search');
 
         $users = User::query()
@@ -51,6 +70,9 @@ class UserController extends Controller
 
     public function register(RegisterUserData $registerUserData): RedirectResponse
     {
+        // Authorize the user to create a new user
+        $this->userAuthorization->canCreate(Auth::user());
+
         $user = $this->registerUserAction->execute($registerUserData);
 
         return redirect()->back();
@@ -58,6 +80,9 @@ class UserController extends Controller
 
     public function update(User $user, UpdateUserData $updateUserData): RedirectResponse
     {
+        // Authorize the user to update this user
+        $this->userAuthorization->canUpdate(Auth::user(), $user);
+
         $updatedUser = $this->updateUserAction->execute($user, $updateUserData);
 
         return redirect()->back();
@@ -65,6 +90,9 @@ class UserController extends Controller
 
     public function delete(User $user): RedirectResponse
     {
+        // Authorize the user to delete this user
+        $this->userAuthorization->canDelete(Auth::user(), $user);
+
         $this->deleteUserAction->execute($user);
 
         return redirect()->back();
@@ -78,7 +106,7 @@ class UserController extends Controller
 
         if ($type == 'reviewal') {
             $users = User::where('workflow_role', 'reviewer')->get();
-        } else if ($type == 'approval') {
+        } elseif ($type == 'approval') {
             $users = User::where('workflow_role', 'approver')->get();
         }
 

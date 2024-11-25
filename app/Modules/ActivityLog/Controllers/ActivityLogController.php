@@ -10,11 +10,22 @@ use App\Modules\ActivityLog\Helpers\ObjectTypeMapper;
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Modules\User\Models\User;
+use App\Modules\ActivityLog\Authorization\ActivityLogAuthorization;
 
 class ActivityLogController extends Controller
 {
+    protected ActivityLogAuthorization $activityLogAuthorization;
+
+    public function __construct(ActivityLogAuthorization $activityLogAuthorization)
+    {
+        $this->activityLogAuthorization = $activityLogAuthorization;
+    }
+
     public function index(Request $request): Response
     {
+        // Authorize the user
+        $this->activityLogAuthorization->canView($request->user());
+
         $search = $request->input('search');
         $userId = $request->input('user_id');
         $objectType = $request->input('object_type', '');
