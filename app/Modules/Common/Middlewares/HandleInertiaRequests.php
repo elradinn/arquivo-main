@@ -94,7 +94,7 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,
-                'systemRole' => ($user && ($user->hasRole('admin') || $user->hasRole('viewer'))) ? $user->system_role : null,
+                'systemRole' => ($user && ($user->hasRole('admin'))) ? $user->system_role : null,
             ],
             'workspaces' => FolderLinksData::collect($workspaces, DataCollection::class),
             'csrf_token' => csrf_token(),
