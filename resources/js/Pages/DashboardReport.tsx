@@ -122,16 +122,39 @@ export default function DashboardReportPage({
     };
 
     /**
+     * Handle clearing all filters.
+     */
+    const handleClearFilters = () => {
+        setDocumentStatus(null);
+        setDateRange([null, null]);
+        setSearch("");
+        handleFilter({
+            document_status: null,
+            start_date: null,
+            end_date: null,
+        });
+    };
+
+    /**
      * Function to render dynamic columns with special handling for 'status' and 'due_in'.
      */
     const renderDynamicColumns = (): DataTableColumn<ItemContentsResourceData>[] => {
         return selectedMetadata.map((meta) => {
-            // Check if the metadata corresponds to 'status'
-            if (meta.name.toLowerCase() === 'status') {
+            // Check if the metadata corresponds to 'review status'
+            if (meta.name.toLowerCase() === 'review status') {
                 return {
-                    accessor: `status`,
-                    title: 'Status',
-                    render: ({ status }) => <StateBadge state={status} />,
+                    accessor: `review status`,
+                    title: 'Review Status',
+                    render: ({ review_status }) => <StateBadge state={review_status} />,
+                };
+            }
+
+            // Check if the metadata corresponds to 'approval status'
+            if (meta.name.toLowerCase() === 'approval status') {
+                return {
+                    accessor: `approval status`,
+                    title: 'Approval Status',
+                    render: ({ approval_status }) => <StateBadge state={approval_status} />,
                 };
             }
 
@@ -143,7 +166,7 @@ export default function DashboardReportPage({
                     render: ({ due_in }) => {
                         return due_in !== undefined && due_in !== null ? (
                             due_in < 0 ? (
-                                <Text color="red" size="sm">{Math.abs(due_in)} days overdue</Text>
+                                <Text c="red" size="sm">{Math.abs(due_in)} days overdue</Text>
                             ) : (
                                 <Text size="sm">{`${due_in} day${due_in !== 1 ? 's' : ''} remaining`}</Text>
                             )
@@ -171,14 +194,14 @@ export default function DashboardReportPage({
             <Head title="Dashboard Report" />
             <Stack px={8} gap={24} py={8}>
                 <Group>
-                    <Text component="h2" size="xl" c="gray.8">
+                    <Text component="h2" size="xl" color="gray.8">
                         Dashboard Report
                     </Text>
                 </Group>
 
                 <Stack>
                     {/* Filter Options */}
-                    <Group gap="md">
+                    <Group justify="space-between">
                         <Flex
                             gap="md"
                             justify="flex-start"
@@ -206,7 +229,8 @@ export default function DashboardReportPage({
                                 placeholder="Select date range"
                                 value={dateRange}
                                 onChange={handleDateRangeChange}
-                                style={{ width: 300 }}
+                                style={{ width: 400 }}
+                                allowSingleDateInRange
                             />
 
                             <Button
@@ -219,15 +243,26 @@ export default function DashboardReportPage({
                             </Button>
                         </Flex>
 
-                        {/* Generate Report Button */}
-                        <Button
-                            onClick={handleGenerateReport}
-                            leftSection={<IconDownload size={16} />}
-                            color="blue"
-                            variant="subtle"
-                        >
-                            Generate Report
-                        </Button>
+                        <Flex gap="sm">
+                            {/* Clear Filters Button */}
+                            <Button
+                                onClick={handleClearFilters}
+                                variant="subtle"
+                                color="gray"
+                            >
+                                Clear Filters
+                            </Button>
+
+                            {/* Generate Report Button */}
+                            <Button
+                                onClick={handleGenerateReport}
+                                leftSection={<IconDownload size={16} />}
+                                color="blue"
+                                variant="subtle"
+                            >
+                                Generate Report
+                            </Button>
+                        </Flex>
                     </Group>
 
                     {/* Select Dashboard Metadata Columns Modal */}

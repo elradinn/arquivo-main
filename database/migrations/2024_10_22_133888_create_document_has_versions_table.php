@@ -14,6 +14,8 @@ return new class extends Migration
             $table->string('mime');
             $table->integer('size');
             $table->uuid('document_item_id');
+            $table->string('review_status')->nullable();
+            $table->string('approval_status')->nullable();
             $table->string('file_path');
             $table->boolean('current')->default(false);
             $table->timestamps();

@@ -1,8 +1,8 @@
 import React from "react";
 import ApproveIcon from "@/Modules/Common/Components/ApproveIcon/ApproveIcon";
 import { ActionIcon, Avatar, Badge, Burger, Button, Card, Divider, Flex, Group, Menu, Paper, rem, Stack, Text, Textarea } from "@mantine/core";
-import { Head, Link, useForm, usePage } from "@inertiajs/react";
-import { IconDownload, IconFileTypePdf, IconFolder, IconLayoutGrid, IconLogout, IconMessageCircle, IconUser } from "@tabler/icons-react";
+import { Head, Link, router, useForm, usePage } from "@inertiajs/react";
+import { IconDownload, IconEye, IconFileTypePdf, IconFolder, IconLayoutGrid, IconLogout, IconMessageCircle, IconUser } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { DocumentApprovalResourceData } from "@/Modules/DocumentApproval/Types/DocumentApprovalResourceData";
 import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
@@ -154,8 +154,14 @@ const ApproveDocumentPage: React.FC<IProps> = ({ documentApproval }) => {
                                         </Text>
                                     </div>
                                 </Group>
-                                <ActionIcon onClick={() => downloadFiles({ all: false, ids: [documentApproval.document_id] })}>
-                                    <IconDownload />
+                                <ActionIcon
+                                    // onClick={() => downloadFiles({ all: false, ids: [documentApproval.document_id] })}
+                                    component="a"
+                                    href={route('document.view', { document: documentApproval.document_id })}
+                                    target="_blank"
+                                    variant="subtle"
+                                >
+                                    <IconEye />
                                 </ActionIcon>
                             </Group>
                         </Card>

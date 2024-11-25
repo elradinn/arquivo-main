@@ -12,6 +12,7 @@ class ItemParentResourceData extends Data
         public string $item_id,
         public ?string $parent_id,
         public string $name,
+        public ?string $description = null,
         public string $owned_by,
         public ?string $numbering_scheme_id = null,
         public ?string $workflow_id = null,
@@ -24,10 +25,13 @@ class ItemParentResourceData extends Data
     {
         $item->load('folder.userAccess');
 
+        // dd($item->folder->description);
+
         return new self(
             item_id: $item->id,
             parent_id: $item->parent_id ?? null,
             name: $item->workspace->name ?? $item->folder->name ?? '',
+            description: $item->folder->description ?? null,
             owned_by: $item->workspace->owned_by ?? $item->folder->owned_by ?? '',
             numbering_scheme_id: $item->folder->numberingScheme->id ?? null,
             workflow_id: $item->folder->workflow->id ?? null,

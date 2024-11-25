@@ -27,16 +27,8 @@ class RoleRedirectMiddleware
             $user = Auth::user();
             $user = User::find($user->id);
 
-            if ($user->hasRole('admin')) {
-                // If the user is already on the dashboard route, proceed
-                if (!$request->is('dashboard*')) {
-                    return redirect()->route('dashboard');
-                }
-            } else {
-                // If the user is already on the shared-with-me route, proceed
-                if (!$request->is('item/shared-with-me')) {
-                    return redirect()->route('item.sharedWithMe');
-                }
+            if (!$request->is('dashboard*')) {
+                return redirect()->route('dashboard');
             }
         } else {
             // For guests, redirect to login if not already on login

@@ -16,13 +16,19 @@ interface DocumentApprovalUser {
     selectedUser: string;
 }
 
-export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps) {
-    const [documentApprovalType, setDocumentApprovalType] = useState("reviewal");
+export function useUpdateDocumentApproval({
+    documentApprovalId,
+    isOpen,
+}: IProps) {
+    const [documentApprovalType, setDocumentApprovalType] = useState("");
     const documentApproval = useFetchDocumentApproval({
         documentApprovalId,
         isOpen,
     });
-    const fetchedUsers = useFetchUsersApprovalRole(documentApprovalType, isOpen);
+    const fetchedUsers = useFetchUsersApprovalRole(
+        documentApprovalType,
+        isOpen
+    );
     const { closeModal } = useModalStore();
 
     const { data, setData, put, processing, errors, reset, clearErrors } =
@@ -37,27 +43,30 @@ export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps
 
     useEffect(() => {
         if (documentApproval) {
-            setDocumentApprovalType(documentApproval.type || "");
+            setDocumentApprovalType(documentApproval.type);
+
+            setUsers(
+                (documentApproval.document_user_approvals || []).map(
+                    (user: DocumentUserApproval) => ({
+                        selectedUser: user.user_id.toString(),
+                    })
+                )
+            );
 
             setData({
                 resolution: documentApproval.resolution || "",
                 type: documentApproval.type || "",
-                users: (documentApproval.document_user_approvals || []).map((user: DocumentUserApproval) => ({
-                    user_id: user.user_id,
-                })),
+                users: (documentApproval.document_user_approvals || []).map(
+                    (user: DocumentUserApproval) => ({
+                        user_id: user.user_id,
+                    })
+                ),
             });
-
-            setUsers(
-                (documentApproval.document_user_approvals || []).map((user: DocumentUserApproval) => ({
-                    selectedUser: user.user_id.toString(),
-                }))
-            );
         }
-    }, [documentApproval, isOpen]);
+    }, [documentApproval, isOpen, documentApprovalType]);
 
     useEffect(() => {
-        // Reset users when documentApprovalType changes
-        setUsers([]);
+        if (!isOpen) setUsers([]);
     }, [documentApprovalType]);
 
     const handleClose = () => {
@@ -111,10 +120,7 @@ export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps
         const newUsers = availableUsers.map((u) => ({
             selectedUser: u.id.toString(),
         }));
-        setUsers([
-            ...users,
-            ...newUsers,
-        ]);
+        setUsers([...users, ...newUsers]);
     };
 
     const removeUser = (index: number) => {
@@ -129,7 +135,9 @@ export function useUpdateDocumentApproval({ documentApprovalId, isOpen }: IProps
         setUsers(updatedUsers);
     };
 
-    const selectedUserIds = users.map((user) => user.selectedUser).filter((id) => id !== "");
+    const selectedUserIds = users
+        .map((user) => user.selectedUser)
+        .filter((id) => id !== "");
 
     return {
         data,

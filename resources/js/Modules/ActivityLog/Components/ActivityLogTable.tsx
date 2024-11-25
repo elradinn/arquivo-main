@@ -36,7 +36,7 @@ const ActivityLogTable: React.FC<ActivityLogTableProps> = ({
                 { accessor: "user_name", title: "User" },
                 { accessor: "subject_type", title: "Object Type" },
                 { accessor: "subject_name", title: "Object" },
-                { accessor: "description", title: "Description" },
+                { accessor: "description", title: "Action", width: 250 },
             ]}
             records={records}
         />

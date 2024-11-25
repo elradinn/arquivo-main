@@ -23,6 +23,7 @@ class Folder extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'owned_by',
         'parent_id', // Add parent_id to allow hierarchical folders
     ];

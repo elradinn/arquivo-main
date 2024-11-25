@@ -2,6 +2,8 @@
 
 namespace Modules\DocumentApproval\Actions;
 
+use Modules\Document\States\DocumentApprovalPending as StatesDocumentApprovalPending;
+use Modules\Document\States\DocumentReviewalPending as StatesDocumentReviewalPending;
 use Modules\DocumentApproval\Data\UpdateDocumentApprovalData;
 use Modules\DocumentApproval\Models\DocumentApproval;
 use Modules\DocumentApproval\States\DocumentApprovalPending;
@@ -28,9 +30,15 @@ class UpdateDocumentApprovalAction
         ]);
 
         // Update the related document's status
-        $documentApproval->document()->update([
-            'status' => $data->type === 'reviewal' ? DocumentReviewalPending::class : DocumentApprovalPending::class,
-        ]);
+        if ($data->type === 'reviewal') {
+            $documentApproval->document()->update([
+                'review_status' => StatesDocumentReviewalPending::class,
+            ]);
+        } elseif ($data->type === 'approval') {
+            $documentApproval->document()->update([
+                'approval_status' => StatesDocumentApprovalPending::class,
+            ]);
+        }
 
         // Determine required role based on the new type
         $requiredRole = $this->getRequiredRole($data->type);

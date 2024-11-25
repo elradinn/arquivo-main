@@ -23,6 +23,8 @@ class RestoreDocumentVersionAction
             'updated_at' => now(),
             'mime' => $version->mime,
             'size' => $version->size,
+            'review_status' => $version->review_status,
+            'approval_status' => $version->approval_status,
         ]);
 
         // Log activity

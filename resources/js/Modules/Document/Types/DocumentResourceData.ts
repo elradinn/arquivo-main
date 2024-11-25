@@ -7,11 +7,15 @@ export type DocumentResourceData = {
     name: string;
     mime: string;
     document_number?: string;
-    status?: string;
+    review_status?: string;
+    approval_status: string;
     description?: string;
     due_date?: string;
     file_path?: string;
-    document_approval_id?: string;
+    document_approval_ids?: {
+        id: string;
+        type: string;
+    }[];
     related_documents: Array<{
         id: string;
         item_id: string;

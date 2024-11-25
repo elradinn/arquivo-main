@@ -13,21 +13,40 @@ use Modules\NumberingScheme\Models\NumberingScheme;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Modules\NumberingScheme\Authorization\NumberingSchemeAuthorization;
 
 class NumberingSchemeController extends Controller
 {
+    protected NumberingSchemeAuthorization $numberingSchemeAuthorization;
+
+    protected CreateNumberingSchemeAction $createNumberingSchemeAction;
+
+    protected UpdateNumberingSchemeAction $updateNumberingSchemeAction;
+
+    protected DeleteNumberingSchemeAction $deleteNumberingSchemeAction;
+
     public function __construct(
-        protected CreateNumberingSchemeAction $createNumberingSchemeAction,
-        protected UpdateNumberingSchemeAction $updateNumberingSchemeAction,
-        protected DeleteNumberingSchemeAction $deleteNumberingSchemeAction,
-    ) {}
+        CreateNumberingSchemeAction $createNumberingSchemeAction,
+        UpdateNumberingSchemeAction $updateNumberingSchemeAction,
+        DeleteNumberingSchemeAction $deleteNumberingSchemeAction,
+        NumberingSchemeAuthorization $numberingSchemeAuthorization
+    ) {
+        $this->createNumberingSchemeAction = $createNumberingSchemeAction;
+        $this->updateNumberingSchemeAction = $updateNumberingSchemeAction;
+        $this->deleteNumberingSchemeAction = $deleteNumberingSchemeAction;
+        $this->numberingSchemeAuthorization = $numberingSchemeAuthorization;
+    }
 
     /**
-     * @return \Inertia\Response
+     * Display a listing of the numbering schemes.
      */
     public function index(Request $request)
     {
+        // Authorize the user to view numbering schemes
+        $this->numberingSchemeAuthorization->canView($request->user());
+
         $search = $request->input('search');
 
         $numberingSchemes = NumberingScheme::query()
@@ -50,34 +69,51 @@ class NumberingSchemeController extends Controller
         ]);
     }
 
-    public function show(NumberingScheme $numberingScheme): JsonResponse
-    {
-        return response()->json($numberingScheme);
-    }
-
+    /**
+     * Show the form for creating a new numbering scheme.
+     */
     public function store(CreateNumberingSchemeData $data): RedirectResponse
     {
+        // Authorize the user to create a numbering scheme
+        $this->numberingSchemeAuthorization->canCreate(Auth::user());
+
         $this->createNumberingSchemeAction->execute($data);
 
         return redirect()->back();
     }
 
+    /**
+     * Update the specified numbering scheme in storage.
+     */
     public function update(UpdateNumberingSchemeData $data, NumberingScheme $numberingScheme): RedirectResponse
     {
-        $numberingScheme = $this->updateNumberingSchemeAction->execute($numberingScheme, $data);
+        // Authorize the user to update this numbering scheme
+        $this->numberingSchemeAuthorization->canUpdate(Auth::user(), $numberingScheme);
+
+        $this->updateNumberingSchemeAction->execute($numberingScheme, $data);
 
         return redirect()->back();
     }
 
+    /**
+     * Remove the specified numbering scheme from storage.
+     */
     public function destroy(NumberingScheme $numberingScheme): RedirectResponse
     {
+        // Authorize the user to delete this numbering scheme
+        $this->numberingSchemeAuthorization->canDelete(Auth::user(), $numberingScheme);
+
         $this->deleteNumberingSchemeAction->execute($numberingScheme);
 
         return redirect()->back();
     }
 
+    /**
+     * Fetch the numbering scheme of a folder.
+     */
     public function getNumberingSchemeOfFolder(NumberingScheme $numberingScheme): JsonResponse
     {
+        // Optional: Add authorization if needed
         return response()->json($numberingScheme);
     }
 }

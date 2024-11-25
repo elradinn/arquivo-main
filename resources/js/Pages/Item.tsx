@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { sortBy } from "lodash";
 import { Head } from "@inertiajs/react";
 import { Group, Stack, Text } from "@mantine/core";
-import { DataTable, DataTableColumn, type DataTableSortStatus } from "mantine-datatable";
+import {
+    DataTable,
+    DataTableColumn,
+    type DataTableSortStatus,
+} from "mantine-datatable";
 
 import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
@@ -27,54 +31,75 @@ interface ItemPageProps {
     itemParent: ItemParentResourceData;
     itemAncestors: ItemAncestorsResourceData[];
     itemContents: ItemContentsResourceData[];
-    folderUserRole?: 'viewer' | 'editor';
+    folderUserRole?: "viewer" | "editor";
 }
 
-export default function ItemPage({ itemParent, itemAncestors, itemContents, folderUserRole }: ItemPageProps) {
+export default function ItemPage({
+    itemParent,
+    itemAncestors,
+    itemContents,
+    folderUserRole,
+}: ItemPageProps) {
     const openRef = useRef<() => void>(null);
     const { uploadFiles } = useUploadDocument(itemParent);
     const { selectedRecord, setSelectedRecord, ids } = useSelectItems();
     const { openFolder } = useOpenFolder();
     const { openDocument } = useDocumentProperties();
 
-    const [sortStatus, setSortStatus] = useState<DataTableSortStatus<ItemContentsResourceData>>({
-        columnAccessor: 'name',
-        direction: 'asc',
+    const [sortStatus, setSortStatus] = useState<
+        DataTableSortStatus<ItemContentsResourceData>
+    >({
+        columnAccessor: "name",
+        direction: "asc",
     });
-    const [records, setRecords] = useState(sortBy(itemContents, 'name'));
+    const [records, setRecords] = useState(sortBy(itemContents, "name"));
 
     useEffect(() => {
-        const data = sortBy(itemContents, sortStatus.columnAccessor) as ItemContentsResourceData[];
-        setRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
+        const data = sortBy(
+            itemContents,
+            sortStatus.columnAccessor
+        ) as ItemContentsResourceData[];
+        setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
     }, [sortStatus, itemContents]);
 
-    const dynamicColumns: DataTableColumn<ItemContentsResourceData>[] = itemParent.metadata_columns?.map((metadata) => ({
-        accessor: `metadata_${metadata.metadata_id}`, // Changed accessor to include metadata_id
-        title: metadata.name,
-        render: (record: ItemContentsResourceData) => {
-            const metadataItem = record.metadata?.find((m) => m.metadata_id === metadata.metadata_id);
-            return metadataItem ? metadataItem.value : null;
-        },
-        sortable: true,
-        ellipsis: true,
-    })) ?? [];
+    const dynamicColumns: DataTableColumn<ItemContentsResourceData>[] =
+        itemParent.metadata_columns?.map((metadata) => ({
+            accessor: `metadata_${metadata.metadata_id}`, // Changed accessor to include metadata_id
+            title: metadata.name,
+            render: (record: ItemContentsResourceData) => {
+                const metadataItem = record.metadata?.find(
+                    (m) => m.metadata_id === metadata.metadata_id
+                );
+                return metadataItem ? metadataItem.value : null;
+            },
+            sortable: true,
+            ellipsis: true,
+        })) ?? [];
 
     const metadataColumns: DataTableColumn<ItemContentsResourceData>[] = [
         {
             accessor: "name",
-            render: ({ mime, type, name, status, missing_required_metadata }) => (
+            render: ({
+                mime,
+                type,
+                name,
+                approval_status,
+                review_status,
+                missing_required_metadata,
+            }) => (
                 <Group align="center" gap={12} preventGrowOverflow>
                     <ItemIcon
                         mime={mime ?? ""}
                         isFolder={type === "folder"}
-                        approvalStatus={status}
+                        reviewStatus={review_status}
+                        approvalStatus={approval_status}
                         missingRequiredMetadata={missing_required_metadata}
                     />
                     <span>{name}</span>
                 </Group>
             ),
             sortable: true,
-            ellipsis: true
+            ellipsis: true,
         },
         {
             accessor: "updated_at",
@@ -92,7 +117,11 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
             <Authenticated
                 toolbar={
                     selectedRecord.length > 0 ? (
-                        <SelectedItemToolbar setSelectedRecord={setSelectedRecord} selectedIds={ids} parentId={itemParent.item_id} />
+                        <SelectedItemToolbar
+                            setSelectedRecord={setSelectedRecord}
+                            selectedIds={ids}
+                            parentId={itemParent.item_id}
+                        />
                     ) : (
                         <ItemToolbar
                             itemParent={{
@@ -102,9 +131,15 @@ export default function ItemPage({ itemParent, itemAncestors, itemContents, fold
                             uploadFileRef={openRef}
                         />
                     )
-                }>
+                }
+            >
                 <ItemDropzone onDrop={uploadFiles} openRef={openRef}>
-                    <Stack px={8} gap={24} py={8} style={{ pointerEvents: "all" }}>
+                    <Stack
+                        px={8}
+                        gap={24}
+                        py={8}
+                        style={{ pointerEvents: "all" }}
+                    >
                         <ItemBreadcrumbs ancestors={itemAncestors} />
 
                         {!itemContents.length ? (

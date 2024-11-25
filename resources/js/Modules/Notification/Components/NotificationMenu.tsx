@@ -37,7 +37,7 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ notifications }) =>
                 ) : (
                     <ScrollArea style={{ height: 200 }}>
                         {notifications?.map(notification => (
-                            <>
+                            <React.Fragment key={notification.id}>
                                 <Menu.Item py={16} key={notification.id} component={Link} href={`/document_approval/${notification.id}`}>
                                     <Group gap={12}>
                                         <ItemIcon mime={"application/pdf"} isFolder={false} />
@@ -46,7 +46,7 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ notifications }) =>
                                 </Menu.Item>
 
                                 <Divider />
-                            </>
+                            </React.Fragment>
                         ))}
                     </ScrollArea>
                 )}

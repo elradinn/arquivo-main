@@ -17,7 +17,7 @@ import { useUpdateDocumentApproval } from "../Hooks/use-update-document-approval
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
 import ConfirmDeleteDocumentApprovalForm from "./ConfirmDeleteDocumentApprovalForm";
-import { StatusIcon } from "@/Modules/Common/Components/StatusIcon/StatusIcon"; // Import StatusIcon
+import { StatusIcon } from "@/Modules/Common/Components/StatusIcon/StatusIcon";
 
 interface IFormProps {
     document?: DocumentResourceData;
@@ -26,6 +26,11 @@ interface IFormProps {
 const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
     const { modals, closeModal, openModal } = useModalStore();
     const isOpen = modals["viewDocumentApproval"];
+
+    // Assuming you want to handle the first approval for simplicity
+    const documentApprovalId = document?.document_approval_ids?.find(
+        (approval) => approval.type === 'approval'
+    )?.id;
 
     const {
         data,
@@ -44,7 +49,7 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
         selectedUserIds,
         fetchedUsers,
     } = useUpdateDocumentApproval({
-        documentApprovalId: document?.document_approval_id,
+        documentApprovalId,
         isOpen,
     });
 
@@ -79,7 +84,7 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                 onClose={() => closeModal("viewDocumentApproval")}
                 title={
                     <Text fw="bold" size="lg">
-                        Document Workflow Process
+                        Document Approval Workflow Process
                     </Text>
                 }
                 size={550}
@@ -98,6 +103,7 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                                     setData("type", value);
                                     setDocumentApprovalType(value);
                                 }}
+                                hidden
                             >
                                 <Group mt="xs">
                                     <Radio value="reviewal" label="Review" />
@@ -132,7 +138,7 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                             return (
                                 <Group key={index} justify="space-between" align="flex-end">
                                     <Group>
-                                        <StatusIcon approvalStatus={userApproval?.user_state} /> {/* Display StatusIcon */}
+                                        <StatusIcon state={userApproval?.user_state} />
                                     </Group>
                                     <Select
                                         placeholder="Select a user"
@@ -142,7 +148,7 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                                         required={!isDecided}
                                         style={{ flex: 1 }}
                                         allowDeselect={!isDecided}
-                                        readOnly={isDecided} // Disable if user has decided
+                                        readOnly={isDecided}
                                     />
                                     {!isDecided && (
                                         <ActionIcon
@@ -157,7 +163,6 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                             );
                         })}
 
-                        {/* Conditionally render the Add User and Add All Users buttons */}
                         {!allUsersDecided && (
                             <Group>
                                 {users.length < maxUsers && (
@@ -198,7 +203,6 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                                     Update
                                 </Button>
 
-
                                 <ActionIcon
                                     variant="transparent"
                                     color="red"
@@ -216,7 +220,7 @@ const ViewDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                     </Flex>
                 </form>
             </Modal>
-            <ConfirmDeleteDocumentApprovalForm documentApprovalId={document?.document_approval_id} />
+            <ConfirmDeleteDocumentApprovalForm documentApprovalId={documentApprovalId} />
         </>
     );
 };

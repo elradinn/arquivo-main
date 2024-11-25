@@ -44,8 +44,10 @@ class ItemController extends Controller
 
     public function delete(DeleteItemsData $data): RedirectResponse
     {
-        $this->deleteItemsAction->execute($data);
+        // Execute the delete action and get the redirect URL
+        $redirectUrl = $this->deleteItemsAction->execute($data);
 
-        return redirect()->back();
+        // Redirect to the determined URL
+        return redirect($redirectUrl);
     }
 }

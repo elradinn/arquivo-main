@@ -23,6 +23,9 @@ interface IFormProps {
 }
 
 const CreateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
+    const { modals, closeModal } = useModalStore();
+    const isOpen = modals["createDocumentApproval"];
+
     const {
         data,
         setData,
@@ -40,15 +43,18 @@ const CreateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
         fetchedUsers,
     } = useCreateDocumentApproval({
         documentId: document?.item_id,
+        isOpen,
     });
-
-    const { modals, closeModal } = useModalStore();
 
     // Function to generate options for each Select, excluding already selected users
     const getOptions = (currentIndex: number) => {
         return fetchedUsers
-            .filter(user => !selectedUserIds.includes(user.id.toString()) || user.id.toString() === users[currentIndex].selectedUser)
-            .map(user => ({
+            .filter(
+                (user) =>
+                    !selectedUserIds.includes(user.id.toString()) ||
+                    user.id.toString() === users[currentIndex].selectedUser
+            )
+            .map((user) => ({
                 value: user.id.toString(),
                 label: `${user.name} (${user.email})`,
             }));
@@ -67,11 +73,6 @@ const CreateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
         >
             <form onSubmit={createApprovalSubmit}>
                 <Stack gap={16}>
-                    <Text size="sm" color="dimmed">
-                        Routinely directs any uploaded file in this folder through a predefined
-                        document approval process
-                    </Text>
-
                     <Radio.Group
                         name="status"
                         value={data.type}
@@ -79,6 +80,7 @@ const CreateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                             setData("type", value);
                             setDocumentApprovalType(value);
                         }}
+                        hidden
                     >
                         <Group mt="xs">
                             <Radio value="reviewal" label="Review" />
@@ -102,12 +104,18 @@ const CreateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                     </Text>
 
                     {users.map((user, index) => (
-                        <Group key={index} justify="space-between" align="flex-end">
+                        <Group
+                            key={index}
+                            justify="space-between"
+                            align="flex-end"
+                        >
                             <Select
                                 placeholder="Select a user"
                                 data={getOptions(index)}
                                 value={user.selectedUser}
-                                onChange={(value) => handleUserChange(index, value)}
+                                onChange={(value) =>
+                                    handleUserChange(index, value)
+                                }
                                 required
                                 style={{ flex: 1 }}
                                 allowDeselect={false}
@@ -151,7 +159,10 @@ const CreateDocumentApprovalForm: React.FC<IFormProps> = ({ document }) => {
                 </Stack>
 
                 <Flex align="center" justify="end" mt={16}>
-                    <Button variant="light" onClick={() => closeModal("createDocumentApproval")}>
+                    <Button
+                        variant="light"
+                        onClick={() => closeModal("createDocumentApproval")}
+                    >
                         Cancel
                     </Button>
 

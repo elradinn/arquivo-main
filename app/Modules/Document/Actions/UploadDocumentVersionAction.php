@@ -41,6 +41,8 @@ class UploadDocumentVersionAction
             'updated_at' => now(),
             'mime' => $data->file->getMimeType(),
             'size' => $data->file->getSize(),
+            'review_status' => null,
+            'approval_status' => null,
         ]);
 
         // Log activity

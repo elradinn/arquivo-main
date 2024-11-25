@@ -31,7 +31,8 @@ class Document extends Model
         'name',
         'owned_by',
         'document_number',
-        'status',
+        'review_status',
+        'approval_status',
         'description',
         'due_date',
         'mime',
@@ -40,25 +41,26 @@ class Document extends Model
     ];
 
     protected $casts = [
-        'status' => DocumentState::class,
+        'review_status' => DocumentState::class,
+        'approval_status' => DocumentState::class,
         // 'due_date' => 'date',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        // Ensure that when retrieving the document, it fetches the current version
-        static::retrieved(function ($document) {
-            $currentVersion = $document->versions()->where('current', true)->first();
-            if ($currentVersion) {
-                $document->file_path = $currentVersion->file_path;
-                $document->mime = $currentVersion->mime;
-                $document->size = $currentVersion->size;
-                // Add other attributes if necessary
-            }
-        });
-    }
+    //     // Ensure that when retrieving the document, it fetches the current version
+    //     static::retrieved(function ($document) {
+    //         $currentVersion = $document->versions()->where('current', true)->first();
+    //         if ($currentVersion) {
+    //             $document->file_path = $currentVersion->file_path;
+    //             $document->mime = $currentVersion->mime;
+    //             $document->size = $currentVersion->size;
+    //             // Add other attributes if necessary
+    //         }
+    //     });
+    // }
 
     /**
      * Get the document's items.
@@ -71,9 +73,9 @@ class Document extends Model
     /**
      * Get the document's approval.
      */
-    public function documentApproval(): HasOne
+    public function documentApprovals(): HasMany
     {
-        return $this->hasOne(DocumentApproval::class, 'document_id', 'item_id');
+        return $this->hasMany(DocumentApproval::class, 'document_id', 'item_id');
     }
 
     /**

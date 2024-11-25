@@ -43,15 +43,35 @@ class CreateDocumentApprovalAction
         $documentApproval->documentApprovalUsers()->saveMany($documentApprovalUsers);
 
         // Document lang to yung sa taas document workflow yan hayst
-        $documentApproval->document->update([
-            'status' => $approvalType === 'reviewal' ? StatesDocumentReviewalPending::class : StatesDocumentApprovalPending::class,
-        ]);
+        if ($approvalType === 'reviewal') {
+            $documentApproval->document->update([
+                'review_status' => StatesDocumentReviewalPending::class,
+            ]);
 
-        $metadata = Metadata::where('name', 'Status')->first();
+            $documentApproval->document->versions()->where('current', true)->update([
+                'review_status' => new StatesDocumentReviewalPending($documentApproval->document),
+            ]);
+        } else {
+            $documentApproval->document->update([
+                'approval_status' => StatesDocumentApprovalPending::class,
+            ]);
 
-        $documentApproval->document->metadata()->attach($metadata->id, [
-            'value' => $documentApproval->document->status->label(),
-        ]);
+            $documentApproval->document->versions()->where('current', true)->update([
+                'approval_status' => new StatesDocumentApprovalPending($documentApproval->document),
+            ]);
+        }
+
+        if ($approvalType === 'reviewal') {
+            $reviewStatusMetadata = Metadata::where('name', 'Review Status')->first();
+            $documentApproval->document->metadata()->attach($reviewStatusMetadata->id, [
+                'value' => $documentApproval->document->review_status->label(),
+            ]);
+        } else {
+            $approvalStatusMetadata = Metadata::where('name', 'Approval Status')->first();
+            $documentApproval->document->metadata()->attach($approvalStatusMetadata->id, [
+                'value' => $documentApproval->document->approval_status->label(),
+            ]);
+        }
 
         $this->sendDocumentApprovalNotificationAction->execute($documentApproval);
 

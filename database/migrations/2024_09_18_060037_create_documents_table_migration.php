@@ -15,7 +15,8 @@ return new class extends Migration
             $table->string('mime');
             $table->string('size');
             $table->string('document_number')->nullable();
-            $table->string('status')->nullable();
+            $table->string('review_status')->nullable();
+            $table->string('approval_status')->nullable();
             $table->string('description')->nullable();
             $table->string('due_date')->nullable();
             $table->string('file_path');

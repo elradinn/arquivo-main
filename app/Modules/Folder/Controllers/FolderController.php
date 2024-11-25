@@ -106,13 +106,13 @@ class FolderController extends Controller
         ]));
     }
 
-    public function update(Folder $folder, UpdateFolderData $data): JsonResponse
+    public function update(Folder $folder, UpdateFolderData $data): RedirectResponse
     {
         $this->folderAuthorization->canEdit(Auth::user(), $folder);
 
-        $updatedFolder = $this->updateFolderAction->execute($folder, $data);
+        $this->updateFolderAction->execute($folder, $data);
 
-        return response()->json(['message' => 'Folder updated successfully', 'folder' => $updatedFolder]);
+        return redirect()->back();
     }
 
     public function destroy(Folder $folder): JsonResponse

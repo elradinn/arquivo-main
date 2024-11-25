@@ -7,7 +7,10 @@ interface DeleteFilesFormProps {
     setSelectedRecord: (record: any[]) => void;
 }
 
-const DeleteFilesForm: React.FC<DeleteFilesFormProps> = ({ selectedIds, setSelectedRecord }) => {
+const DeleteFilesForm: React.FC<DeleteFilesFormProps> = ({
+    selectedIds,
+    setSelectedRecord,
+}) => {
     const { handleDelete, processing } = useDeleteFiles({ setSelectedRecord });
     const { modals, closeModal } = useModalStore();
 
@@ -15,16 +18,34 @@ const DeleteFilesForm: React.FC<DeleteFilesFormProps> = ({ selectedIds, setSelec
         <Modal
             opened={modals["deleteFiles"]}
             onClose={() => closeModal("deleteFiles")}
-            title={<Text fw="bold" size="lg">Delete Files</Text>}
+            title={
+                <Text fw="bold" size="lg">
+                    Delete Files
+                </Text>
+            }
             size={550}
         >
-            <form onSubmit={(e) => { e.preventDefault(); handleDelete(selectedIds); }}>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleDelete(selectedIds);
+                }}
+            >
                 <Text c="dimmed">Delete selected files?</Text>
                 <Flex align="center" justify="end" mt={16}>
-                    <Button variant="subtle" onClick={() => closeModal("deleteFiles")} color="gray">
+                    <Button
+                        variant="subtle"
+                        onClick={() => closeModal("deleteFiles")}
+                        color="gray"
+                    >
                         Cancel
                     </Button>
-                    <Button ml={12} type="submit" loading={processing} color="red">
+                    <Button
+                        ml={12}
+                        type="submit"
+                        loading={processing}
+                        color="red"
+                    >
                         Delete
                     </Button>
                 </Flex>

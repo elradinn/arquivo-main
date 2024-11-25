@@ -13,21 +13,40 @@ use Modules\Metadata\Actions\DeleteMetadataAction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Modules\Metadata\Authorization\MetadataAuthorization;
 
 class MetadataController extends Controller
 {
+    protected MetadataAuthorization $metadataAuthorization;
+
+    protected CreateMetadataAction $createMetadataAction;
+
+    protected UpdateMetadataAction $updateMetadataAction;
+
+    protected DeleteMetadataAction $deleteMetadataAction;
+
     public function __construct(
-        protected CreateMetadataAction $createMetadataAction,
-        protected UpdateMetadataAction $updateMetadataAction,
-        protected DeleteMetadataAction $deleteMetadataAction
-    ) {}
+        CreateMetadataAction $createMetadataAction,
+        UpdateMetadataAction $updateMetadataAction,
+        DeleteMetadataAction $deleteMetadataAction,
+        MetadataAuthorization $metadataAuthorization
+    ) {
+        $this->createMetadataAction = $createMetadataAction;
+        $this->updateMetadataAction = $updateMetadataAction;
+        $this->deleteMetadataAction = $deleteMetadataAction;
+        $this->metadataAuthorization = $metadataAuthorization;
+    }
 
     /**
      * Display a listing of the metadata.
      */
     public function index(Request $request)
     {
+        // Authorize the user to view metadata
+        $this->metadataAuthorization->canView($request->user());
+
         $search = $request->input('search');
 
         $metadata = Metadata::query()
@@ -55,6 +74,9 @@ class MetadataController extends Controller
      */
     public function store(CreateMetadataData $data): RedirectResponse
     {
+        // Authorize the user to create metadata
+        $this->metadataAuthorization->canCreate(Auth::user());
+
         $this->createMetadataAction->execute($data);
 
         return redirect()->back();
@@ -65,6 +87,9 @@ class MetadataController extends Controller
      */
     public function update(UpdateMetadataData $data, Metadata $metadata): RedirectResponse
     {
+        // Authorize the user to update this metadata
+        $this->metadataAuthorization->canUpdate(Auth::user(), $metadata);
+
         $this->updateMetadataAction->execute($metadata, $data);
         return redirect()->back();
     }
@@ -74,6 +99,9 @@ class MetadataController extends Controller
      */
     public function destroy(Metadata $metadata): RedirectResponse
     {
+        // Authorize the user to delete this metadata
+        $this->metadataAuthorization->canDelete(Auth::user(), $metadata);
+
         $this->deleteMetadataAction->execute($metadata);
         return redirect()->back();
     }
@@ -83,6 +111,7 @@ class MetadataController extends Controller
      */
     public function fetchMetadata()
     {
+        // Optional: Add authorization if needed
         $metadata = Metadata::all();
         return response()->json([
             'metadata' => MetadataResourceData::collect($metadata),

@@ -69,7 +69,12 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
             </Box>
             <Stack px={8} py={8} gap={24} w={550} mb={72}>
                 <Group mt={24} align="center">
-                    <ItemIcon mime={document.mime} isFolder={false} approvalStatus={document.status} />
+                    <ItemIcon
+                        mime={document.mime}
+                        isFolder={false}
+                        reviewStatus={document.review_status}
+                        approvalStatus={document.approval_status}
+                    />
                     <Text fw={500}>{data.name}</Text>
                     <ActionIcon variant="subtle" color="gray">
                         <IconEdit size={24} />

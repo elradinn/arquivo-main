@@ -8,6 +8,7 @@ use Modules\Item\Data\DownloadItemsData;
 use Modules\Item\Models\Item;
 use Illuminate\Support\Str;
 use ZipArchive;
+use Illuminate\Support\Facades\Auth;
 
 class DownloadItemsAction
 {
@@ -24,6 +25,8 @@ class DownloadItemsAction
             ];
         }
 
+        $documentsToLog = [];
+
         if ($all) {
             if (!$parent) {
                 return [
@@ -31,16 +34,31 @@ class DownloadItemsAction
                 ];
             }
 
-            $url = $this->createZip($parent->getChildren()->load('folder', 'document'));
-            $filename = $parent->folder->name ?? $parent->workspace->name . '.zip';
+            $children = $parent->getChildren()->load('folder', 'document');
+            $url = $this->createZip($children);
+            $filename = ($parent->folder->name ?? $parent->workspace->name) . '.zip';
+
+            // Collect all documents for logging
+            $documentsToLog = $children->whereNotNull('document')->pluck('document');
         } else {
-            [$url, $filename, $message] = $this->getDownloadUrl($ids, $parent ? $parent->folder->name ?? $parent->workspace->name : 'download');
+            [$url, $filename, $message, $downloadedDocuments] = $this->getDownloadUrl($ids, $parent ? ($parent->folder->name ?? $parent->workspace->name) : 'download');
 
             if ($message) {
                 return [
                     'message' => $message
                 ];
             }
+
+            // Collect documents for logging
+            $documentsToLog = $downloadedDocuments;
+        }
+
+        // Log each downloaded document
+        foreach ($documentsToLog as $document) {
+            activity()
+                ->performedOn($document)
+                ->causedBy(Auth::id())
+                ->log("Document downloaded");
         }
 
         return [
@@ -101,18 +119,24 @@ class DownloadItemsAction
 
     private function getDownloadUrl(array $ids, $zipName)
     {
+        $downloadedDocuments = [];
+
         if (count($ids) === 1) {
             $item = Item::find($ids[0]);
             if (!$item) {
-                return [null, null, 'Item not found.'];
+                return [null, null, 'Item not found.', $downloadedDocuments];
             }
 
             if ($item->folder) {
                 if ($item->getChildren()->load('folder', 'document')->count() === 0) {
-                    return [null, null, 'The folder is empty'];
+                    return [null, null, 'The folder is empty.', $downloadedDocuments];
                 }
-                $url = $this->createZip($item->getChildren()->load('folder', 'document'));
+                $children = $item->getChildren()->load('folder', 'document');
+                $url = $this->createZip($children);
                 $filename = $item->folder->name . '.zip';
+
+                // Collect documents for logging
+                $downloadedDocuments = $children->whereNotNull('document')->pluck('document');
             } elseif ($item->document) {
                 $document = $item->document;
                 $dest = pathinfo($document->file_path, PATHINFO_BASENAME);
@@ -129,7 +153,7 @@ class DownloadItemsAction
                     }
                 } catch (\Exception $e) {
                     Log::error("Error fetching file content: " . $e->getMessage());
-                    return [null, null, 'Error fetching file content.'];
+                    return [null, null, 'Error fetching file content.', $downloadedDocuments];
                 }
 
                 Log::debug("Getting file content. File: " . $document->file_path . ". Content length: " . strlen($content));
@@ -138,21 +162,27 @@ class DownloadItemsAction
                 Log::debug('Inserted in public disk. "' . $dest . '". Success: ' . intval($success));
 
                 if (!$success) {
-                    return [null, null, 'Failed to store the file for download.'];
+                    return [null, null, 'Failed to store the file for download.', $downloadedDocuments];
                 }
 
                 $url = Storage::url($dest);
                 Log::debug("Logging URL " . $url);
                 $filename = $document->name;
+
+                // Collect document for logging
+                $downloadedDocuments[] = $document;
             } else {
-                return [null, null, 'Selected item is neither a folder nor a document.'];
+                return [null, null, 'Selected item is neither a folder nor a document.', $downloadedDocuments];
             }
         } else {
             $items = Item::whereIn('id', $ids)->get();
             $url = $this->createZip($items);
             $filename = $zipName . '.zip';
+
+            // Collect documents for logging
+            $downloadedDocuments = $items->whereNotNull('document')->pluck('document');
         }
 
-        return [$url, $filename, null];
+        return [$url, $filename, null, $downloadedDocuments];
     }
 }

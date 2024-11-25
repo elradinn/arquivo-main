@@ -7,6 +7,7 @@ import { CreateDocumentApprovalData } from "../Types/CreateDocumentApprovalData"
 
 interface IProps {
     documentId?: string;
+    isOpen: boolean;
 }
 
 interface UserOption {
@@ -19,34 +20,43 @@ interface DocumentApprovalUser {
     selectedUser: string;
 }
 
-export function useCreateDocumentApproval({ documentId }: IProps) {
-    const [documentApprovalType, setDocumentApprovalType] = useState("reviewal");
+export function useCreateDocumentApproval({ documentId, isOpen }: IProps) {
+    const [documentApprovalType, setDocumentApprovalType] =
+        useState("approval");
     const { closeModal, modals } = useModalStore();
-    const fetchedUsers: UserOption[] = useFetchUsersApprovalRole(documentApprovalType, modals["createDocumentApproval"]);
-    
-    const { data, setData, post, processing, errors, reset } = useForm<CreateDocumentApprovalData>({
-        document_id: "",
-        resolution: "",
-        destination: "",
-        type: "reviewal",
-        users: [],
-    });
+    const fetchedUsers: UserOption[] = useFetchUsersApprovalRole(
+        documentApprovalType,
+        isOpen
+    );
+
+    const { data, setData, post, processing, errors, reset } =
+        useForm<CreateDocumentApprovalData>({
+            document_id: "",
+            resolution: "",
+            destination: "",
+            type: "approval",
+            users: [],
+        });
 
     const [users, setUsers] = useState<DocumentApprovalUser[]>([]);
     const maxUsers = fetchedUsers.length;
 
     useEffect(() => {
         // Reset users when document approval type changes
-        setUsers([]);
-    }, [documentApprovalType, fetchedUsers]);
+        if (isOpen) {
+            setUsers([]);
+        }
+    }, [documentApprovalType, fetchedUsers, isOpen]);
 
     const createApprovalSubmit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        const selectedUserIds = users.map(user => parseInt(user.selectedUser)).filter(id => !isNaN(id));
+        const selectedUserIds = users
+            .map((user) => parseInt(user.selectedUser))
+            .filter((id) => !isNaN(id));
 
         data.document_id = documentId ?? "";
-        data.users = selectedUserIds.map(id => ({ user_id: id.toString() }));
+        data.users = selectedUserIds.map((id) => ({ user_id: id.toString() }));
 
         post(route("document_approvals.store"), {
             preserveScroll: true,
@@ -79,15 +89,14 @@ export function useCreateDocumentApproval({ documentId }: IProps) {
     };
 
     const addAllUsers = () => {
-        const selectedUserIds = users.map(user => user.selectedUser);
-        const availableUsers = fetchedUsers.filter(u => !selectedUserIds.includes(u.id.toString()));
-        const newUsers = availableUsers.map(u => ({
+        const selectedUserIds = users.map((user) => user.selectedUser);
+        const availableUsers = fetchedUsers.filter(
+            (u) => !selectedUserIds.includes(u.id.toString())
+        );
+        const newUsers = availableUsers.map((u) => ({
             selectedUser: u.id.toString(),
         }));
-        setUsers([
-            ...users,
-            ...newUsers,
-        ]);
+        setUsers([...users, ...newUsers]);
     };
 
     const removeUser = (index: number) => {
@@ -103,7 +112,9 @@ export function useCreateDocumentApproval({ documentId }: IProps) {
     };
 
     // Compute selected user IDs to exclude them from other Select options
-    const selectedUserIds = users.map(user => user.selectedUser).filter(id => id !== "");
+    const selectedUserIds = users
+        .map((user) => user.selectedUser)
+        .filter((id) => id !== "");
 
     return {
         data,

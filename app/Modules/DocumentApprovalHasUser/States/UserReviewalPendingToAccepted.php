@@ -28,11 +28,11 @@ class UserReviewalPendingToAccepted extends Transition
 
         $recalculateDocumentStateAction->execute($this->documentApprovalHasUser->documentApproval);
 
-        $metadata = Metadata::where('name', 'Status')->first();
+        $metadata = Metadata::where('name', 'Review Status')->first();
 
         $this->documentApprovalHasUser->documentApproval->document->metadata()->sync([
             $metadata->id => [
-                'value' => $this->documentApprovalHasUser->documentApproval->document->status->label(),
+                'value' => $this->documentApprovalHasUser->documentApproval->document->review_status->label(),
             ],
         ]);
 

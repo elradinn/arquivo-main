@@ -5,6 +5,7 @@ namespace Modules\Document\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Modules\Document\States\DocumentState;
 
 class DocumentHasVersion extends Model
 {
@@ -17,6 +18,13 @@ class DocumentHasVersion extends Model
         'name',
         'size',
         'mime',
+        'review_status',
+        'approval_status',
+    ];
+
+    protected $casts = [
+        'review_status' => DocumentState::class,
+        'approval_status' => DocumentState::class,
     ];
 
     public function document(): BelongsTo

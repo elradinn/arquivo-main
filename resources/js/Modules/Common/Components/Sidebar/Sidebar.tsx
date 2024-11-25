@@ -31,12 +31,6 @@ const NAV_LINKS = [
         adminOnly: true,
     },
     {
-        label: "Shared with me",
-        icon: IconUsers,
-        href: "/item/shared-with-me",
-        adminOnly: false,
-    },
-    {
         label: "Trash",
         icon: IconTrash,
         href: "/trash",
@@ -45,40 +39,41 @@ const NAV_LINKS = [
 ];
 
 const Sidebar: React.FC = () => {
-    const { workspaces, auth } = usePage<{
-        workspaces: WorkspaceLinksData[],
-        auth: { systemRole: string }
+    const { workspaces, auth, currentWorkspace } = usePage<{
+        workspaces: WorkspaceLinksData[];
+        auth: { systemRole: string };
+        currentWorkspace: string;
     }>().props;
     const { openModal } = useModalStore();
 
-    const currentPath = window.location.pathname;
+    // const currentPath = window.location.pathname;
 
-    const renderNavLinks = NAV_LINKS
-        .filter(link => {
-            // Show link if it's not adminOnly or the user is admin
-            const isAllowed = auth.systemRole === 'admin' || auth.systemRole === 'viewer';
-            // Additionally, hide "Shared with me" if the user is admin
-            const isSharedWithMe = link.label === "Shared with me";
-            const shouldHideSharedWithMe = isSharedWithMe && (auth.systemRole === 'admin' || auth.systemRole === 'viewer');
-            return isAllowed && !shouldHideSharedWithMe;
-        })
-        .map(({ label, icon: Icon, href }) => (
-            <Link
-                className={classes.link}
-                data-active={currentPath === href || undefined}
-                href={href}
-                key={label}
-            >
-                <Icon className={classes.linkIcon} stroke={1.5} />
-                <span>{label}</span>
-            </Link>
-        ));
+    const renderNavLinks = NAV_LINKS.filter((link) => {
+        // Show link if it's not adminOnly or the user is admin
+        // const isAllowed = auth.systemRole === "admin";
+        // Additionally, hide "Shared with me" if the user is admin
+        const isSharedWithMe = link.label === "Shared with me";
+        const shouldHideSharedWithMe =
+            isSharedWithMe && auth.systemRole === "admin";
+        // return isAllowed && !shouldHideSharedWithMe;
+        return true;
+    }).map(({ label, icon: Icon, href }) => (
+        <Link
+            className={classes.link}
+            data-active={currentWorkspace === href || undefined}
+            href={href}
+            key={label}
+        >
+            <Icon className={classes.linkIcon} stroke={1.5} />
+            <span>{label}</span>
+        </Link>
+    ));
 
     const renderWorkspaceLinks = workspaces.map((workspace) => (
         <Link
             className={classes.workspaceLinkWrapper}
             key={workspace.item_id}
-            data-active={currentPath === workspace.url || undefined}
+            data-active={currentWorkspace === workspace.url || undefined}
             href={workspace.url}
         >
             {/* <Link className={classes.workspaceLinkDesign} href={workspace.url}> */}
@@ -106,9 +101,17 @@ const Sidebar: React.FC = () => {
                             Sections
                         </Text>
 
-                        {auth.systemRole === 'admin' && (
-                            <Tooltip label="New section" withArrow position="right">
-                                <ActionIcon variant="default" size={18} onClick={() => openModal("workspace")}>
+                        {auth.systemRole === "admin" && (
+                            <Tooltip
+                                label="New section"
+                                withArrow
+                                position="right"
+                            >
+                                <ActionIcon
+                                    variant="default"
+                                    size={18}
+                                    onClick={() => openModal("workspace")}
+                                >
                                     <IconPlus
                                         style={{
                                             width: rem(12),
@@ -120,7 +123,9 @@ const Sidebar: React.FC = () => {
                             </Tooltip>
                         )}
                     </Group>
-                    <div className={classes.workspaces}>{renderWorkspaceLinks}</div>
+                    <div className={classes.workspaces}>
+                        {renderWorkspaceLinks}
+                    </div>
                 </div>
             </nav>
 
