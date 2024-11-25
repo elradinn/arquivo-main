@@ -1,6 +1,6 @@
 import { DataTable } from "mantine-datatable";
 import { Group, Text } from "@mantine/core";
-import ItemIcon from "./ItemIcon";
+import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 import { ItemContentsResourceData } from "../Types/ItemContentsResourceData";
 import { useOpenFolder } from "../Hooks/use-open-folder";
 import { useDocumentProperties } from "../Hooks/use-document-properties";
@@ -33,12 +33,19 @@ const ItemTable: React.FC<ItemTableProps> = ({
             columns={[
                 {
                     accessor: "name",
-                    render: ({ mime, type, name, status }) => (
+                    render: ({
+                        mime,
+                        type,
+                        name,
+                        review_status,
+                        approval_status,
+                    }) => (
                         <Group align="center" gap={12}>
                             <ItemIcon
                                 mime={mime ?? ""}
                                 isFolder={type === "folder"}
-                                approvalStatus={status}
+                                approvalStatus={approval_status}
+                                reviewStatus={review_status}
                             />
                             <span>{name}</span>
                         </Group>
@@ -71,6 +78,6 @@ const ItemTable: React.FC<ItemTableProps> = ({
             onSelectedRecordsChange={setSelectedRecord}
         />
     );
-}
+};
 
 export default ItemTable;
