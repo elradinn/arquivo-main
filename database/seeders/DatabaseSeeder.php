@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
             'password' => '12345678',
             'office_position' => 'Coordinator',
             'workflow_role' => 'reviewer',
-            'system_role' => 'viewer',
+            'system_role' => 'none',
         ]);
 
         // Coordinator
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
         $testUser1->assignRole('admin');
         $testUser2->assignRole('viewer');
         $testUser3->assignRole('viewer');
-        $testUser4->assignRole('viewer');
+        $testUser4->assignRole('none');
         $testUser5->assignRole('viewer');
 
 
@@ -119,11 +119,11 @@ class DatabaseSeeder extends Seeder
             'status' => 'custom',
         ]);
 
-        Metadata::create([
-            'name' => 'Is Confidential',
-            'type' => 'boolean',
-            'status' => 'custom',
-        ]);
+        // Metadata::create([
+        //     'name' => 'Is Confidential',
+        //     'type' => 'boolean',
+        //     'status' => 'custom',
+        // ]);
 
         Metadata::create([
             'name' => 'Subject',
