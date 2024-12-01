@@ -26,10 +26,13 @@ class RetrieveNotificationAction
                     UserReviewalPending::class,
                 ]);
         })
-            ->whereHas('document', function ($query) {
-                // No need to check for 'deleted_at' on Document, since it doesn't use soft deletes.
+            ->whereHas('documentVersion', function ($query) {
+                $query->where('current', true);
+            })
+            ->whereHas('documentVersion.document', function ($query) {
+                // Ensure the related Item is not soft-deleted
                 $query->whereHas('item', function ($query) {
-                    $query->whereNull('deleted_at'); // Ensure the related Item is not soft-deleted
+                    $query->whereNull('deleted_at');
                 });
             })
             ->get()

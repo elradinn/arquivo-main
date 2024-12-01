@@ -29,7 +29,10 @@ class DocumentApprovalHasUser extends Model
         return $this->belongsTo(DocumentApproval::class);
     }
 
-    public function users()
+    /**
+     * Get the user associated with the approval.
+     */
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }

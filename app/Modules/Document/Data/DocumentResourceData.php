@@ -35,6 +35,13 @@ class DocumentResourceData extends Resource
             'name' => $metadata->name,
         ])->toArray() : [];
 
+        $currentVersion = $document->versions()->where('current', true)->first();
+
+        $documentApprovalIds = $currentVersion ? $currentVersion->documentApprovals->map(fn($documentApproval) => [
+            'id' => $documentApproval->id,
+            'type' => $documentApproval->type,
+        ])->toArray() : [];
+
         return new self(
             item_id: $document->item_id,
             name: $document->name,
@@ -45,10 +52,7 @@ class DocumentResourceData extends Resource
             mime: $document->mime,
             due_date: $document->due_date,
             file_path: $document->file_path,
-            document_approval_ids: $document->documentApprovals->map(fn($documentApproval) => [
-                'id' => $documentApproval->id,
-                'type' => $documentApproval->type,
-            ])->toArray(),
+            document_approval_ids: $documentApprovalIds,
             related_documents: $document->relatedDocuments->map(fn($relatedDocument) => [
                 'id' => $relatedDocument->id,
                 'item_id' => $relatedDocument->item_id,

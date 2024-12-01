@@ -2,19 +2,15 @@
 
 namespace Modules\Document\Models;
 
-use Modules\DocumentApproval\Models\DocumentApproval;
 use Modules\Item\Models\Item;
-use Modules\Folder\Models\Folder;
 use Modules\Metadata\Models\Metadata;
 use Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Modules\Document\States\DocumentState;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\ModelStates\HasStates;
@@ -46,36 +42,12 @@ class Document extends Model
         // 'due_date' => 'date',
     ];
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
-
-    //     // Ensure that when retrieving the document, it fetches the current version
-    //     static::retrieved(function ($document) {
-    //         $currentVersion = $document->versions()->where('current', true)->first();
-    //         if ($currentVersion) {
-    //             $document->file_path = $currentVersion->file_path;
-    //             $document->mime = $currentVersion->mime;
-    //             $document->size = $currentVersion->size;
-    //             // Add other attributes if necessary
-    //         }
-    //     });
-    // }
-
     /**
      * Get the document's items.
      */
     public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
-    }
-
-    /**
-     * Get the document's approval.
-     */
-    public function documentApprovals(): HasMany
-    {
-        return $this->hasMany(DocumentApproval::class, 'document_id', 'item_id');
     }
 
     /**
@@ -118,6 +90,9 @@ class Document extends Model
         return $this->morphMany(Activity::class, 'subject');
     }
 
+    /**
+     * Get the document's versions.
+     */
     public function versions(): HasMany
     {
         return $this->hasMany(DocumentHasVersion::class, 'document_item_id');
