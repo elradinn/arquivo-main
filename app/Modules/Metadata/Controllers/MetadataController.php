@@ -59,6 +59,7 @@ class MetadataController extends Controller
                     }
                 });
             })
+            ->where('status', '!=', 'system') // Exclude system metadata
             ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();

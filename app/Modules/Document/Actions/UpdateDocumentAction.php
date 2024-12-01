@@ -29,9 +29,9 @@ class UpdateDocumentAction
 
         $metadata = Metadata::where('name', 'Due In')->first();
 
-        $document->metadata()->attach($metadata->id, [
+        $document->metadata()->sync([$metadata->id => [
             'value' => $data->due_date,
-        ]);
+        ]]);
 
         activity()
             ->performedOn($document)
