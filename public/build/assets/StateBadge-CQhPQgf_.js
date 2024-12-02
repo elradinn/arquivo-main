@@ -1,0 +1,1 @@
+import{j as r}from"./app-Dpvel7_R.js";import{g as t}from"./NotificationMenu-iEPQ7dzL.js";import{B as a}from"./Badge-Dy2giFzA.js";const m=({state:o})=>r.jsx(a,{color:t(o),variant:"light",children:o??"None"});export{m as S};
