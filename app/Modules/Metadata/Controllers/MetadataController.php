@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Modules\Metadata\Authorization\MetadataAuthorization;
+use Modules\Metadata\Models\MetadataHasPredefinedValue;
 
 class MetadataController extends Controller
 {
@@ -113,9 +114,23 @@ class MetadataController extends Controller
     public function fetchMetadata()
     {
         // Optional: Add authorization if needed
-        $metadata = Metadata::all();
+        $metadata = Metadata::where('status', '!=', 'system')->get();
+
         return response()->json([
             'metadata' => MetadataResourceData::collect($metadata),
         ]);
+    }
+
+    public function getPredefinedValues($id)
+    {
+        $metadata = Metadata::find($id);
+
+        if (!$metadata) {
+            return response()->json(['message' => 'Metadata not found.'], 404);
+        }
+
+        $predefinedValues = MetadataHasPredefinedValue::where('metadata_id', $id)->get(['id', 'predefined_value']);
+
+        return response()->json(['predefined_values' => $predefinedValues], 200);
     }
 }

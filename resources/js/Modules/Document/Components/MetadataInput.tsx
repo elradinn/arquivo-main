@@ -1,10 +1,22 @@
-import React, { useMemo } from "react";
-import { Group, ActionIcon, TextInput, Button, Stack, Text, Alert } from "@mantine/core";
+import React, { useMemo, useState } from "react";
+import {
+    Group,
+    ActionIcon,
+    TextInput,
+    Button,
+    Stack,
+    Text,
+    Alert,
+    Select,
+    Loader,
+    Autocomplete,
+} from "@mantine/core";
 import { IconPlus, IconTrash, IconAlertCircle } from "@tabler/icons-react";
 import { DocumentMetadata } from "../Types/DocumentMetadata";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import AddDocumentMetadataModal from "./AddDocumentMetadataModal";
 import { FolderRequiredMetadataResource } from "@/Modules/Folder/Types/FolderRequiredMetadataResource";
+import useFetchMetadataPredefinedValue from "@/Modules/Document/Hooks/use-fetch-metadata-predefined-value";
 
 interface MetadataInputProps {
     metadata: DocumentMetadata[];
@@ -15,8 +27,18 @@ interface MetadataInputProps {
     onDelete?: (metadataId: number) => void;
 }
 
-const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadata, onAdd, onUpdate, onChange, onDelete }) => {
+const MetadataInput: React.FC<MetadataInputProps> = ({
+    metadata,
+    requiredMetadata,
+    onAdd,
+    onUpdate,
+    onChange,
+    onDelete,
+}) => {
     const { openModal } = useModalStore();
+    const [activeMetadataId, setActiveMetadataId] = useState<number | null>(
+        null
+    );
 
     const handleAddMetadata = (newMetadata: DocumentMetadata) => {
         onAdd && onAdd(newMetadata);
@@ -30,18 +52,28 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
         const removedMeta = metadata[index];
         const newMetadata = metadata.filter((_, i) => i !== index);
         onUpdate && onUpdate(newMetadata);
-        onDelete && removedMeta.metadata_id !== 0 && onDelete(removedMeta.metadata_id);
+        onDelete &&
+            removedMeta.metadata_id !== 0 &&
+            onDelete(removedMeta.metadata_id);
     };
 
-    const handleChange = (index: number, field: keyof DocumentMetadata, value: string) => {
-        const newMetadata = metadata.map((item, i) => (i === index ? { ...item, [field]: value } : item));
+    const handleChange = (
+        index: number,
+        field: keyof DocumentMetadata,
+        value: string
+    ) => {
+        const newMetadata = metadata.map((item, i) =>
+            i === index ? { ...item, [field]: value } : item
+        );
         onChange && onChange(newMetadata);
     };
 
     // Compute missing required metadata
     const missingRequiredMetadata = useMemo(() => {
-        const existingIds = metadata.map(meta => meta.metadata_id);
-        return requiredMetadata.filter(required => !existingIds.includes(required.metadata_id));
+        const existingIds = metadata.map((meta) => meta.metadata_id);
+        return requiredMetadata.filter(
+            (required) => !existingIds.includes(required.metadata_id)
+        );
     }, [metadata, requiredMetadata]);
 
     return (
@@ -53,13 +85,16 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
                         label="Name"
                         placeholder="Metadata name"
                         value={meta.name}
-                        onChange={(e) => handleChange(index, "name", e.target.value)}
+                        onChange={(e) =>
+                            handleChange(index, "name", e.target.value)
+                        }
                     />
-                    <TextInput
-                        label="Value"
-                        placeholder="Metadata value"
-                        value={meta.value}
-                        onChange={(e) => handleChange(index, "value", e.target.value)}
+                    <PredefinedValueSelect
+                        metadataId={meta.metadata_id}
+                        value={meta.value || ""}
+                        onChange={(value) =>
+                            handleChange(index, "value", value)
+                        }
                     />
                     <ActionIcon color="red" onClick={() => handleRemove(index)}>
                         <IconTrash size={16} />
@@ -73,7 +108,7 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
                     <Text c="red" size="sm">
                         Missing Required Metadata:
                     </Text>
-                    {missingRequiredMetadata.map(required => (
+                    {missingRequiredMetadata.map((required) => (
                         <Alert
                             icon={<IconAlertCircle size={16} />}
                             title={`${required.name} is missing`}
@@ -85,15 +120,64 @@ const MetadataInput: React.FC<MetadataInputProps> = ({ metadata, requiredMetadat
                 </Stack>
             )}
 
-            <Button variant="light" onClick={handleAddCustomMetadata} leftSection={<IconPlus size={14} />}>
+            <Button
+                variant="light"
+                onClick={handleAddCustomMetadata}
+                leftSection={<IconPlus size={14} />}
+            >
                 Add Custom Metadata
             </Button>
-            <AddDocumentMetadataModal onAdd={(meta) => handleAddMetadata({
-                metadata_id: meta.metadata_id,
-                name: meta.name,
-                value: "",
-            })} />
+            <AddDocumentMetadataModal
+                onAdd={(meta) =>
+                    handleAddMetadata({
+                        metadata_id: meta.metadata_id,
+                        name: meta.name,
+                        value: "",
+                    })
+                }
+            />
         </Stack>
+    );
+};
+
+interface PredefinedValueSelectProps {
+    metadataId: number;
+    value: string;
+    onChange: (value: string) => void;
+}
+
+const PredefinedValueSelect: React.FC<PredefinedValueSelectProps> = ({
+    metadataId,
+    value,
+    onChange,
+}) => {
+    const { predefinedValues, loading, error } =
+        useFetchMetadataPredefinedValue(metadataId);
+
+    console.log(predefinedValues);
+
+    if (loading) {
+        return <Loader size="sm" />;
+    }
+
+    if (error) {
+        return (
+            <Text c="red" size="sm">
+                {error}
+            </Text>
+        );
+    }
+
+    return (
+        <Autocomplete
+            label="Value"
+            data={predefinedValues.map((pre) => ({
+                value: pre.predefined_value,
+                label: pre.predefined_value,
+            }))}
+            value={value}
+            onChange={(val) => onChange(val || "")}
+        />
     );
 };
 
