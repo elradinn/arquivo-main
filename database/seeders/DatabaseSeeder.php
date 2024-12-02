@@ -133,7 +133,13 @@ class DatabaseSeeder extends Seeder
 
         Metadata::create([
             'name' => 'For',
-            'type' => 'boolean',
+            'type' => 'string',
+            'status' => 'custom',
+        ]);
+
+        Metadata::create([
+            'name' => 'Thru',
+            'type' => 'string',
             'status' => 'custom',
         ]);
 

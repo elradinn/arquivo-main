@@ -12,10 +12,12 @@ use Spatie\LaravelData\Attributes\Validation\Sometimes;
 class UpdateMetadataData extends Data
 {
     public function __construct(
-        #[Sometimes, Required, StringType, Unique('metadata', 'name')]
+        #[Sometimes, Required, StringType]
         public ?string $name = null,
 
         #[Sometimes, Required, StringType, In(['String', 'Integer', 'Float', 'Boolean', 'Date', 'DateTime'])]
-        public ?string $type = null
+        public ?string $type = null,
+
+        public ?array $predefined_values = [],
     ) {}
 }
