@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Item\Controllers\BackupController;
 use Modules\Item\Controllers\ItemController;
 use Modules\Item\Controllers\ShareController;
 
@@ -18,5 +19,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/showItem/{item?}', [ItemController::class, 'showItems'])->name('item.showItems');
 
         Route::get('/shared-with-me', [ShareController::class, 'sharedWithMe'])->name('item.sharedWithMe');
+
+        Route::get('/backup', [BackupController::class, 'backupAll'])->name('backup.all');
     });
 });
