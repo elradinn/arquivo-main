@@ -31,11 +31,11 @@ class UpdateDocumentApprovalAction
 
         // Update the related document's status
         if ($data->type === 'reviewal') {
-            $documentApproval->document()->update([
+            $documentApproval->document->update([
                 'review_status' => StatesDocumentReviewalPending::class,
             ]);
         } elseif ($data->type === 'approval') {
-            $documentApproval->document()->update([
+            $documentApproval->document->update([
                 'approval_status' => StatesDocumentApprovalPending::class,
             ]);
         }
