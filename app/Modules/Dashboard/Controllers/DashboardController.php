@@ -20,6 +20,7 @@ use Modules\Document\Data\DocumentResourceData;
 use Modules\Item\Data\ItemContentsResourceData;
 use Modules\Item\Models\Item;
 use Modules\Dashboard\Authorization\DashboardAuthorization;
+use Modules\User\Models\User;
 
 class DashboardController extends Controller
 {
@@ -105,8 +106,14 @@ class DashboardController extends Controller
             recently_uploaded_documents: $recently_uploaded_documents
         );
 
+        // Fetch all users for the uploader filter
+        $users = Auth::user()->hasRole('admin')
+            ? User::select('id', 'name')->get()
+            : collect([]);
+
         return Inertia::render('Dashboard', [
             'dashboard' => $dashboardData,
+            'users' => $users,
         ]);
     }
 
@@ -122,6 +129,8 @@ class DashboardController extends Controller
         $documentStatus = $request->query('document_status'); // e.g., reviewal_pending, approval_accepted, etc.
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
+        $uploader = $request->query('uploader');
+        $dueIn = $request->query('due_in');
 
         // Get selected metadata columns from the dashboard_report_metadata_columns table
         $selectedMetadataIds = DB::table('dashboard_report_metadata_columns')->pluck('metadata_id')->toArray();
@@ -129,6 +138,11 @@ class DashboardController extends Controller
 
         // Get all available metadata
         $availableMetadata = Metadata::all();
+
+        // Get all users for the uploader filter
+        $users = Auth::user()->hasRole('admin')
+            ? User::select('id', 'name')->get()
+            : collect([]);
 
         // Query documents based on filters, ensuring associated Items are not soft-deleted
         $documentsQuery = Item::with('document')
@@ -148,6 +162,22 @@ class DashboardController extends Controller
             }
         }
 
+        // Apply uploader filter
+        if ($uploader) {
+            $documentsQuery->whereHas('document', function ($query) use ($uploader) {
+                $query->where('owned_by', $uploader);
+            });
+        }
+
+        // Apply due_in filter
+        if ($dueIn) {
+            $dueDays = intval($dueIn);
+            $currentDate = now();
+            $documentsQuery->whereHas('document', function ($query) use ($dueDays, $currentDate) {
+                $query->whereDate('due_date', '<=', $currentDate->copy()->addDays($dueDays));
+            });
+        }
+
         // Apply date range filter
         if ($startDate && $endDate) {
             $documentsQuery->whereHas('document', function ($query) use ($startDate, $endDate) {
@@ -155,10 +185,8 @@ class DashboardController extends Controller
             });
         }
 
-        // The metadata filtering section has been removed
-
         // Paginate results
-        $documents = $documentsQuery->paginate(15);
+        $documents = $documentsQuery->paginate(15)->withQueryString();
 
         // Pass data to Inertia
         return Inertia::render('DashboardReport', [
@@ -167,10 +195,13 @@ class DashboardController extends Controller
                 'document_status' => $documentStatus,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
+                'uploader' => $uploader,
+                'due_in' => $dueIn,
             ],
             'selectedMetadata' => DashboardMetadataResourceData::collect($selectedMetadata),
             'availableMetadata' => DashboardMetadataResourceData::collect($availableMetadata),
             'existingMetadataIds' => $selectedMetadataIds,
+            'users' => $users, // Pass users to the frontend
         ]);
     }
 

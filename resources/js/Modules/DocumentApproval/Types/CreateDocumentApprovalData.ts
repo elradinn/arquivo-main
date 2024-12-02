@@ -1,4 +1,4 @@
-import { DocumentApprovalHasUserData } from './DocumentApprovalHasUserData';
+import { DocumentApprovalHasUserData } from "./DocumentApprovalHasUserData";
 
 export interface CreateDocumentApprovalData {
     document_id: string;

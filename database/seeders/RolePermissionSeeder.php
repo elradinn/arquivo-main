@@ -41,5 +41,7 @@ class RolePermissionSeeder extends Seeder
             'view folder',
             'view document',
         ]);
+
+        $none = Role::create(['name' => 'none']);
     }
 }

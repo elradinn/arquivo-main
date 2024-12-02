@@ -39,24 +39,30 @@ class DocumentApprovalResourceData extends Resource
             );
         }
 
+        // Traverse through documentVersion to get the Document
+        $documentVersion = $documentApproval->documentVersion;
+        $document = $documentVersion->document ?? null;
+
         return new self(
             id: $documentApproval->id,
-            document_id: $documentApproval->document_id,
-            document_name: $documentApproval->document->name ?? 'No Name',
+            document_id: $document->item_id ?? '0',
+            document_name: $document->name ?? 'No Name',
             type: $documentApproval->type,
             destination: $documentApproval->destination,
             resolution: $documentApproval->resolution,
             overall_state: $documentApproval->overall_state->label(),
-            document_user_approvals: $documentApproval->documentApprovalUsers->map(fn($documentUserApproval) => [
-                'user_id' => $documentUserApproval->user_id,
-                'user_name' => $documentUserApproval->users->name,
-                'user_state' => $documentUserApproval->user_state->label(),
-                'comment' => $documentUserApproval->comment,
-                'created_at' => $documentUserApproval->created_at,
-                'updated_at' => $documentUserApproval->updated_at,
-            ])->toArray(),
-            created_at: $documentApproval->created_at,
-            updated_at: $documentApproval->updated_at,
+            document_user_approvals: $documentApproval->documentApprovalUsers->map(function ($documentUserApproval) {
+                return [
+                    'user_id' => $documentUserApproval->user_id,
+                    'user_name' => $documentUserApproval->user->name ?? 'Unknown User',
+                    'user_state' => $documentUserApproval->user_state->label(),
+                    'comment' => $documentUserApproval->comment,
+                    'created_at' => $documentUserApproval->created_at->toDateTimeString(),
+                    'updated_at' => $documentUserApproval->updated_at->toDateTimeString(),
+                ];
+            })->toArray(),
+            created_at: $documentApproval->created_at->toDateTimeString(),
+            updated_at: $documentApproval->updated_at->toDateTimeString(),
             current_user_approval_id: $currentUserApproval?->id,
             is_done: $isDone
         );

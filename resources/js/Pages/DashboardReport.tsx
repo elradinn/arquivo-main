@@ -11,12 +11,17 @@ import {
     Flex,
     TextInput,
 } from "@mantine/core";
-import { IconDownload, IconSearch, IconTable } from "@tabler/icons-react";
+import {
+    IconDownload,
+    IconSearch,
+    IconTable,
+    IconFilter,
+} from "@tabler/icons-react";
 import { DataTable, DataTableColumn } from "mantine-datatable";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
 import { usePaginateDataTable } from "@/Modules/Common/Hooks/use-paginate-datatable";
-import useGenerateReport from "@/Modules/Reports/Hooks/use-generate-dashboard-report";
+import useGenerateDashboardReport from "@/Modules/Reports/Hooks/use-generate-dashboard-report";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { PaginationData } from "@/Modules/Common/Types/CommonPageTypes";
 import { MetadataResourceData } from "@/Modules/Metadata/Types/MetadataResourceData";
@@ -38,6 +43,7 @@ interface DashboardReportProps {
     selectedMetadata: MetadataResourceData[];
     availableMetadata: DashboardMetadataResourceData[];
     existingMetadataIds: number[];
+    users: { id: number; name: string }[];
 }
 
 export default function DashboardReportPage({
@@ -46,49 +52,72 @@ export default function DashboardReportPage({
     selectedMetadata,
     availableMetadata,
     existingMetadataIds,
+    users,
 }: DashboardReportProps) {
-    const [documentStatus, setDocumentStatus] = useState<string | null>(filters.document_status);
-    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
-        filters.start_date ? new Date(filters.start_date) : null,
-        filters.end_date ? new Date(filters.end_date) : null,
-    ]);
+    const [documentStatus, setDocumentStatus] = useState<string | null>(
+        filters.document_status
+    );
+    const [startDate, setStartDate] = useState<Date | null>(
+        filters.start_date ? new Date(filters.start_date) : null
+    );
+    const [endDate, setEndDate] = useState<Date | null>(
+        filters.end_date ? new Date(filters.end_date) : null
+    );
+    const [uploader, setUploader] = useState<string | null>(null);
+    const [dueIn, setDueIn] = useState<string | null>(null);
 
     const { openDocument } = useDocumentProperties();
 
-    const { search, setSearch, handleSearch } = useSearchDataTable("", `/dashboard/reports`);
-    const { page, setPage, handlePageChange } = usePaginateDataTable(documents.current_page);
+    const { search, setSearch, handleSearch } = useSearchDataTable(
+        "",
+        `/dashboard/reports`
+    );
+    const { page, setPage, handlePageChange } = usePaginateDataTable(
+        documents.current_page
+    );
 
-    const { generateDashboardReport } = useGenerateReport();
+    const { generateDashboardReport } = useGenerateDashboardReport();
 
     const { openModal } = useModalStore();
 
     /**
      * Consolidated handleFilter function that merges all active filters.
      */
-    const handleFilter = (updatedFilters: Partial<{
-        document_status: string | null;
-        start_date: string | null;
-        end_date: string | null;
-        search: string;
-        page: number;
-    }>) => {
+    const handleFilter = (
+        updatedFilters: Partial<{
+            document_status: string | null;
+            start_date: string | null;
+            end_date: string | null;
+            uploader: string | null;
+            due_in: string | null;
+            search: string;
+            page: number;
+        }>
+    ) => {
         const query: any = {
             document_status: documentStatus,
-            start_date: dateRange[0] ? dateRange[0].toISOString().split('T')[0] : null,
-            end_date: dateRange[1] ? dateRange[1].toISOString().split('T')[0] : null,
+            start_date: startDate
+                ? startDate.toISOString().split("T")[0]
+                : null,
+            end_date: endDate ? endDate.toISOString().split("T")[0] : null,
+            uploader: uploader || undefined,
+            due_in: dueIn || undefined,
             page: page || undefined,
             ...updatedFilters, // Override with any updated filters
         };
 
         // Remove null or undefined query parameters
-        Object.keys(query).forEach(key => {
+        Object.keys(query).forEach((key) => {
             if (query[key] === null || query[key] === undefined) {
                 delete query[key];
             }
         });
 
         // Navigate with Inertia to apply filters
-        router.get(route("dashboard.reports"), query, { replace: true, preserveState: true });
+        router.get(route("dashboard.reports"), query, {
+            replace: true,
+            preserveState: true,
+        });
     };
 
     const handleDocumentStatusChange = (value: string | null) => {
@@ -96,13 +125,30 @@ export default function DashboardReportPage({
         handleFilter({ document_status: value, page: 1 }); // Reset to first page on filter change
     };
 
-    const handleDateRangeChange = (value: [Date | null, Date | null]) => {
-        setDateRange(value);
+    const handleStartDateChange = (date: Date | null) => {
+        setStartDate(date);
         handleFilter({
-            start_date: value[0] ? value[0].toISOString().split('T')[0] : null,
-            end_date: value[1] ? value[1].toISOString().split('T')[0] : null,
+            start_date: date ? date.toISOString().split("T")[0] : null,
             page: 1, // Reset to first page on filter change
         });
+    };
+
+    const handleEndDateChange = (date: Date | null) => {
+        setEndDate(date);
+        handleFilter({
+            end_date: date ? date.toISOString().split("T")[0] : null,
+            page: 1, // Reset to first page on filter change
+        });
+    };
+
+    const handleUploaderChange = (value: string | null) => {
+        setUploader(value);
+        handleFilter({ uploader: value, page: 1 });
+    };
+
+    const handleDueInChange = (value: string | null) => {
+        setDueIn(value);
+        handleFilter({ due_in: value, page: 1 });
     };
 
     const handlePageChangeInternal = (newPage: number) => {
@@ -113,8 +159,12 @@ export default function DashboardReportPage({
     const handleGenerateReport = () => {
         const payload = {
             document_status: documentStatus,
-            start_date: dateRange[0] ? dateRange[0].toISOString().split('T')[0] : null,
-            end_date: dateRange[1] ? dateRange[1].toISOString().split('T')[0] : null,
+            start_date: startDate
+                ? startDate.toISOString().split("T")[0]
+                : null,
+            end_date: endDate ? endDate.toISOString().split("T")[0] : null,
+            uploader: uploader,
+            due_in: dueIn,
             metadata_ids: existingMetadataIds,
         };
 
@@ -126,68 +176,84 @@ export default function DashboardReportPage({
      */
     const handleClearFilters = () => {
         setDocumentStatus(null);
-        setDateRange([null, null]);
+        setStartDate(null);
+        setEndDate(null);
+        setUploader(null);
+        setDueIn(null);
         setSearch("");
         handleFilter({
             document_status: null,
             start_date: null,
             end_date: null,
+            uploader: null,
+            due_in: null,
         });
     };
 
     /**
      * Function to render dynamic columns with special handling for 'status' and 'due_in'.
      */
-    const renderDynamicColumns = (): DataTableColumn<ItemContentsResourceData>[] => {
-        return selectedMetadata.map((meta) => {
-            // Check if the metadata corresponds to 'review status'
-            if (meta.name.toLowerCase() === 'review status') {
-                return {
-                    accessor: `review status`,
-                    title: 'Review Status',
-                    render: ({ review_status }) => <StateBadge state={review_status} />,
-                };
-            }
+    const renderDynamicColumns =
+        (): DataTableColumn<ItemContentsResourceData>[] => {
+            return selectedMetadata.map((meta) => {
+                // Check if the metadata corresponds to 'review status'
+                if (meta.name.toLowerCase() === "review status") {
+                    return {
+                        accessor: `review_status`,
+                        title: "Review Status",
+                        render: ({ review_status }) => (
+                            <StateBadge state={review_status} />
+                        ),
+                    };
+                }
 
-            // Check if the metadata corresponds to 'approval status'
-            if (meta.name.toLowerCase() === 'approval status') {
-                return {
-                    accessor: `approval status`,
-                    title: 'Approval Status',
-                    render: ({ approval_status }) => <StateBadge state={approval_status} />,
-                };
-            }
+                // Check if the metadata corresponds to 'approval status'
+                if (meta.name.toLowerCase() === "approval status") {
+                    return {
+                        accessor: `approval_status`,
+                        title: "Approval Status",
+                        render: ({ approval_status }) => (
+                            <StateBadge state={approval_status} />
+                        ),
+                    };
+                }
 
-            // Check if the metadata corresponds to 'due_in'
-            if (meta.name.toLowerCase() === 'due_in') {
-                return {
-                    accessor: `due_in`,
-                    title: "Due in",
-                    render: ({ due_in }) => {
-                        return due_in !== undefined && due_in !== null ? (
-                            due_in < 0 ? (
-                                <Text c="red" size="sm">{Math.abs(due_in)} days overdue</Text>
+                // Check if the metadata corresponds to 'due_in'
+                if (meta.name.toLowerCase() === "due_in") {
+                    return {
+                        accessor: `due_in`,
+                        title: "Due in",
+                        render: ({ due_in }) => {
+                            return due_in !== undefined && due_in !== null ? (
+                                due_in < 0 ? (
+                                    <Text color="red" size="sm">
+                                        {Math.abs(due_in)} days overdue
+                                    </Text>
+                                ) : (
+                                    <Text size="sm">{`${due_in} day${
+                                        due_in !== 1 ? "s" : ""
+                                    } remaining`}</Text>
+                                )
                             ) : (
-                                <Text size="sm">{`${due_in} day${due_in !== 1 ? 's' : ''} remaining`}</Text>
-                            )
-                        ) : (
-                            "Deadline not set"
+                                "Deadline not set"
+                            );
+                        },
+                    };
+                }
+
+                // Default rendering for other metadata columns
+                return {
+                    accessor: `metadata_${meta.metadata_id}`,
+                    title: meta.name,
+                    render: (record: ItemContentsResourceData) => {
+                        const metaValue = record.metadata?.find(
+                            (m) => m.metadata_id === meta.metadata_id
                         );
+                        return metaValue ? metaValue.value : "N/A";
                     },
                 };
-            }
-
-            // Default rendering for other metadata columns
-            return {
-                accessor: `metadata_${meta.metadata_id}`,
-                title: meta.name,
-                render: (record: ItemContentsResourceData) => {
-                    const metaValue = record.metadata?.find((m) => m.metadata_id === meta.metadata_id);
-                    return metaValue ? metaValue.value : "N/A";
-                },
-            };
-        });
-    };
+            });
+        };
 
     return (
         <Authenticated>
@@ -201,7 +267,7 @@ export default function DashboardReportPage({
 
                 <Stack>
                     {/* Filter Options */}
-                    <Group justify="space-between">
+                    <Group align="flex-end">
                         <Flex
                             gap="md"
                             justify="flex-start"
@@ -214,27 +280,77 @@ export default function DashboardReportPage({
                                 value={documentStatus}
                                 onChange={handleDocumentStatusChange}
                                 data={[
-                                    { value: "reviewal_accepted", label: "Review Accepted" },
-                                    { value: "reviewal_rejected", label: "Review Rejected" },
-                                    { value: "reviewal_pending", label: "Review Pending" },
-                                    { value: "approval_accepted", label: "Approval Accepted" },
-                                    { value: "approval_rejected", label: "Approval Rejected" },
-                                    { value: "approval_pending", label: "Approval Pending" },
+                                    {
+                                        value: "reviewal_accepted",
+                                        label: "Review Accepted",
+                                    },
+                                    {
+                                        value: "reviewal_rejected",
+                                        label: "Review Rejected",
+                                    },
+                                    {
+                                        value: "reviewal_pending",
+                                        label: "Review Pending",
+                                    },
+                                    {
+                                        value: "approval_accepted",
+                                        label: "Approval Accepted",
+                                    },
+                                    {
+                                        value: "approval_rejected",
+                                        label: "Approval Rejected",
+                                    },
+                                    {
+                                        value: "approval_pending",
+                                        label: "Approval Pending",
+                                    },
+                                ]}
+                                style={{ width: 200 }}
+                            />
+
+                            <Select
+                                placeholder="Select uploader"
+                                value={uploader}
+                                onChange={handleUploaderChange}
+                                data={users.map((user) => ({
+                                    value: user.id.toString(),
+                                    label: user.name,
+                                }))}
+                                style={{ width: 200 }}
+                            />
+
+                            <Select
+                                placeholder="Select due in"
+                                value={dueIn}
+                                onChange={handleDueInChange}
+                                data={[
+                                    { value: "7", label: "Due in 7 days" },
+                                    { value: "30", label: "Due in 30 days" },
+                                    { value: "60", label: "Due in 60 days" },
                                 ]}
                                 style={{ width: 200 }}
                             />
 
                             <DatePickerInput
-                                type="range"
-                                placeholder="Select date range"
-                                value={dateRange}
-                                onChange={handleDateRangeChange}
-                                style={{ width: 400 }}
-                                allowSingleDateInRange
+                                placeholder="Start Date"
+                                value={startDate}
+                                onChange={handleStartDateChange}
+                                style={{ width: 200 }}
+                                required
+                            />
+
+                            <DatePickerInput
+                                placeholder="End Date"
+                                value={endDate}
+                                onChange={handleEndDateChange}
+                                style={{ width: 200 }}
+                                required
                             />
 
                             <Button
-                                onClick={() => openModal("selectDashboardMetadataColumns")}
+                                onClick={() =>
+                                    openModal("selectDashboardMetadataColumns")
+                                }
                                 leftSection={<IconTable size={16} />}
                                 variant="subtle"
                                 color="dark.5"
@@ -249,6 +365,7 @@ export default function DashboardReportPage({
                                 onClick={handleClearFilters}
                                 variant="subtle"
                                 color="gray"
+                                leftSection={<IconFilter size={16} />}
                             >
                                 Clear Filters
                             </Button>
@@ -276,12 +393,19 @@ export default function DashboardReportPage({
                         columns={[
                             {
                                 accessor: "name",
-                                render: ({ mime, type, name, missing_required_metadata }) => (
+                                render: ({
+                                    mime,
+                                    type,
+                                    name,
+                                    missing_required_metadata,
+                                }) => (
                                     <Group align="center" gap={12}>
                                         <ItemIcon
                                             mime={mime ?? ""}
                                             isFolder={type === "folder"}
-                                            missingRequiredMetadata={missing_required_metadata}
+                                            missingRequiredMetadata={
+                                                missing_required_metadata
+                                            }
                                         />
                                         <span>{name}</span>
                                     </Group>

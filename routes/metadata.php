@@ -16,5 +16,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{metadata}', [MetadataController::class, 'destroy'])->name('metadata.destroy');
 
         Route::get('/fetch', [MetadataController::class, 'fetchMetadata'])->name('metadata.fetch');
+
+        Route::get('/{metadata}/predefined-values', [MetadataController::class, 'getPredefinedValues'])->name('metadata.predefined-values');
     });
 });

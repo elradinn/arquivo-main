@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('document_approvals', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('document_id');
+            $table->uuid('document_version_id');
             $table->text('resolution')->nullable();
             $table->string('overall_state');
             $table->uuid('destination')->nullable();
@@ -18,10 +18,10 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('document_id')->references('item_id')->on('documents')->onDelete('cascade');
+            $table->foreign('document_version_id')->references('id')->on('document_has_versions')->onDelete('cascade');
             $table->foreign('destination')->references('id')->on('items')->onDelete('cascade');
 
-            $table->unique(['document_id', 'type']);
+            $table->unique(['document_version_id', 'type']);
         });
     }
 

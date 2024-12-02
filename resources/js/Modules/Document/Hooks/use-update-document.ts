@@ -8,26 +8,32 @@ interface UseUpdateDocumentProps {
     onSuccess?: () => void;
 }
 
-export function useUpdateDocument({ document, onSuccess }: UseUpdateDocumentProps) {
-    const { data, setData, put, processing, errors, reset, clearErrors } = useForm<UpdateDocumentData>({
-        name: document.name,
-        document_number: document.document_number || "",
-        description: document.description || "",
-        due_date: document.due_date || "",
-        update_metadata: document.metadata.map(meta => ({
-            metadata_id: meta.metadata_id,
-            name: meta.name,
-            value: meta.value,
-        })),
-        delete_metadata: [],
-        related_documents: document.related_documents.map(doc => ({
-            item_id: doc.item_id,
-            name: doc.name,
-        })),
-    });
+export function useUpdateDocument({
+    document,
+    onSuccess,
+}: UseUpdateDocumentProps) {
+    const { data, setData, put, processing, errors, reset, clearErrors } =
+        useForm<UpdateDocumentData>({
+            name: document.name,
+            document_number: document.document_number || "",
+            description: document.description || "",
+            due_date: document.due_date || "",
+            update_metadata: document.metadata.map((meta) => ({
+                metadata_id: meta.metadata_id,
+                name: meta.name,
+                value: meta.value,
+            })),
+            delete_metadata: [],
+            related_documents: document.related_documents.map((doc) => ({
+                item_id: doc.item_id,
+                name: doc.name,
+            })),
+        });
 
     const handleUpdateDocument = (e: React.FormEvent) => {
         e.preventDefault();
+
+        console.log(data);
 
         put(route("document.save", document.item_id), {
             onSuccess: () => {

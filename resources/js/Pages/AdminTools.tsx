@@ -2,6 +2,7 @@ import { Head, Link } from "@inertiajs/react";
 import { Card, Group, SimpleGrid, Stack, Text } from "@mantine/core";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import { IconReportAnalytics } from "@tabler/icons-react";
+import BackupButton from "@/Modules/Item/Components/BackupButton";
 
 const adminTools = [
     // {
@@ -52,7 +53,9 @@ export default function AdminToolsPage() {
                     <Text component="h2" size="xl" fw={600} c="gray.8">
                         Admin Tools
                     </Text>
-                    <Text c="dimmed">Essential features for efficient document management</Text>
+                    <Text c="dimmed">
+                        Essential features for efficient document management
+                    </Text>
                 </div>
 
                 <SimpleGrid spacing="lg" cols={{ base: 1, sm: 2 }} w="90%">
@@ -80,6 +83,7 @@ export default function AdminToolsPage() {
                             </Group>
                         </Card>
                     ))}
+                    <BackupButton />
                 </SimpleGrid>
             </Stack>
         </Authenticated>

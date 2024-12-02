@@ -83,7 +83,7 @@ class DocumentController extends Controller
         return Inertia::render('DocumentProperties', [
             'activityLog' => ActivityLogResourceData::collect($activityLogs),
             'itemAncestors' => ItemAncestorsResourceData::collect($itemAncestors, DataCollection::class),
-            'document' => DocumentResourceData::fromModel($document),
+            'document' => DocumentResourceData::fromModel($document, true),
             'userRole' => $userRole,
         ]);
     }

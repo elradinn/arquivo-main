@@ -27,13 +27,35 @@ class DocumentResourceData extends Resource
         public string $updated_at
     ) {}
 
-    public static function fromModel(Document $document): self
+    /**
+     * Create a DocumentResourceData instance from a Document model.
+     *
+     * @param Document $document
+     * @param bool $includeSystemMetadata Whether to include system metadata
+     * @return self
+     */
+    public static function fromModel(Document $document, bool $includeSystemMetadata = false): self
     {
         $requiredMetadata = Folder::find($document->item->parent_id);
         $requiredFolderMetadata = $requiredMetadata ? $requiredMetadata->requiredMetadata()->get()->map(fn($metadata) => [
             'metadata_id' => $metadata->id,
             'name' => $metadata->name,
         ])->toArray() : [];
+
+        $currentVersion = $document->versions()->where('current', true)->first();
+
+        $documentApprovalIds = $currentVersion ? $currentVersion->documentApprovals->map(fn($documentApproval) => [
+            'id' => $documentApproval->id,
+            'type' => $documentApproval->type,
+        ])->toArray() : [];
+
+        // Filter metadata based on the $includeSystemMetadata flag
+        $metadataCollection = $document->metadata;
+        if (!$includeSystemMetadata) {
+            $metadataCollection = $metadataCollection->filter(function ($metadata) {
+                return $metadata->status !== 'system';
+            });
+        }
 
         return new self(
             item_id: $document->item_id,
@@ -45,16 +67,13 @@ class DocumentResourceData extends Resource
             mime: $document->mime,
             due_date: $document->due_date,
             file_path: $document->file_path,
-            document_approval_ids: $document->documentApprovals->map(fn($documentApproval) => [
-                'id' => $documentApproval->id,
-                'type' => $documentApproval->type,
-            ])->toArray(),
+            document_approval_ids: $documentApprovalIds,
             related_documents: $document->relatedDocuments->map(fn($relatedDocument) => [
                 'id' => $relatedDocument->id,
                 'item_id' => $relatedDocument->item_id,
                 'name' => $relatedDocument->name,
             ])->toArray(),
-            metadata: $document->metadata->map(fn($metadata) => [
+            metadata: $metadataCollection->map(fn($metadata) => [
                 'metadata_id' => $metadata->id,
                 'name' => $metadata->name,
                 'value' => $metadata->pivot->value,

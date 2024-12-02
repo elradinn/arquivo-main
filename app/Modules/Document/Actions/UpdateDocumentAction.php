@@ -27,12 +27,6 @@ class UpdateDocumentAction
         $this->updateDocumentMetadataAction->execute($document, $data);
         $this->attachRelatedDocumentAction->execute($document, $data->related_documents);
 
-        $metadata = Metadata::where('name', 'Due In')->first();
-
-        $document->metadata()->attach($metadata->id, [
-            'value' => $data->due_date,
-        ]);
-
         activity()
             ->performedOn($document)
             ->causedBy(Auth::id())

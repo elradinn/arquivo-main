@@ -2,21 +2,21 @@
 
 namespace Modules\DocumentApproval\Models;
 
-use Modules\Item\Models\Item;
-use Modules\Document\Models\Document;
+use Modules\Document\Models\DocumentHasVersion;
 use Modules\User\Models\User;
-use Modules\DocumentApproval\States\DocumentState;
-use Modules\DocumentApprovalHasUser\Models\DocumentApprovalHasUser;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\ModelStates\HasStates;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Modules\DocumentApproval\States\DocumentState;
+use Modules\DocumentApprovalHasUser\Models\DocumentApprovalHasUser;
+use Modules\Item\Models\Item;
 
 class DocumentApproval extends Model
 {
     use HasUuids, HasStates;
 
     protected $fillable = [
-        'document_id',
+        'document_version_id',
         'resolution',
         'destination',
         'type',
@@ -27,9 +27,12 @@ class DocumentApproval extends Model
         'overall_state' => DocumentState::class,
     ];
 
-    public function document()
+    /**
+     * Get the document version that owns the approval.
+     */
+    public function documentVersion()
     {
-        return $this->belongsTo(Document::class, 'document_id', 'item_id');
+        return $this->belongsTo(DocumentHasVersion::class, 'document_version_id');
     }
 
     public function destinationItem()
@@ -42,8 +45,11 @@ class DocumentApproval extends Model
         return $this->hasMany(DocumentApprovalHasUser::class);
     }
 
-    public function users()
+    /**
+     * Accessor to get the associated Document.
+     */
+    public function getDocumentAttribute()
     {
-        return $this->hasManyThrough(User::class, DocumentApprovalHasUser::class, 'document_approval_id', 'id', 'id', 'user_id');
+        return $this->documentVersion->document;
     }
 }
