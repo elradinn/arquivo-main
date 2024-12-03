@@ -57,6 +57,10 @@ class CreateDocumentApprovalAction
             $documentVersion->document->versions()->where('current', true)->update([
                 'review_status' => new StatesDocumentReviewalPending($documentVersion->document),
             ]);
+
+            $documentApproval->document->update([
+                'review_status' => StatesDocumentReviewalPending::class,
+            ]);
         } else {
             $documentVersion->update([
                 'approval_status' => StatesDocumentApprovalPending::class,
@@ -64,6 +68,10 @@ class CreateDocumentApprovalAction
 
             $documentVersion->document->versions()->where('current', true)->update([
                 'approval_status' => new StatesDocumentApprovalPending($documentVersion->document),
+            ]);
+
+            $documentApproval->document->update([
+                'approval_status' => StatesDocumentApprovalPending::class,
             ]);
         }
 
