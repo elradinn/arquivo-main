@@ -188,7 +188,7 @@ class DashboardController extends Controller
             ->whereHas('document', function ($query) use ($user) {
                 if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
                     $query->where(function ($q) use ($user) {
-                        $q->whereHas('document.userAccess', function ($q2) use ($user) {
+                        $q->whereHas('userAccess', function ($q2) use ($user) {
                             $q2->where('user_id', $user->id);
                         });
                     });
@@ -206,7 +206,7 @@ class DashboardController extends Controller
                             $q->where('review_status', $statusClass)
                                 ->orWhere('approval_status', $statusClass)
                                 ->where(function ($q2) use ($user) {
-                                    $q2->whereHas('document.userAccess', function ($q3) use ($user) {
+                                    $q2->whereHas('userAccess', function ($q3) use ($user) {
                                         $q3->where('user_id', $user->id);
                                     });
                                 });
@@ -227,7 +227,7 @@ class DashboardController extends Controller
                 $query->where('owned_by', $uploader);
                 if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
                     $query->where(function ($q) use ($user) {
-                        $q->whereHas('document.userAccess', function ($q2) use ($user) {
+                        $q->whereHas('userAccess', function ($q2) use ($user) {
                             $q2->where('user_id', $user->id);
                         });
                     });
@@ -243,7 +243,7 @@ class DashboardController extends Controller
                 $query->whereDate('due_date', '<=', $currentDate->copy()->addDays($dueDays));
                 if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
                     $query->where(function ($q) use ($user) {
-                        $q->whereHas('document.userAccess', function ($q2) use ($user) {
+                        $q->whereHas('userAccess', function ($q2) use ($user) {
                             $q2->where('user_id', $user->id);
                         });
                     });
@@ -257,7 +257,7 @@ class DashboardController extends Controller
                 $query->whereBetween('updated_at', [$startDate, $endDate]);
                 if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
                     $query->where(function ($q) use ($user) {
-                        $q->whereHas('document.userAccess', function ($q2) use ($user) {
+                        $q->whereHas('userAccess', function ($q2) use ($user) {
                             $q2->where('user_id', $user->id);
                         });
                     });

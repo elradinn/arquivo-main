@@ -61,7 +61,7 @@ class HandleInertiaRequests extends Middleware
 
         // dd($pathSegments);
 
-        if ($pathSegments[0] === 'dashboard' || $pathSegments[0] === 'trash') {
+        if ($pathSegments[0] === 'dashboard' || $pathSegments[0] === 'trash' || ($pathSegments[0] === 'item' && $pathSegments[1] === 'shared-with-me')) {
             $currentWorkspace = '/' . $pathSegments[0];
         } elseif (isset($pathSegments[1])) {
             $currentFolderId = $pathSegments[1];

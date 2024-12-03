@@ -15,6 +15,7 @@ import {
     IconPlus,
     IconDotsVertical,
     IconUsers,
+    IconShare,
 } from "@tabler/icons-react";
 import classes from "./Sidebar.module.css";
 import OfficeLogo from "../OfficeLogo/OfficeLogo";
@@ -29,6 +30,12 @@ const NAV_LINKS = [
         icon: IconLayoutDashboard,
         href: "/dashboard",
         adminOnly: true,
+    },
+    {
+        label: "Shared with me",
+        icon: IconShare,
+        href: "/item/shared-with-me",
+        adminOnly: false,
     },
     {
         label: "Trash",
@@ -48,6 +55,8 @@ const Sidebar: React.FC = () => {
 
     // const currentPath = window.location.pathname;
 
+    console.log(currentWorkspace);
+
     const renderNavLinks = NAV_LINKS.filter((link) => {
         // Show link if it's not adminOnly or the user is admin
         // const isAllowed = auth.systemRole === "admin";
@@ -55,7 +64,7 @@ const Sidebar: React.FC = () => {
         const isSharedWithMe = link.label === "Shared with me";
         const shouldHideSharedWithMe =
             isSharedWithMe && auth.systemRole === "admin";
-        // return isAllowed && !shouldHideSharedWithMe;
+        return !shouldHideSharedWithMe;
         return true;
     }).map(({ label, icon: Icon, href }) => (
         <Link
