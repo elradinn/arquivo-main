@@ -29,14 +29,8 @@ interface IProps {
 }
 
 export default function DocumentEditPage({ document, itemAncestors }: IProps) {
-    const {
-        data,
-        setData,
-        handleUpdateDocument,
-        processing,
-        errors,
-        reset,
-    } = useUpdateDocument({ document });
+    const { data, setData, handleUpdateDocument, processing, errors, reset } =
+        useUpdateDocument({ document });
 
     const [deletedMetadataIds, setDeletedMetadataIds] = useState<number[]>([]);
 
@@ -54,10 +48,15 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
 
     const handleMetadataDelete = (metadataId: number) => {
         setDeletedMetadataIds((prev) => [...prev, metadataId]);
-        setData("delete_metadata", [...(data.delete_metadata || []), { metadata_id: metadataId }]);
+        setData("delete_metadata", [
+            ...(data.delete_metadata || []),
+            { metadata_id: metadataId },
+        ]);
     };
 
-    const handleRelatedDocsChange = (updatedRelatedDocs: { item_id: string; name: string }[]) => {
+    const handleRelatedDocsChange = (
+        updatedRelatedDocs: { item_id: string; name: string }[]
+    ) => {
         setData("related_documents", updatedRelatedDocs);
     };
 
@@ -87,11 +86,18 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
                             label="Document Number"
                             name="document_number"
                             value={data.document_number}
-                            onChange={(e) => setData("document_number", e.target.value)}
+                            onChange={(e) =>
+                                setData("document_number", e.target.value)
+                            }
                             placeholder="Enter document number"
                         />
 
-                        <TextInput type="text" label="Created At" value={document.created_at} disabled />
+                        <TextInput
+                            type="text"
+                            label="Created At"
+                            value={document.created_at}
+                            disabled
+                        />
 
                         <Textarea
                             label="Description"
@@ -100,20 +106,31 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
                             maxRows={6}
                             placeholder="Enter description"
                             value={data.description}
-                            onChange={(e) => setData("description", e.target.value)}
+                            onChange={(e) =>
+                                setData("description", e.target.value)
+                            }
                         />
 
                         <DatePickerInput
                             label="Due Date"
                             placeholder="Select due date"
-                            value={data.due_date ? new Date(data.due_date) : undefined}
-                            onChange={(date: Date | null) => setData("due_date", date?.toISOString() ?? undefined)}
+                            value={
+                                data.due_date
+                                    ? new Date(data.due_date)
+                                    : undefined
+                            }
+                            onChange={(date: Date | null) =>
+                                setData(
+                                    "due_date",
+                                    date?.toISOString() ?? undefined
+                                )
+                            }
                         />
                     </Stack>
 
                     <Stack gap={12} mt={16}>
                         <Text size="sm" fw={500}>
-                            Custom Metadata Field
+                            Custom Tags
                         </Text>
 
                         <MetadataInput
@@ -138,7 +155,16 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
                     </Stack>
 
                     <Flex align="center" justify="end" mt={16}>
-                        <Button variant="light" onClick={() => router.visit(route('document.show', { document: document.item_id }))}>
+                        <Button
+                            variant="light"
+                            onClick={() =>
+                                router.visit(
+                                    route("document.show", {
+                                        document: document.item_id,
+                                    })
+                                )
+                            }
+                        >
                             Cancel
                         </Button>
 
