@@ -32,7 +32,9 @@ class DashboardController extends Controller
     public function dashboard(): Response
     {
         // Enforce admin authorization
-        $this->dashboardAuthorization->isAdmin(Auth::user());
+        $user = Auth::user();
+        $user = User::find($user->id);
+        $this->dashboardAuthorization->isAdmin($user);
 
         // Define the statuses to count
         $reviewStatuses = [
@@ -56,7 +58,15 @@ class DashboardController extends Controller
             $statusClass = DocumentStatusHelper::getStatusClass($statusKey);
             if ($statusClass) {
                 $count = Document::where('review_status', $statusClass)
-                    ->whereHas('item')
+                    ->whereHas('item', function ($query) use ($user) {
+                        if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
+                            $query->where(function ($q) use ($user) {
+                                $q->whereHas('document.userAccess', function ($q2) use ($user) {
+                                    $q2->where('user_id', $user->id);
+                                });
+                            });
+                        }
+                    })
                     ->count();
                 $reviewStatusCounts[$statusKey] = $count;
             } else {
@@ -69,7 +79,15 @@ class DashboardController extends Controller
             $statusClass = DocumentStatusHelper::getStatusClass($statusKey);
             if ($statusClass) {
                 $count = Document::where('approval_status', $statusClass)
-                    ->whereHas('item')
+                    ->whereHas('item', function ($query) use ($user) {
+                        if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
+                            $query->where(function ($q) use ($user) {
+                                $q->whereHas('document.userAccess', function ($q2) use ($user) {
+                                    $q2->where('user_id', $user->id);
+                                });
+                            });
+                        }
+                    })
                     ->count();
                 $approvalStatusCounts[$statusKey] = $count;
             } else {
@@ -77,8 +95,16 @@ class DashboardController extends Controller
             }
         }
 
-        // Fetch recently uploaded documents, ensuring associated Items are not soft-deleted
-        $recently_uploaded_documents = Document::whereHas('item')
+        // Fetch recently uploaded documents, ensuring associated Items are not soft-deleted and user has access
+        $recently_uploaded_documents = Document::whereHas('item', function ($query) use ($user) {
+            if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
+                $query->where(function ($q) use ($user) {
+                    $q->whereHas('document.userAccess', function ($q2) use ($user) {
+                        $q2->where('user_id', $user->id);
+                    });
+                });
+            }
+        })
             ->orderBy('updated_at', 'desc')
             ->take(5)
             ->get()
@@ -102,12 +128,21 @@ class DashboardController extends Controller
             number_of_approval_pending: $approvalStatusCounts['approval_pending'],
             number_of_approval_accepted: $approvalStatusCounts['approval_accepted'],
             number_of_approval_rejected: $approvalStatusCounts['approval_rejected'],
-            number_of_documents: Document::whereHas('item')->count(),
+            number_of_documents: Document::whereHas('item', function ($query) use ($user) {
+                if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
+                    $query->where(function ($q) use ($user) {
+                        $q->whereHas('document.userAccess', function ($q2) use ($user) {
+                            $q2->where('user_id', $user->id);
+                        });
+                    });
+                }
+            })
+                ->count(),
             recently_uploaded_documents: $recently_uploaded_documents
         );
 
         // Fetch all users for the uploader filter
-        $users = Auth::user()->hasRole('admin')
+        $users = $user->hasRole('admin')
             ? User::select('id', 'name')->get()
             : collect([]);
 
@@ -125,6 +160,10 @@ class DashboardController extends Controller
      */
     public function showDashboardReport(Request $request)
     {
+        $user = Auth::user();
+        $user = User::find($user->id);
+        $this->dashboardAuthorization->isAdmin($user);
+
         // Extract filters from query parameters
         $documentStatus = $request->query('document_status'); // e.g., reviewal_pending, approval_accepted, etc.
         $startDate = $request->query('start_date');
@@ -140,32 +179,59 @@ class DashboardController extends Controller
         $availableMetadata = Metadata::all();
 
         // Get all users for the uploader filter
-        $users = Auth::user()->hasRole('admin')
+        $users = $user->hasRole('admin')
             ? User::select('id', 'name')->get()
             : collect([]);
 
-        // Query documents based on filters, ensuring associated Items are not soft-deleted
+        // Query documents based on filters, ensuring associated Items are not soft-deleted and user has access
         $documentsQuery = Item::with('document')
-            ->whereHas('document')
+            ->whereHas('document', function ($query) use ($user) {
+                if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
+                    $query->where(function ($q) use ($user) {
+                        $q->whereHas('userAccess', function ($q2) use ($user) {
+                            $q2->where('user_id', $user->id);
+                        });
+                    });
+                }
+            })
             ->whereNull('deleted_at'); // Ensure Item is not soft-deleted
 
         // Apply document status filter
         if ($documentStatus) {
             $statusClass = DocumentStatusHelper::getStatusClass($documentStatus);
             if ($statusClass) {
-                $documentsQuery->whereHas('document', function ($query) use ($statusClass) {
-                    $query->where(function ($query) use ($statusClass) {
-                        $query->where('review_status', $statusClass)
-                            ->orWhere('approval_status', $statusClass);
-                    });
+                $documentsQuery->whereHas('document', function ($query) use ($statusClass, $user) {
+                    if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
+                        $query->where(function ($q) use ($statusClass, $user) {
+                            $q->where('review_status', $statusClass)
+                                ->orWhere('approval_status', $statusClass)
+                                ->where(function ($q2) use ($user) {
+                                    $q2->whereHas('userAccess', function ($q3) use ($user) {
+                                        $q3->where('user_id', $user->id);
+                                    });
+                                });
+                        });
+                    } else {
+                        $query->where(function ($q) use ($statusClass) {
+                            $q->where('review_status', $statusClass)
+                                ->orWhere('approval_status', $statusClass);
+                        });
+                    }
                 });
             }
         }
 
         // Apply uploader filter
         if ($uploader) {
-            $documentsQuery->whereHas('document', function ($query) use ($uploader) {
+            $documentsQuery->whereHas('document', function ($query) use ($uploader, $user) {
                 $query->where('owned_by', $uploader);
+                if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
+                    $query->where(function ($q) use ($user) {
+                        $q->whereHas('userAccess', function ($q2) use ($user) {
+                            $q2->where('user_id', $user->id);
+                        });
+                    });
+                }
             });
         }
 
@@ -173,15 +239,29 @@ class DashboardController extends Controller
         if ($dueIn) {
             $dueDays = intval($dueIn);
             $currentDate = now();
-            $documentsQuery->whereHas('document', function ($query) use ($dueDays, $currentDate) {
+            $documentsQuery->whereHas('document', function ($query) use ($dueDays, $currentDate, $user) {
                 $query->whereDate('due_date', '<=', $currentDate->copy()->addDays($dueDays));
+                if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
+                    $query->where(function ($q) use ($user) {
+                        $q->whereHas('userAccess', function ($q2) use ($user) {
+                            $q2->where('user_id', $user->id);
+                        });
+                    });
+                }
             });
         }
 
         // Apply date range filter
         if ($startDate && $endDate) {
-            $documentsQuery->whereHas('document', function ($query) use ($startDate, $endDate) {
+            $documentsQuery->whereHas('document', function ($query) use ($startDate, $endDate, $user) {
                 $query->whereBetween('updated_at', [$startDate, $endDate]);
+                if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
+                    $query->where(function ($q) use ($user) {
+                        $q->whereHas('userAccess', function ($q2) use ($user) {
+                            $q2->where('user_id', $user->id);
+                        });
+                    });
+                }
             });
         }
 

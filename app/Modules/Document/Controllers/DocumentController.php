@@ -58,6 +58,10 @@ class DocumentController extends Controller
 
         $item = Item::find($document->item_id);
 
+        if (!$item) {
+            abort(404, 'Item not found.');
+        }
+
         $itemAncestors = $item->ancestorsWithSelf()->get()->load('workspace', 'folder');
 
         // $userRole = $document->userAccess()
