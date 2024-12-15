@@ -59,9 +59,14 @@ class HandleInertiaRequests extends Middleware
         $currentPath = $request->path();
         $pathSegments = explode('/', $currentPath);
 
-        // dd($pathSegments);
+        // Initialize currentWorkspace as null
+        $currentWorkspace = null;
 
-        if ($pathSegments[0] === 'dashboard' || $pathSegments[0] === 'trash' || ($pathSegments[0] === 'item' && $pathSegments[1] === 'shared-with-me')) {
+        if (
+            isset($pathSegments[0]) &&
+            ($pathSegments[0] === 'dashboard' || $pathSegments[0] === 'trash' ||
+                ($pathSegments[0] === 'item' && isset($pathSegments[1]) && $pathSegments[1] === 'shared-with-me'))
+        ) {
             $currentWorkspace = '/' . $pathSegments[0];
         } elseif (isset($pathSegments[1])) {
             $currentFolderId = $pathSegments[1];
@@ -79,13 +84,11 @@ class HandleInertiaRequests extends Middleware
             } else {
                 // Handle the case where the folder is not found
                 // You can choose to set a default workspace or handle it as per your application's requirement
-                $currentWorkspace = null;
                 // Optionally, log the incident for debugging
                 Log::warning("HandleInertiaRequests: Folder with ID {$currentFolderId} not found.");
             }
         } else {
             // If the path doesn't have the expected structure, handle accordingly
-            $currentWorkspace = null;
             Log::warning("HandleInertiaRequests: Unexpected path structure '{$currentPath}'.");
         }
 
