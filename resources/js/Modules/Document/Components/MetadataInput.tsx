@@ -125,7 +125,7 @@ const MetadataInput: React.FC<MetadataInputProps> = ({
                 onClick={handleAddCustomMetadata}
                 leftSection={<IconPlus size={14} />}
             >
-                Add Custom Metadata
+                Add New Tag
             </Button>
             <AddDocumentMetadataModal
                 onAdd={(meta) =>
