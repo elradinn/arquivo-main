@@ -69,26 +69,32 @@ class DownloadItemsAction
 
     public function createZip($items): string
     {
-        $zipPath = 'zip/' . Str::random() . '.zip';
-        $publicPath = "public/$zipPath";
+        $zipPath = 'zip/' . Str::random() . '.zip'; // Path relative to storage/app/public
+        $publicPath = $zipPath; // Remove 'public/' prefix
 
         if (!Storage::exists('zip')) {
-            Storage::makeDirectory('public/zip');
+            Storage::makeDirectory('zip'); // Creates storage/app/public/zip
+            Log::info("Created zip directory at storage/app/public/zip");
         }
 
-        $zipFile = Storage::path($publicPath);
+        $zipFile = Storage::path($publicPath); // Resolves to storage/app/public/zip/xxx.zip
 
         $zip = new ZipArchive();
 
         if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+            Log::info("Opened zip file at $zipFile");
             $this->addItemsToZip($zip, $items);
-            $zip->close();
+            if (!$zip->close()) {
+                Log::error("Failed to close zip file at $zipFile");
+                return '';
+            }
+            Log::info("Closed zip file at $zipFile");
         } else {
             Log::error("Failed to create zip file at $zipFile");
             return '';
         }
 
-        return Storage::url($zipPath);
+        return Storage::url($zipPath); // Returns /storage/zip/xxx.zip
     }
 
     private function addItemsToZip($zip, $items, $ancestors = '')
