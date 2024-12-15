@@ -1,5 +1,31 @@
 <?php
 
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Storage;
+
+Route::get('/test-zip', function () {
+    $zipPath = 'zip/test.zip';
+    $publicPath = "public/$zipPath";
+
+    Storage::makeDirectory('public/zip');
+
+    $zipFile = Storage::path($publicPath);
+    $zip = new ZipArchive();
+
+    if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+        $testFilePath = Storage::disk('public')->path('documents/sample.pdf'); // Ensure sample.pdf exists
+        if (file_exists($testFilePath)) {
+            $zip->addFile($testFilePath, 'sample.pdf');
+        } else {
+            return 'Test file does not exist.';
+        }
+        $zip->close();
+        return 'Zip file created successfully at ' . Storage::url($zipPath);
+    } else {
+        return 'Failed to create zip file.';
+    }
+});
+
 require __DIR__ . '/mock_main.php';
 
 require __DIR__ . '/auth.php';
