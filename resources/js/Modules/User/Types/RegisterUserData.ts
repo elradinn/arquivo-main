@@ -1,9 +1,7 @@
 export interface RegisterUserData {
     name: string;
     email: string;
-    password: string;
-    password_confirmation: string;
-    workflow_role?: string;
     office_position?: string;
-    system_role?: string;
+    workflow_role?: string;
+    system_role: string;
 }
