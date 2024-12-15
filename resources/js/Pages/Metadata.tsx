@@ -1,6 +1,16 @@
 import { useState } from "react";
 import { Head } from "@inertiajs/react";
-import { ActionIcon, Box, Button, Group, Flex, rem, Stack, Text, TextInput } from "@mantine/core";
+import {
+    ActionIcon,
+    Box,
+    Button,
+    Group,
+    Flex,
+    rem,
+    Stack,
+    Text,
+    TextInput,
+} from "@mantine/core";
 import { IconEdit, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import CreateMetadataForm from "@/Modules/Metadata/Forms/CreateMetadataForm";
@@ -10,7 +20,10 @@ import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable"
 import { usePaginateDataTable } from "@/Modules/Common/Hooks/use-paginate-datatable";
 import { MetadataResourceData } from "@/Modules/Metadata/Types/MetadataResourceData";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
-import { PaginationData, Filters } from "@/Modules/Common/Types/CommonPageTypes";
+import {
+    PaginationData,
+    Filters,
+} from "@/Modules/Common/Types/CommonPageTypes";
 import { DataTable } from "mantine-datatable";
 
 interface IProps {
@@ -19,22 +32,30 @@ interface IProps {
 }
 
 export default function MetadataPage({ metadata, filters }: IProps) {
-    const [selectedRecord, setSelectedRecord] = useState<MetadataResourceData[]>([]);
-    const [currentMetadata, setCurrentMetadata] = useState<MetadataResourceData>();
+    const [selectedRecord, setSelectedRecord] = useState<
+        MetadataResourceData[]
+    >([]);
+    const [currentMetadata, setCurrentMetadata] =
+        useState<MetadataResourceData>();
 
-    const { search, setSearch, handleSearch } = useSearchDataTable(filters.search || "", "/metadata");
-    const { page, setPage, handlePageChange } = usePaginateDataTable(metadata.current_page);
+    const { search, setSearch, handleSearch } = useSearchDataTable(
+        filters.search || "",
+        "/metadata"
+    );
+    const { page, setPage, handlePageChange } = usePaginateDataTable(
+        metadata.current_page
+    );
 
     const { modals, openModal, closeModal } = useModalStore();
 
     const handleEditMetadata = (metadata: MetadataResourceData) => {
         setCurrentMetadata(metadata);
-        openModal('editMetadata');
+        openModal("editMetadata");
     };
 
     const handleDeleteMetadata = (metadata: MetadataResourceData) => {
         setCurrentMetadata(metadata);
-        openModal('deleteMetadata');
+        openModal("deleteMetadata");
     };
 
     return (
@@ -42,20 +63,32 @@ export default function MetadataPage({ metadata, filters }: IProps) {
             <Head title="Metadata" />
             <Stack px={8} py={8} gap={24}>
                 <Text component="h2" size="xl" fw={600} c="gray.8">
-                    Metadata
+                    Tags
                 </Text>
-                <Flex justify="space-between" direction={{ base: "column", md: "row" }} gap={{ base: 12, md: 0 }}>
+                <Flex
+                    justify="space-between"
+                    direction={{ base: "column", md: "row" }}
+                    gap={{ base: 12, md: 0 }}
+                >
                     <TextInput
                         w={{ md: 400 }}
                         placeholder="Search"
-                        leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+                        leftSection={
+                            <IconSearch
+                                style={{ width: rem(16), height: rem(16) }}
+                                stroke={1.5}
+                            />
+                        }
                         value={search}
                         onChange={(e) => {
                             setSearch(e.target.value);
                             handleSearch(e.target.value);
                         }}
                     />
-                    <Button leftSection={<IconPlus size={14} />} onClick={() => openModal('addMetadata')}>
+                    <Button
+                        leftSection={<IconPlus size={14} />}
+                        onClick={() => openModal("addMetadata")}
+                    >
                         Add New Metadata
                     </Button>
                 </Flex>
@@ -89,7 +122,9 @@ export default function MetadataPage({ metadata, filters }: IProps) {
                                         size="sm"
                                         variant="subtle"
                                         color="gray"
-                                        onClick={() => handleEditMetadata(metadata)}
+                                        onClick={() =>
+                                            handleEditMetadata(metadata)
+                                        }
                                     >
                                         <IconEdit size={48} />
                                     </ActionIcon>
@@ -97,7 +132,9 @@ export default function MetadataPage({ metadata, filters }: IProps) {
                                         size="sm"
                                         variant="subtle"
                                         color="red"
-                                        onClick={() => handleDeleteMetadata(metadata)}
+                                        onClick={() =>
+                                            handleDeleteMetadata(metadata)
+                                        }
                                     >
                                         <IconTrash size={48} />
                                     </ActionIcon>
@@ -111,9 +148,20 @@ export default function MetadataPage({ metadata, filters }: IProps) {
                 />
             </Stack>
 
-            <CreateMetadataForm isOpened={modals['addMetadata']} close={() => closeModal('addMetadata')} />
-            <UpdateMetadataForm isOpened={modals['editMetadata']} close={() => closeModal('editMetadata')} metadata={currentMetadata} />
-            <DeleteMetadataForm isOpened={modals['deleteMetadata']} close={() => closeModal('deleteMetadata')} metadata={currentMetadata} />
+            <CreateMetadataForm
+                isOpened={modals["addMetadata"]}
+                close={() => closeModal("addMetadata")}
+            />
+            <UpdateMetadataForm
+                isOpened={modals["editMetadata"]}
+                close={() => closeModal("editMetadata")}
+                metadata={currentMetadata}
+            />
+            <DeleteMetadataForm
+                isOpened={modals["deleteMetadata"]}
+                close={() => closeModal("deleteMetadata")}
+                metadata={currentMetadata}
+            />
         </Authenticated>
     );
 }
