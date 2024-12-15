@@ -13,9 +13,9 @@ Route::get('/test-zip', function () {
     $zip = new ZipArchive();
 
     if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
-        $testFilePath = Storage::disk('public')->path('documents/sample.pdf'); // Ensure sample.pdf exists
+        $testFilePath = Storage::disk('public')->path('documents/Doe, John - Letter Request.pdf'); // Ensure sample.pdf exists
         if (file_exists($testFilePath)) {
-            $zip->addFile($testFilePath, 'sample.pdf');
+            $zip->addFile($testFilePath, 'Doe, John - Letter Request.pdf');
         } else {
             return 'Test file does not exist.';
         }
