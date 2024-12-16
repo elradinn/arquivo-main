@@ -35,13 +35,12 @@ class DownloadItemsAction
             }
 
             $children = $parent->getChildren()->load('folder', 'document');
-            $url = $this->createZip($children);
+            $zipPath = $this->createZip($children);
             $filename = ($parent->folder->name ?? $parent->workspace->name) . '.zip';
 
-            // Collect all documents for logging
             $documentsToLog = $children->whereNotNull('document')->pluck('document');
         } else {
-            [$url, $filename, $message, $downloadedDocuments] = $this->getDownloadUrl($ids, $parent ? ($parent->folder->name ?? $parent->workspace->name) : 'download');
+            [$zipPath, $filename, $message, $downloadedDocuments] = $this->getDownloadUrl($ids, $parent ? ($parent->folder->name ?? $parent->workspace->name) : 'download');
 
             if ($message) {
                 return [
@@ -49,11 +48,9 @@ class DownloadItemsAction
                 ];
             }
 
-            // Collect documents for logging
             $documentsToLog = $downloadedDocuments;
         }
 
-        // Log each downloaded document
         foreach ($documentsToLog as $document) {
             activity()
                 ->performedOn($document)
@@ -61,40 +58,24 @@ class DownloadItemsAction
                 ->log("Document downloaded");
         }
 
-        return [
-            'url' => $url,
-            'filename' => $filename
-        ];
+        return $this->getDownloadResponse($zipPath, $filename);
     }
 
     public function createZip($items): string
     {
-        $zipPath = 'zip/' . Str::random() . '.zip'; // Path relative to storage/app/public
-        $publicPath = $zipPath; // Remove 'public/' prefix
-
-        if (!Storage::exists('zip')) {
-            Storage::makeDirectory('zip'); // Creates storage/app/public/zip
-            Log::info("Created zip directory at storage/app/public/zip");
-        }
-
-        $zipFile = Storage::path($publicPath); // Resolves to storage/app/public/zip/xxx.zip
-
+        // Generate a temporary file for the ZIP
+        $zipPath = tempnam(sys_get_temp_dir(), 'zip');
         $zip = new ZipArchive();
 
-        if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
-            Log::info("Opened zip file at $zipFile");
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
             $this->addItemsToZip($zip, $items);
-            if (!$zip->close()) {
-                Log::error("Failed to close zip file at $zipFile");
-                return '';
-            }
-            Log::info("Closed zip file at $zipFile");
+            $zip->close();
         } else {
-            Log::error("Failed to create zip file at $zipFile");
+            Log::error("Failed to create zip file at $zipPath");
             return '';
         }
 
-        return Storage::url($zipPath); // Returns /storage/zip/xxx.zip
+        return $zipPath;
     }
 
     private function addItemsToZip($zip, $items, $ancestors = '')
@@ -104,20 +85,24 @@ class DownloadItemsAction
                 $this->addItemsToZip($zip, $item->getChildren()->load('folder', 'document'), $ancestors . $item->folder->name . '/');
             } else {
                 $document = $item->document;
-                $publicPath = Storage::disk('public')->path($document->file_path);
+                $filePath = Storage::disk('public')->path($document->file_path);
 
                 if ($document->uploaded_on_cloud) {
-                    // Assuming the file is accessible via the public disk
-                    $dest = pathinfo($document->file_path, PATHINFO_BASENAME);
-                    $content = Storage::get($document->file_path);
-                    Storage::disk('public')->put($dest, $content);
-                    $publicPath = Storage::disk('public')->path($dest);
+                    try {
+                        $content = Storage::get($document->file_path);
+                    } catch (\Exception $e) {
+                        Log::warning("Could not fetch file content: " . $e->getMessage());
+                        continue;
+                    }
+
+                    $filePath = sys_get_temp_dir() . '/' . pathinfo($document->file_path, PATHINFO_BASENAME);
+                    file_put_contents($filePath, $content);
                 }
 
-                if (file_exists($publicPath)) {
-                    $zip->addFile($publicPath, $ancestors . $document->name);
+                if (file_exists($filePath)) {
+                    $zip->addFile($filePath, $ancestors . $document->name);
                 } else {
-                    Log::warning("File not found: $publicPath");
+                    Log::warning("File not found: $filePath");
                 }
             }
         }
@@ -138,57 +123,49 @@ class DownloadItemsAction
                     return [null, null, 'The folder is empty.', $downloadedDocuments];
                 }
                 $children = $item->getChildren()->load('folder', 'document');
-                $url = $this->createZip($children);
+                $zipPath = $this->createZip($children);
                 $filename = $item->folder->name . '.zip';
 
-                // Collect documents for logging
                 $downloadedDocuments = $children->whereNotNull('document')->pluck('document');
             } elseif ($item->document) {
                 $document = $item->document;
-                $dest = pathinfo($document->file_path, PATHINFO_BASENAME);
+                $filePath = sys_get_temp_dir() . '/' . pathinfo($document->file_path, PATHINFO_BASENAME);
 
                 try {
-                    if ($document->uploaded_on_cloud) {
-                        $content = Storage::get($document->file_path);
-                    } else {
-                        $content = Storage::disk('public')->get($document->file_path);
-                    }
+                    $content = $document->uploaded_on_cloud
+                        ? Storage::get($document->file_path)
+                        : Storage::disk('public')->get($document->file_path);
 
-                    if ($content === null) {
+                    if (!$content) {
                         throw new \Exception('File content is null.');
                     }
+
+                    file_put_contents($filePath, $content);
                 } catch (\Exception $e) {
                     Log::error("Error fetching file content: " . $e->getMessage());
                     return [null, null, 'Error fetching file content.', $downloadedDocuments];
                 }
 
-                Log::debug("Getting file content. File: " . $document->file_path . ". Content length: " . strlen($content));
-
-                $success = Storage::disk('public')->put($dest, $content);
-                Log::debug('Inserted in public disk. "' . $dest . '". Success: ' . intval($success));
-
-                if (!$success) {
-                    return [null, null, 'Failed to store the file for download.', $downloadedDocuments];
-                }
-
-                $url = Storage::url($dest);
-                Log::debug("Logging URL " . $url);
+                $zipPath = $filePath;
                 $filename = $document->name;
 
-                // Collect document for logging
                 $downloadedDocuments[] = $document;
             } else {
                 return [null, null, 'Selected item is neither a folder nor a document.', $downloadedDocuments];
             }
         } else {
             $items = Item::whereIn('id', $ids)->get();
-            $url = $this->createZip($items);
+            $zipPath = $this->createZip($items);
             $filename = $zipName . '.zip';
 
-            // Collect documents for logging
             $downloadedDocuments = $items->whereNotNull('document')->pluck('document');
         }
 
-        return [$url, $filename, null, $downloadedDocuments];
+        return [$zipPath, $filename, null, $downloadedDocuments];
+    }
+
+    private function getDownloadResponse($zipPath, $filename)
+    {
+        return response()->download($zipPath, $filename)->deleteFileAfterSend(true);
     }
 }

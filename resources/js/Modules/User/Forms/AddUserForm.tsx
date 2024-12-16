@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Button, Flex, Modal, Select, Stack, Text, TextInput } from "@mantine/core";
+import {
+    Button,
+    Flex,
+    Modal,
+    Select,
+    Stack,
+    Text,
+    TextInput,
+} from "@mantine/core";
 import { useAddUser } from "../Hooks/use-add-user";
 
 interface IProps {
@@ -16,7 +24,12 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
     };
 
     return (
-        <Modal opened={isOpened} onClose={handleClose} title={<Text size="lg">Add User</Text>} size={550}>
+        <Modal
+            opened={isOpened}
+            onClose={handleClose}
+            title={<Text size="lg">Add User</Text>}
+            size={550}
+        >
             <form onSubmit={submit}>
                 <Stack gap={16}>
                     <TextInput
@@ -39,7 +52,7 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         error={errors.email}
                     />
 
-                    <TextInput
+                    {/* <TextInput
                         id="password"
                         type="password"
                         name="password"
@@ -57,7 +70,7 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         label="Confirm Password"
                         onChange={(e) => setData("password_confirmation", e.target.value)}
                         error={errors.password_confirmation}
-                    />
+                    /> */}
 
                     <TextInput
                         id="office_position"
@@ -65,7 +78,9 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         name="office_position"
                         value={data.office_position}
                         label="Office Position"
-                        onChange={(e) => setData("office_position", e.target.value)}
+                        onChange={(e) =>
+                            setData("office_position", e.target.value)
+                        }
                         error={errors.office_position}
                     />
 
@@ -77,7 +92,9 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         value={data.workflow_role}
                         placeholder="Pick value"
                         data={["Reviewer", "Approver"]}
-                        onChange={(_value, option) => setData("workflow_role", option.value)}
+                        onChange={(_value, option) =>
+                            setData("workflow_role", option.value)
+                        }
                     />
 
                     <Select
@@ -90,7 +107,9 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                             { value: "viewer", label: "Viewer" },
                         ]}
                         value={data.system_role}
-                        onChange={(value) => setData("system_role", value || "")}
+                        onChange={(value) =>
+                            setData("system_role", value || "")
+                        }
                         error={errors.system_role}
                     />
                 </Stack>

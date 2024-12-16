@@ -7,10 +7,8 @@ export function useAddUser() {
         useForm<RegisterUserData>({
             name: "",
             email: "",
-            password: "",
-            password_confirmation: "",
-            workflow_role: "",
             office_position: "",
+            workflow_role: "",
             system_role: "",
         });
 
@@ -19,14 +17,15 @@ export function useAddUser() {
         post(route("users.register"), {
             onSuccess: () => {
                 notifications.show({
-                    message: "New user added successfully",
+                    message:
+                        "New user added successfully. An email has been sent.",
                     color: "green",
                 });
                 reset();
             },
             onError: () => {
                 notifications.show({
-                    message: "Failed to add user",
+                    message: "Failed to add user.",
                     color: "red",
                 });
             },

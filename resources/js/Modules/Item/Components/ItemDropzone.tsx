@@ -9,7 +9,11 @@ interface ItemDropzoneProps {
     children: React.ReactNode;
 }
 
-export default function ItemDropzone({ onDrop, openRef, children }: ItemDropzoneProps) {
+export default function ItemDropzone({
+    onDrop,
+    openRef,
+    children,
+}: ItemDropzoneProps) {
     return (
         <Dropzone
             openRef={openRef}
@@ -18,7 +22,8 @@ export default function ItemDropzone({ onDrop, openRef, children }: ItemDropzone
             accept={{
                 "application/pdf": [],
                 "application/msword": [],
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [],
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                    [],
                 "image/png": [],
                 "image/jpeg": [],
             }}
@@ -28,6 +33,13 @@ export default function ItemDropzone({ onDrop, openRef, children }: ItemDropzone
                     border: "none",
                     padding: 0,
                 },
+            }}
+            onReject={() => {
+                notifications.show({
+                    title: "Error",
+                    message: "File type not supported",
+                    color: "red",
+                });
             }}
         >
             <Dropzone.Accept>
