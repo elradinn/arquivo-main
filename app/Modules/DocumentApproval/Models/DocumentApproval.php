@@ -52,4 +52,9 @@ class DocumentApproval extends Model
     {
         return $this->documentVersion->document;
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'document_approval_has_users', 'document_approval_id', 'user_id');
+    }
 }
