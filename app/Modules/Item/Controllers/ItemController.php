@@ -35,11 +35,9 @@ class ItemController extends Controller
         return response()->json($data);
     }
 
-    public function download(DownloadItemsData $data): JsonResponse
+    public function download(DownloadItemsData $data)
     {
-        $result = $this->downloadItemsAction->execute($data);
-
-        return response()->json($result);
+        return $this->downloadItemsAction->execute($data);
     }
 
     public function delete(DeleteItemsData $data): RedirectResponse

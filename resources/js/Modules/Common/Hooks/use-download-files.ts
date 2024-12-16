@@ -8,33 +8,31 @@ interface DownloadFilesProps {
 
 export function useDownloadFiles() {
     const downloadFiles = ({ all, ids, parentId }: DownloadFilesProps) => {
-        if (!all && ids?.length === 0) {
+        if (!all && (!ids || ids.length === 0)) {
+            alert("Please select items to download.");
             return;
         }
 
-        const p = new URLSearchParams();
+        const params = new URLSearchParams();
         if (parentId) {
-            p.append("parent_id", String(parentId));
+            params.append("parent_id", String(parentId));
         }
 
         if (all) {
-            p.append("all", all ? "1" : "0");
-        } else {
-            ids?.forEach((id) => p.append("ids[]", id));
+            params.append("all", "1");
+        } else if (ids && ids.length > 0) {
+            ids.forEach((id) => params.append("ids[]", id));
         }
 
-        const url = route("item.download");
+        const url = `${route("item.download")}?${params.toString()}`;
 
-        httpGet(`${url}?${p.toString()}`).then((res) => {
-            if (!res.url) {
-                return;
-            }
-
-            const a = document.createElement("a");
-            a.download = res.filename;
-            a.href = res.url;
-            a.click();
-        });
+        // Create a temporary link to trigger the download
+        const link = document.createElement("a");
+        link.href = url;
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     return { downloadFiles };
