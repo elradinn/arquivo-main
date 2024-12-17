@@ -17,6 +17,7 @@ import { useForm } from "@inertiajs/react";
 import { notifications } from "@mantine/notifications";
 import useFetchMetadata from "@/Modules/Metadata/Hooks/use-fetch-metadata";
 import { useFetchExistingMetadataColumn } from "../../Hooks/use-fetch-existing-metadata-column";
+import useFetchAllMetadata from "@/Modules/Metadata/Hooks/use-fetch-all-metadata";
 
 interface SelectMetadataColumnFormProps {
     folderId: string;
@@ -28,7 +29,7 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({
     const { modals, closeModal } = useModalStore();
     const isOpen = modals["selectMetadataColumns"];
 
-    const { metadataList } = useFetchMetadata();
+    const { metadataList } = useFetchAllMetadata();
 
     const { existingMetadataColumns, loading, error } =
         useFetchExistingMetadataColumn({

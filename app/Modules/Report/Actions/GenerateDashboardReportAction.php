@@ -7,6 +7,7 @@ use Modules\Metadata\Models\Metadata;
 use Modules\Dashboard\Helpers\DocumentStatusHelper;
 use Modules\Item\Data\ItemContentsResourceData;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Modules\Dashboard\Data\DashboardMetadataResourceData;
@@ -25,10 +26,10 @@ class GenerateDashboardReportAction
 
         // Apply document status filter
         if ($data->document_status) {
-            $statusClass = DocumentStatusHelper::getStatusClass($data->document_status);
-            if ($statusClass) {
-                $documentsQuery->whereHas('document', function ($query) use ($statusClass) {
-                    $query->where('status', $statusClass);
+            $statusDetails = DocumentStatusHelper::getStatusDetails($data->document_status);
+            if ($statusDetails) {
+                $documentsQuery->whereHas('document', function ($query) use ($statusDetails) {
+                    $query->where($statusDetails['column'], $statusDetails['class']);
                 });
             }
         }
@@ -58,6 +59,8 @@ class GenerateDashboardReportAction
 
         $headerImage = 'data:image/' . $headerType . ';base64,' . base64_encode($headerData);
         $footerImage = 'data:image/' . $footerType . ';base64,' . base64_encode($footerData);
+
+        Log::info(ItemContentsResourceData::collect($documents));
 
         $pdf = Pdf::loadView('report.dashboard_report', [
             'items' => ItemContentsResourceData::collect($documents),

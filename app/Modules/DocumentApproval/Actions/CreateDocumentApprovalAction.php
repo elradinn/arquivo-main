@@ -77,13 +77,17 @@ class CreateDocumentApprovalAction
 
         if ($approvalType === 'reviewal') {
             $reviewStatusMetadata = Metadata::where('name', 'Review Status')->first();
-            $documentVersion->document->metadata()->updateExistingPivot($reviewStatusMetadata->id, [
-                'value' => $documentVersion->review_status->label(),
+            $documentVersion->document->metadata()->sync([
+                $reviewStatusMetadata->id => [
+                    'value' => $documentVersion->review_status->label(),
+                ],
             ]);
         } else {
             $approvalStatusMetadata = Metadata::where('name', 'Approval Status')->first();
-            $documentVersion->document->metadata()->updateExistingPivot($approvalStatusMetadata->id, [
-                'value' => $documentVersion->approval_status->label(),
+            $documentVersion->document->metadata()->sync([
+                $approvalStatusMetadata->id => [
+                    'value' => $documentVersion->approval_status->label(),
+                ],
             ]);
         }
 

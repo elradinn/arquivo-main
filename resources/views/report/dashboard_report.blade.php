@@ -104,7 +104,7 @@
                                 @php
                                     $meta = collect($item->metadata)->firstWhere('metadata_id', $metadataColumn->metadata_id);
                                 @endphp
-                                <td>{{ $meta['value'] ?? 'N/A' }}</td>
+                                <td>{{ $meta['value'] ?? '-' }}</td>
                             @endforeach
                         </tr>
                     @endforeach

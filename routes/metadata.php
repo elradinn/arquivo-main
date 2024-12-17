@@ -17,6 +17,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/fetch', [MetadataController::class, 'fetchMetadata'])->name('metadata.fetch');
 
+        Route::get('/fetch-all', [MetadataController::class, 'fetchAllMetadata'])->name('metadata.fetch-all');
+
         Route::get('/{metadata}/predefined-values', [MetadataController::class, 'getPredefinedValues'])->name('metadata.predefined-values');
     });
 });
