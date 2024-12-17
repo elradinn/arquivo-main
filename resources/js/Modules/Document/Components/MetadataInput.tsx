@@ -79,7 +79,11 @@ const MetadataInput: React.FC<MetadataInputProps> = ({
     return (
         <Stack>
             {metadata.map((meta, index) => (
-                <Group key={meta.metadata_id || index} grow align="flex-end">
+                <Group
+                    key={meta.metadata_id || index}
+                    justify="space-between"
+                    align="flex-end"
+                >
                     <TextInput
                         disabled
                         label="Name"
@@ -96,7 +100,12 @@ const MetadataInput: React.FC<MetadataInputProps> = ({
                             handleChange(index, "value", value)
                         }
                     />
-                    <ActionIcon color="red" onClick={() => handleRemove(index)}>
+                    <ActionIcon
+                        color="red"
+                        variant="subtle"
+                        size="lg"
+                        onClick={() => handleRemove(index)}
+                    >
                         <IconTrash size={16} />
                     </ActionIcon>
                 </Group>
