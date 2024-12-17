@@ -1,0 +1,1 @@
+import{j as r}from"./app-Bb5USZrt.js";import{g as t}from"./NotificationMenu-DIIl_Q3g.js";import{B as a}from"./Badge-D2fU9ZDK.js";const m=({state:o})=>r.jsx(a,{color:t(o),variant:"light",children:o??"None"});export{m as S};
