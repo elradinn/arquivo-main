@@ -34,6 +34,32 @@ class GenerateDashboardReportAction
             }
         }
 
+        // Apply metadata filters
+        if (!empty($data->metadata_filters)) {
+            foreach ($data->metadata_filters as $filter) {
+                $documentsQuery->whereHas('document.metadata', function ($query) use ($filter) {
+                    $query->where('name', $filter['field']);
+                    switch ($filter['operator']) {
+                        case 'includes':
+                            $query->where('value', 'LIKE', "%{$filter['value']}%");
+                            break;
+                        case 'excludes':
+                            $query->where('value', 'NOT LIKE', "%{$filter['value']}%");
+                            break;
+                        case 'is':
+                            $query->where('value', $filter['value']);
+                            break;
+                        case 'is_not':
+                            $query->where('value', '!=', $filter['value']);
+                            break;
+                        default:
+                            // Handle unknown operator if necessary
+                            break;
+                    }
+                });
+            }
+        }
+
         // Apply date range filter
         if ($data->start_date && $data->end_date) {
             $documentsQuery->whereHas('document', function ($query) use ($data) {
