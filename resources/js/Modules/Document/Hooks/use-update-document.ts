@@ -33,8 +33,6 @@ export function useUpdateDocument({
     const handleUpdateDocument = (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log(data);
-
         put(route("document.save", document.item_id), {
             onSuccess: () => {
                 notifications.show({

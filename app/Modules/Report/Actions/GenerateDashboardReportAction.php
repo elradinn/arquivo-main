@@ -60,8 +60,6 @@ class GenerateDashboardReportAction
         $headerImage = 'data:image/' . $headerType . ';base64,' . base64_encode($headerData);
         $footerImage = 'data:image/' . $footerType . ';base64,' . base64_encode($footerData);
 
-        Log::info(ItemContentsResourceData::collect($documents));
-
         $pdf = Pdf::loadView('report.dashboard_report', [
             'items' => ItemContentsResourceData::collect($documents),
             'selectedMetadata' => DashboardMetadataResourceData::collect($selectedMetadata),

@@ -52,8 +52,6 @@ class UpdateDocumentMetadataAction
             ->where('document_id', $document->item_id)
             ->get();
 
-        Log::info('Updated Document Metadata:', ['updatedMetadata' => $updatedMetadata]);
-
         if (!empty($data->delete_metadata)) {
             $metadataIdsToDelete = collect($data->delete_metadata)->pluck('metadata_id')->toArray();
 

@@ -160,8 +160,6 @@ const PredefinedValueSelect: React.FC<PredefinedValueSelectProps> = ({
     const { predefinedValues, loading, error } =
         useFetchMetadataPredefinedValue(metadataId);
 
-    console.log(predefinedValues);
-
     if (loading) {
         return <Loader size="sm" />;
     }
