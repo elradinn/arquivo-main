@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\DocumentApprovalHasUser\Controllers\DocumentUserApprovalController;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('user_approval/{userApproval}')->group(function () {
 

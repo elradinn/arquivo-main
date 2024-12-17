@@ -2,7 +2,11 @@ import { useForm } from "@inertiajs/react";
 import { RegisterUserData } from "../Types/RegisterUserData";
 import { notifications } from "@mantine/notifications";
 
-export function useAddUser() {
+interface IProps {
+    close: () => void;
+}
+
+export function useAddUser({ close }: IProps) {
     const { data, setData, post, processing, errors, reset } =
         useForm<RegisterUserData>({
             name: "",
@@ -23,6 +27,7 @@ export function useAddUser() {
                     color: "green",
                 });
                 reset();
+                close();
             },
             onError: () => {
                 notifications.show({

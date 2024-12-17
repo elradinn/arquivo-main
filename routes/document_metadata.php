@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Document\Controllers\DocumentMetadataController;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('documents/{document}/metadata')->group(function () {
 

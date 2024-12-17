@@ -16,7 +16,9 @@ interface IProps {
 }
 
 const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
-    const { data, setData, submit, processing, errors } = useAddUser();
+    const { data, setData, submit, processing, errors } = useAddUser({
+        close,
+    });
 
     const handleClose = () => {
         close();
@@ -105,6 +107,7 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         data={[
                             { value: "admin", label: "Admin" },
                             { value: "viewer", label: "Viewer" },
+                            { value: "none", label: "None" },
                         ]}
                         value={data.system_role}
                         onChange={(value) =>

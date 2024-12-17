@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\DocumentApproval\Controllers\DocumentApprovalController;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('document_approval/pending', [DocumentApprovalController::class, 'getPendingApprovals'])->name('document_approvals.pending');
 
