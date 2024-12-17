@@ -1,0 +1,1 @@
+import{d as a,e as s}from"./app-CIibWdLr.js";function c(){const[e,r]=a.useState([]);return a.useEffect(()=>{s.get(route("metadata.fetch")).then(t=>{r(t.data.metadata)}).catch(t=>{console.error("Error fetching metadata:",t)})},[]),{metadataList:e}}export{c as u};
