@@ -10,10 +10,11 @@ interface IProps {
 }
 
 export function useAddFolder({ itemParent, close }: IProps) {
-    const { data, setData, post, processing, errors, reset, clearErrors } = useForm<CreateFolderFormData>({
-        parent_id: "",
-        name: "",
-    });
+    const { data, setData, post, processing, errors, reset, clearErrors } =
+        useForm<CreateFolderFormData>({
+            parent_id: "",
+            name: "",
+        });
     const { closeModal } = useModalStore();
 
     const submit = (e: React.FormEvent) => {
@@ -24,6 +25,7 @@ export function useAddFolder({ itemParent, close }: IProps) {
             preserveScroll: true,
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "New folder created",
                     color: "green",
                 });
@@ -34,10 +36,12 @@ export function useAddFolder({ itemParent, close }: IProps) {
                 if (Object.keys(errors).length > 0) {
                     message = errors[Object.keys(errors)[0]];
                 } else {
-                    message = "Error during file upload. Please try again later.";
+                    message =
+                        "Error during file upload. Please try again later.";
                 }
 
                 notifications.show({
+                    position: "top-center",
                     message,
                     color: "red",
                 });
@@ -48,7 +52,6 @@ export function useAddFolder({ itemParent, close }: IProps) {
                 clearErrors();
             },
         });
-        
     };
 
     return { data, setData, submit, processing, errors };

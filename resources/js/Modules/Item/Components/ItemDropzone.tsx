@@ -36,9 +36,11 @@ export default function ItemDropzone({
             }}
             onReject={() => {
                 notifications.show({
+                    position: "top-center",
                     title: "Error",
                     message: "File type not supported",
                     color: "red",
+                    icon: <IconX />,
                 });
             }}
         >

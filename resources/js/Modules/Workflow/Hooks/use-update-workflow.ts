@@ -47,10 +47,11 @@ export function useUpdateWorkflow({ itemParent, isOpen }: IProps) {
                 })),
             });
 
-            setUsers(workflow.users.map(user => ({
-                selectedUser: user.id.toString()
-            })));
-            
+            setUsers(
+                workflow.users.map((user) => ({
+                    selectedUser: user.id.toString(),
+                }))
+            );
         }
     }, [workflow, isOpen]);
 
@@ -61,20 +62,24 @@ export function useUpdateWorkflow({ itemParent, isOpen }: IProps) {
     const handleUpdateWorkflow = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const selectedUserIds = users.map(user => parseInt(user.selectedUser)).filter(id => !isNaN(id));
+        const selectedUserIds = users
+            .map((user) => parseInt(user.selectedUser))
+            .filter((id) => !isNaN(id));
 
-        data.users = selectedUserIds.map(id => ({ user_id: id }));
+        data.users = selectedUserIds.map((id) => ({ user_id: id }));
 
         put(route("workflows.update", itemParent?.workflow_id), {
             onSuccess: () => {
                 closeModal("updateWorkflow");
                 notifications.show({
+                    position: "top-center",
                     message: "Workflow updated successfully",
                     color: "green",
                 });
             },
             onError: (e) => {
                 notifications.show({
+                    position: "top-center",
                     message: "Something went wrong",
                     color: "red",
                 });
@@ -95,15 +100,14 @@ export function useUpdateWorkflow({ itemParent, isOpen }: IProps) {
     };
 
     const addAllUsers = () => {
-        const selectedUserIds = users.map(user => user.selectedUser);
-        const availableUsers = fetchedUsers.filter(u => !selectedUserIds.includes(u.id.toString()));
-        const newUsers = availableUsers.map(u => ({
+        const selectedUserIds = users.map((user) => user.selectedUser);
+        const availableUsers = fetchedUsers.filter(
+            (u) => !selectedUserIds.includes(u.id.toString())
+        );
+        const newUsers = availableUsers.map((u) => ({
             selectedUser: u.id.toString(),
         }));
-        setUsers([
-            ...users,
-            ...newUsers,
-        ]);
+        setUsers([...users, ...newUsers]);
     };
 
     const removeUser = (index: number) => {
@@ -118,7 +122,9 @@ export function useUpdateWorkflow({ itemParent, isOpen }: IProps) {
         setUsers(updatedUsers);
     };
 
-    const selectedUserIds = users.map(user => user.selectedUser).filter(id => id !== "");
+    const selectedUserIds = users
+        .map((user) => user.selectedUser)
+        .filter((id) => id !== "");
 
     return {
         data,

@@ -16,6 +16,7 @@ export function useDeleteDocumentReview({
     const handleDeleteDocumentReview = () => {
         if (!documentReviewId) {
             notifications.show({
+                position: "top-center",
                 message: "Document Review ID is missing.",
                 color: "red",
             });
@@ -25,6 +26,7 @@ export function useDeleteDocumentReview({
         destroy(route("document_approvals.cancel", documentReviewId), {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Document Review deleted successfully.",
                     color: "green",
                 });
@@ -36,6 +38,7 @@ export function useDeleteDocumentReview({
                     message = errors[Object.keys(errors)[0]] as string;
                 }
                 notifications.show({
+                    position: "top-center",
                     message,
                     color: "red",
                 });

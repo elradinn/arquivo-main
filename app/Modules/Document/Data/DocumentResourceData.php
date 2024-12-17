@@ -49,12 +49,9 @@ class DocumentResourceData extends Resource
             'type' => $documentApproval->type,
         ])->toArray() : [];
 
-        // Filter metadata based on the $includeSystemMetadata flag
         $metadataCollection = $document->metadata;
         if (!$includeSystemMetadata) {
-            $metadataCollection = $metadataCollection->filter(function ($metadata) {
-                return $metadata->status !== 'system';
-            });
+            $metadataCollection = $metadataCollection->where('status', '!=', 'system')->values();
         }
 
         return new self(

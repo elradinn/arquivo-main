@@ -99,12 +99,14 @@ export function useUpdateNumberingScheme({
             onSuccess: () => {
                 closeModal("updateNumberingScheme");
                 notifications.show({
+                    position: "top-center",
                     message: `Numbering scheme updated successfully`,
                     color: "green",
                 });
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Something went wrong",
                     color: "red",
                 });

@@ -4,14 +4,16 @@ import { FileWithPath } from "@mantine/dropzone";
 import { UploadDocumentVersionData } from "../Types/UploadDocumentVersionData";
 
 export default function useUploadDocumentVersion(documentItemId: string) {
-    const { data, post, reset, processing, errors, clearErrors } = useForm<UploadDocumentVersionData>({
-        document_item_id: documentItemId,
-        file: null,
-    });
+    const { data, post, reset, processing, errors, clearErrors } =
+        useForm<UploadDocumentVersionData>({
+            document_item_id: documentItemId,
+            file: null,
+        });
 
     const uploadVersion = (file: FileWithPath) => {
         if (!file) {
             notifications.show({
+                position: "top-center",
                 message: "No file selected.",
                 color: "red",
             });
@@ -23,6 +25,7 @@ export default function useUploadDocumentVersion(documentItemId: string) {
         post(`/document/${documentItemId}/versions`, {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Document version uploaded successfully.",
                     color: "green",
                 });
@@ -30,6 +33,7 @@ export default function useUploadDocumentVersion(documentItemId: string) {
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Failed to upload document version.",
                     color: "red",
                 });

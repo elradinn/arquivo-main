@@ -7,6 +7,7 @@ use Modules\Metadata\Models\Metadata;
 use Modules\Dashboard\Helpers\DocumentStatusHelper;
 use Modules\Item\Data\ItemContentsResourceData;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Modules\Dashboard\Data\DashboardMetadataResourceData;
@@ -25,10 +26,36 @@ class GenerateDashboardReportAction
 
         // Apply document status filter
         if ($data->document_status) {
-            $statusClass = DocumentStatusHelper::getStatusClass($data->document_status);
-            if ($statusClass) {
-                $documentsQuery->whereHas('document', function ($query) use ($statusClass) {
-                    $query->where('status', $statusClass);
+            $statusDetails = DocumentStatusHelper::getStatusDetails($data->document_status);
+            if ($statusDetails) {
+                $documentsQuery->whereHas('document', function ($query) use ($statusDetails) {
+                    $query->where($statusDetails['column'], $statusDetails['class']);
+                });
+            }
+        }
+
+        // Apply metadata filters
+        if (!empty($data->metadata_filters)) {
+            foreach ($data->metadata_filters as $filter) {
+                $documentsQuery->whereHas('document.metadata', function ($query) use ($filter) {
+                    $query->where('name', $filter['field']);
+                    switch ($filter['operator']) {
+                        case 'includes':
+                            $query->where('value', 'LIKE', "%{$filter['value']}%");
+                            break;
+                        case 'excludes':
+                            $query->where('value', 'NOT LIKE', "%{$filter['value']}%");
+                            break;
+                        case 'is':
+                            $query->where('value', $filter['value']);
+                            break;
+                        case 'is_not':
+                            $query->where('value', '!=', $filter['value']);
+                            break;
+                        default:
+                            // Handle unknown operator if necessary
+                            break;
+                    }
                 });
             }
         }

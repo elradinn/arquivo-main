@@ -5,7 +5,7 @@ use Modules\Item\Controllers\BackupController;
 use Modules\Item\Controllers\ItemController;
 use Modules\Item\Controllers\ShareController;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('item')->group(function () {
 

@@ -7,13 +7,14 @@ use Modules\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Modules\User\Notifications\NewUserNotification;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\Registered;
 
 class RegisterUserAction
 {
     public function execute(RegisterUserData $data): User
     {
         // Define a default password
-        $defaultPassword = 'Password123';
+        $defaultPassword = 'BU-IRO-Arquivo';
 
         $user = User::create([
             'name' => $data->name,
@@ -25,6 +26,8 @@ class RegisterUserAction
         ]);
 
         $user->assignRole($data->system_role);
+
+        event(new Registered($user));
 
         // Send notification to the user with credentials and reset link
         $user->notify(new NewUserNotification($defaultPassword));

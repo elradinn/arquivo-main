@@ -34,6 +34,7 @@ export function useUpdateUser({ user, close }: IProps) {
         put(route("users.update", user.id), {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "User updated successfully",
                     color: "green",
                 });
@@ -42,6 +43,7 @@ export function useUpdateUser({ user, close }: IProps) {
             },
             onError: (errors) => {
                 notifications.show({
+                    position: "top-center",
                     message: "Failed to update user",
                     color: "red",
                 });

@@ -1,5 +1,16 @@
 import React, { useEffect } from "react";
-import { Button, ActionIcon, Group, Select, Modal, Stack, Text, Flex, Loader, Alert } from "@mantine/core";
+import {
+    Button,
+    ActionIcon,
+    Group,
+    Select,
+    Modal,
+    Stack,
+    Text,
+    Flex,
+    Loader,
+    Alert,
+} from "@mantine/core";
 import { IconPlus, IconTrash, IconAlertCircle } from "@tabler/icons-react";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { useForm } from "@inertiajs/react";
@@ -13,17 +24,17 @@ interface SelectDashboardMetadataColumnFormProps {
     existingMetadataIds: number[];
 }
 
-const SelectDashboardMetadataColumnForm: React.FC<SelectDashboardMetadataColumnFormProps> = ({
-    availableMetadata,
-    existingMetadataIds,
-}) => {
+const SelectDashboardMetadataColumnForm: React.FC<
+    SelectDashboardMetadataColumnFormProps
+> = ({ availableMetadata, existingMetadataIds }) => {
     const { modals, closeModal } = useModalStore();
     const isOpen = modals["selectDashboardMetadataColumns"];
 
-    const { existingMetadataColumns, loading, error } = useFetchExistingMetadataColumn({
-        folderId: "", // Adjust if necessary
-        isOpen,
-    });
+    const { existingMetadataColumns, loading, error } =
+        useFetchExistingMetadataColumn({
+            folderId: "", // Adjust if necessary
+            isOpen,
+        });
 
     const { data, setData, post, processing, errors, reset } = useForm({
         metadata_columns: [{ id: Date.now(), value: "" }],
@@ -33,7 +44,7 @@ const SelectDashboardMetadataColumnForm: React.FC<SelectDashboardMetadataColumnF
     // Populate metadata_columns with existing metadata when fetched
     useEffect(() => {
         if (existingMetadataIds.length > 0) {
-            const mappedColumns = existingMetadataIds.map(id => ({
+            const mappedColumns = existingMetadataIds.map((id) => ({
                 id: Date.now() + id, // Ensure unique ID
                 value: id.toString(),
             }));
@@ -44,21 +55,27 @@ const SelectDashboardMetadataColumnForm: React.FC<SelectDashboardMetadataColumnF
     // Populate metadata_ids whenever metadata_columns changes
     useEffect(() => {
         const metadata_ids = data.metadata_columns
-            .map(column => parseInt(column.value))
-            .filter(id => !isNaN(id));
+            .map((column) => parseInt(column.value))
+            .filter((id) => !isNaN(id));
         setData("metadata_ids", metadata_ids);
     }, [data.metadata_columns]);
 
     const handleAddColumn = () => {
-        setData("metadata_columns", [...data.metadata_columns, { id: Date.now(), value: "" }]);
+        setData("metadata_columns", [
+            ...data.metadata_columns,
+            { id: Date.now(), value: "" },
+        ]);
     };
 
     const handleRemoveColumn = (id: number) => {
-        setData("metadata_columns", data.metadata_columns.filter(column => column.id !== id));
+        setData(
+            "metadata_columns",
+            data.metadata_columns.filter((column) => column.id !== id)
+        );
     };
 
     const handleChange = (id: number, value: string) => {
-        const updatedColumns = data.metadata_columns.map(column =>
+        const updatedColumns = data.metadata_columns.map((column) =>
             column.id === id ? { ...column, value } : column
         );
         setData("metadata_columns", updatedColumns);
@@ -67,14 +84,15 @@ const SelectDashboardMetadataColumnForm: React.FC<SelectDashboardMetadataColumnF
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const metadata_ids = data.metadata_columns
-            .map(column => parseInt(column.value))
-            .filter(id => !isNaN(id));
+            .map((column) => parseInt(column.value))
+            .filter((id) => !isNaN(id));
 
         post(route("dashboard.selectMetadataColumn"), {
             preserveScroll: true,
             onSuccess: () => {
                 closeModal("selectDashboardMetadataColumns");
                 notifications.show({
+                    position: "top-center",
                     title: "Success",
                     message: "Metadata columns selected successfully",
                     color: "green",
@@ -83,6 +101,7 @@ const SelectDashboardMetadataColumnForm: React.FC<SelectDashboardMetadataColumnF
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     title: "Error",
                     message: "Failed to select metadata columns",
                     color: "red",
@@ -106,27 +125,49 @@ const SelectDashboardMetadataColumnForm: React.FC<SelectDashboardMetadataColumnF
                     <Loader />
                 </Flex>
             ) : error ? (
-                <Alert icon={<IconAlertCircle size={16} />} title="Error" color="red">
+                <Alert
+                    icon={<IconAlertCircle size={16} />}
+                    title="Error"
+                    color="red"
+                >
                     {error}
                 </Alert>
             ) : (
                 <form onSubmit={handleSubmit}>
                     <Stack gap={16}>
-                        <Text>Select the metadata columns you want to display in the dashboard report:</Text>
+                        <Text>
+                            Select the metadata columns you want to display in
+                            the dashboard report:
+                        </Text>
 
                         {/* Render Select components dynamically */}
                         {data.metadata_columns.map((column) => (
-                            <Group key={column.id} justify="space-between" align="flex-end">
+                            <Group
+                                key={column.id}
+                                justify="space-between"
+                                align="flex-end"
+                            >
                                 <Select
                                     placeholder="Pick a metadata column"
-                                    data={availableMetadata.map(meta => ({ value: meta.metadata_id.toString(), label: meta.name }))}
+                                    data={availableMetadata.map((meta) => ({
+                                        value: meta.metadata_id.toString(),
+                                        label: meta.name,
+                                    }))}
                                     value={column.value}
-                                    onChange={(value) => handleChange(column.id, value || "")}
+                                    onChange={(value) =>
+                                        handleChange(column.id, value || "")
+                                    }
                                     w="90%"
                                     required
                                 />
                                 {data.metadata_columns.length > 1 && (
-                                    <ActionIcon color="red" variant="subtle" onClick={() => handleRemoveColumn(column.id)}>
+                                    <ActionIcon
+                                        color="red"
+                                        variant="subtle"
+                                        onClick={() =>
+                                            handleRemoveColumn(column.id)
+                                        }
+                                    >
                                         <IconTrash size={18} />
                                     </ActionIcon>
                                 )}

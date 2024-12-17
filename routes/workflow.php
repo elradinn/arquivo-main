@@ -3,7 +3,7 @@
 use Modules\Workflow\Controllers\WorkflowController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('workflows')->group(function () {
 

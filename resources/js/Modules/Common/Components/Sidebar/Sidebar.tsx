@@ -55,8 +55,6 @@ const Sidebar: React.FC = () => {
 
     // const currentPath = window.location.pathname;
 
-    console.log(currentWorkspace);
-
     const renderNavLinks = NAV_LINKS.filter((link) => {
         // Show link if it's not adminOnly or the user is admin
         // const isAllowed = auth.systemRole === "admin";

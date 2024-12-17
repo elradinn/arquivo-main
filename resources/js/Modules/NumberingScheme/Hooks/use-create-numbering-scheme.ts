@@ -33,12 +33,14 @@ export function useCreateNumberingScheme({ itemParent }: IProps) {
             onSuccess: () => {
                 closeModal("createNumberingScheme");
                 notifications.show({
+                    position: "top-center",
                     message: "Numbering scheme created",
                     color: "green",
                 });
             },
             onError: (errors) => {
                 notifications.show({
+                    position: "top-center",
                     message: "Something went wrong",
                     color: "red",
                 });

@@ -13,47 +13,55 @@ interface UseShareFolderProps {
 export function useShareFolder({ folderId, close }: UseShareFolderProps) {
     const { modals } = useModalStore();
     const isOpen = modals["shareFolder"];
-    const { sharedUsers, loading, error } = useFetchUsersShareFolder({ folderId, isOpen });
-
-    const { data, setData, post, processing, errors, reset } = useForm<ShareFolderData>({
-        users: [],
+    const { sharedUsers, loading, error } = useFetchUsersShareFolder({
+        folderId,
+        isOpen,
     });
 
-
+    const { data, setData, post, processing, errors, reset } =
+        useForm<ShareFolderData>({
+            users: [],
+        });
 
     useEffect(() => {
         if (sharedUsers.length > 0) {
-            const initialUsers: ShareFolderUserData[] = sharedUsers.map(user => ({
-                email: user.email,
-                role: user.role,
-            }));
-            setData('users', initialUsers);
+            const initialUsers: ShareFolderUserData[] = sharedUsers.map(
+                (user) => ({
+                    email: user.email,
+                    role: user.role,
+                })
+            );
+            setData("users", initialUsers);
         }
     }, [sharedUsers]);
 
     const addUser = () => {
-        setData('users', [...data.users, { email: "", role: "viewer" }]);
+        setData("users", [...data.users, { email: "", role: "viewer" }]);
     };
 
     const removeUser = (index: number) => {
         const updatedUsers = data.users.filter((_, i) => i !== index);
-        setData('users', updatedUsers);
+        setData("users", updatedUsers);
     };
 
-    const handleUserChange = (index: number, field: keyof ShareFolderUserData, value: string) => {
+    const handleUserChange = (
+        index: number,
+        field: keyof ShareFolderUserData,
+        value: string
+    ) => {
         const updatedUsers = data.users.map((user, i) =>
             i === index ? { ...user, [field]: value } : user
         );
-        setData('users', updatedUsers);
+        setData("users", updatedUsers);
     };
 
     const handleAddAllUsers = () => {
         // This function can be enhanced to set the role if needed
-        const allUsers = sharedUsers.map(user => ({
+        const allUsers = sharedUsers.map((user) => ({
             email: user.email,
             role: "viewer" as const,
         }));
-        setData('users', allUsers);
+        setData("users", allUsers);
     };
 
     const submitShare = () => {
@@ -61,6 +69,7 @@ export function useShareFolder({ folderId, close }: UseShareFolderProps) {
             onSuccess: () => {
                 close();
                 notifications.show({
+                    position: "top-center",
                     message: "Folder shared successfully.",
                     color: "green",
                 });
@@ -68,6 +77,7 @@ export function useShareFolder({ folderId, close }: UseShareFolderProps) {
             },
             onError: (errors) => {
                 notifications.show({
+                    position: "top-center",
                     message: "Failed to share the folder.",
                     color: "red",
                 });

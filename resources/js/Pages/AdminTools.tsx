@@ -1,7 +1,12 @@
 import { Head, Link } from "@inertiajs/react";
-import { Card, Group, SimpleGrid, Stack, Text } from "@mantine/core";
+import { Card, Group, SimpleGrid, Stack, Text, ThemeIcon } from "@mantine/core";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
-import { IconReportAnalytics } from "@tabler/icons-react";
+import {
+    IconActivity,
+    IconReportAnalytics,
+    IconTag,
+    IconUsersGroup,
+} from "@tabler/icons-react";
 import BackupButton from "@/Modules/Item/Components/BackupButton";
 
 const adminTools = [
@@ -12,9 +17,9 @@ const adminTools = [
     //     href: "/generate-report",
     // },
     {
-        title: "Manage Metadata",
+        title: "Manage Tags",
         description: "Tag and categorize documents efficiently",
-        icon: <IconReportAnalytics />,
+        icon: <IconTag />,
         href: "/metadata",
     },
     // {
@@ -23,22 +28,22 @@ const adminTools = [
     //     icon: <IconReportAnalytics />,
     //     href: "/customization",
     // },
-    {
-        title: "Numbering Scheme",
-        description: "Implement systematic document numbering",
-        icon: <IconReportAnalytics />,
-        href: "/numbering-scheme",
-    },
+    // {
+    //     title: "Numbering Scheme",
+    //     description: "Implement systematic document numbering",
+    //     icon: <IconReportAnalytics />,
+    //     href: "/numbering-scheme",
+    // },
     {
         title: "Manage Users",
         description: "Add, edit, and remove users",
-        icon: <IconReportAnalytics />,
+        icon: <IconUsersGroup />,
         href: "/users",
     },
     {
         title: "Activity Log",
         description: "Track all document activities",
-        icon: <IconReportAnalytics />,
+        icon: <IconActivity />,
         href: "/activity-log",
     },
 ];
@@ -63,15 +68,22 @@ export default function AdminToolsPage() {
                         <Card
                             key={index}
                             shadow="xs"
-                            radius="sm"
+                            radius="md"
                             withBorder
-                            py={24}
-                            px={20}
+                            py={30}
+                            px={28}
                             component={Link}
                             href={adminTool.href}
                         >
                             <Group gap={24}>
-                                {adminTool.icon}
+                                <ThemeIcon
+                                    variant="light"
+                                    size="xl"
+                                    radius={40}
+                                >
+                                    {adminTool.icon}
+                                </ThemeIcon>
+
                                 <div>
                                     <Text size="md" fw="bold">
                                         {adminTool.title}

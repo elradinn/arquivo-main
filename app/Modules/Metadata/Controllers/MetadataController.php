@@ -121,6 +121,19 @@ class MetadataController extends Controller
         ]);
     }
 
+    /**
+     * Fetch all available metadata.
+     */
+    public function fetchAllMetadata()
+    {
+        // Optional: Add authorization if needed
+        $metadata = Metadata::all();
+
+        return response()->json([
+            'metadata' => MetadataResourceData::collect($metadata),
+        ]);
+    }
+
     public function getPredefinedValues($id)
     {
         $metadata = Metadata::find($id);

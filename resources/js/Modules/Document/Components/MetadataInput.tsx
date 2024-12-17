@@ -79,7 +79,11 @@ const MetadataInput: React.FC<MetadataInputProps> = ({
     return (
         <Stack>
             {metadata.map((meta, index) => (
-                <Group key={meta.metadata_id || index} grow align="flex-end">
+                <Group
+                    key={meta.metadata_id || index}
+                    justify="space-between"
+                    align="flex-end"
+                >
                     <TextInput
                         disabled
                         label="Name"
@@ -96,7 +100,12 @@ const MetadataInput: React.FC<MetadataInputProps> = ({
                             handleChange(index, "value", value)
                         }
                     />
-                    <ActionIcon color="red" onClick={() => handleRemove(index)}>
+                    <ActionIcon
+                        color="red"
+                        variant="subtle"
+                        size="lg"
+                        onClick={() => handleRemove(index)}
+                    >
                         <IconTrash size={16} />
                     </ActionIcon>
                 </Group>
@@ -105,14 +114,11 @@ const MetadataInput: React.FC<MetadataInputProps> = ({
             {/* Display warnings for missing required metadata */}
             {missingRequiredMetadata.length > 0 && (
                 <Stack gap="xs">
-                    <Text c="red" size="sm">
-                        Missing Required Metadata:
-                    </Text>
                     {missingRequiredMetadata.map((required) => (
                         <Alert
                             icon={<IconAlertCircle size={16} />}
                             title={`${required.name} is missing`}
-                            color="red"
+                            color="orange"
                             variant="light"
                             key={required.metadata_id}
                         />
@@ -153,8 +159,6 @@ const PredefinedValueSelect: React.FC<PredefinedValueSelectProps> = ({
 }) => {
     const { predefinedValues, loading, error } =
         useFetchMetadataPredefinedValue(metadataId);
-
-    console.log(predefinedValues);
 
     if (loading) {
         return <Loader size="sm" />;

@@ -50,6 +50,7 @@ export function useUpdateMetadata({ metadata, close }: IProps) {
             onSuccess: () => {
                 close();
                 notifications.show({
+                    position: "top-center",
                     message: "Metadata edited successfully",
                     color: "green",
                 });

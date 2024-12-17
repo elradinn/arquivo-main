@@ -79,43 +79,41 @@ class DatabaseSeeder extends Seeder
         $testUser4->assignRole('none');
         $testUser5->assignRole('viewer');
 
-
-
         // Create System Metadata
         Metadata::create([
             'name' => 'Document Number',
-            'type' => 'string',
+            'type' => 'Text',
             'status' => 'system',
         ]);
 
         Metadata::create([
             'name' => 'Due In',
-            'type' => 'date',
+            'type' => 'Date',
             'status' => 'system',
         ]);
 
         Metadata::create([
             'name' => 'Review Status',
-            'type' => 'string',
+            'type' => 'Text',
             'status' => 'system',
         ]);
 
         Metadata::create([
             'name' => 'Approval Status',
-            'type' => 'string',
+            'type' => 'Text',
             'status' => 'system',
         ]);
 
         // Create Custom Metadata
         Metadata::create([
             'name' => 'Country',
-            'type' => 'string',
+            'type' => 'Text',
             'status' => 'custom',
         ]);
 
         Metadata::create([
             'name' => 'Published Year',
-            'type' => 'integer',
+            'type' => 'Number',
             'status' => 'custom',
         ]);
 
@@ -127,19 +125,19 @@ class DatabaseSeeder extends Seeder
 
         Metadata::create([
             'name' => 'Subject',
-            'type' => 'string',
+            'type' => 'Text',
             'status' => 'custom',
         ]);
 
         Metadata::create([
             'name' => 'For',
-            'type' => 'string',
+            'type' => 'Text',
             'status' => 'custom',
         ]);
 
         Metadata::create([
             'name' => 'Thru',
-            'type' => 'string',
+            'type' => 'Text',
             'status' => 'custom',
         ]);
 

@@ -85,8 +85,6 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
         })),
     ];
 
-    console.log(document);
-
     return (
         <Authenticated>
             <Head title="Document Properties" />

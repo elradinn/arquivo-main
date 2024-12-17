@@ -3,7 +3,7 @@
 use Modules\NumberingScheme\Controllers\NumberingSchemeController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('numbering-scheme')->group(function () {
 

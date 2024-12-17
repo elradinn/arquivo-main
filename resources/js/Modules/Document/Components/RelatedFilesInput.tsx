@@ -14,7 +14,10 @@ interface RelatedFilesInputProps {
     onChange?: (relatedDocuments: RelatedDocument[]) => void;
 }
 
-const RelatedFilesInput: React.FC<RelatedFilesInputProps> = ({ relatedDocuments, onChange }) => {
+const RelatedFilesInput: React.FC<RelatedFilesInputProps> = ({
+    relatedDocuments,
+    onChange,
+}) => {
     const { openModal } = useModalStore();
 
     const handleAdd = (document: RelatedDocument) => {
@@ -30,15 +33,33 @@ const RelatedFilesInput: React.FC<RelatedFilesInputProps> = ({ relatedDocuments,
     return (
         <Stack>
             {relatedDocuments.map((doc, index) => (
-                <Group key={doc.item_id} grow align="center">
+                <Group
+                    key={doc.item_id}
+                    justify="space-between"
+                    align="flex-end"
+                    style={{
+                        border: "1px solid #E5E7EB",
+                        borderRadius: "8px",
+                        padding: "8px",
+                    }}
+                >
                     <Text>{doc.name}</Text>
-                    <ActionIcon color="red" onClick={() => handleRemove(index)}>
+                    <ActionIcon
+                        color="red"
+                        variant="subtle"
+                        size="lg"
+                        onClick={() => handleRemove(index)}
+                    >
                         <IconTrash size={16} />
                     </ActionIcon>
                 </Group>
             ))}
             <RelatedDocumentModal onAdd={handleAdd} />
-            <Button variant="light" onClick={() => openModal("relatedDocumentModal")} leftSection={<IconPlus size={14} />}>
+            <Button
+                variant="light"
+                onClick={() => openModal("relatedDocumentModal")}
+                leftSection={<IconPlus size={14} />}
+            >
                 Add Related Document
             </Button>
         </Stack>
