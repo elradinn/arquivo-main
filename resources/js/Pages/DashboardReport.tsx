@@ -91,8 +91,6 @@ const DashboardReportPage: React.FC<DashboardReportProps> = ({
 
     const { openModal } = useModalStore();
 
-    console.log(metadataFilters);
-
     /**
      * Consolidated handleFilter function that merges all active filters.
      */
