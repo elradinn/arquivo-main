@@ -14,7 +14,7 @@ class RegisterUserAction
     public function execute(RegisterUserData $data): User
     {
         // Define a default password
-        $defaultPassword = 'Password123';
+        $defaultPassword = 'BU-IRO-Arquivo';
 
         $user = User::create([
             'name' => $data->name,

@@ -1,5 +1,13 @@
 import { IconLock, IconUser } from "@tabler/icons-react";
-import { Button, Checkbox, Flex, Stack, Text, TextInput } from "@mantine/core";
+import {
+    Button,
+    Checkbox,
+    Flex,
+    PasswordInput,
+    Stack,
+    Text,
+    TextInput,
+} from "@mantine/core";
 import { useLoginForm } from "../Hooks/use-login-form";
 
 export default function LoginForm() {
@@ -32,7 +40,7 @@ export default function LoginForm() {
                         error={errors.email}
                     />
 
-                    <TextInput
+                    <PasswordInput
                         id="password"
                         type="password"
                         name="password"
@@ -58,7 +66,13 @@ export default function LoginForm() {
                 </Flex>
 
                 <Flex align="center" justify="end">
-                    <Button type="submit" loading={processing} size="md" radius="md" fullWidth>
+                    <Button
+                        type="submit"
+                        loading={processing}
+                        size="md"
+                        radius="md"
+                        fullWidth
+                    >
                         Sign in
                     </Button>
                 </Flex>

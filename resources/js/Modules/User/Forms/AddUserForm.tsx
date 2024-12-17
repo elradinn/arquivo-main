@@ -29,7 +29,11 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
         <Modal
             opened={isOpened}
             onClose={handleClose}
-            title={<Text size="lg">Add User</Text>}
+            title={
+                <Text size="lg" fw={500}>
+                    Add User
+                </Text>
+            }
             size={550}
         >
             <form onSubmit={submit}>
@@ -54,17 +58,16 @@ const AddUserForm: React.FC<IProps> = ({ isOpened, close }) => {
                         error={errors.email}
                     />
 
-                    {/* <TextInput
+                    <TextInput
+                        disabled
                         id="password"
-                        type="password"
+                        type="text"
                         name="password"
-                        value={data.password}
-                        label="Password"
-                        onChange={(e) => setData("password", e.target.value)}
-                        error={errors.password}
+                        value={"BU-IRO-Arquivo"}
+                        label="Default Password"
                     />
 
-                    <TextInput
+                    {/* <TextInput
                         id="password_confirmation"
                         type="password"
                         name="password_confirmation"
