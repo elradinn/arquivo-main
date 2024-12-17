@@ -30,6 +30,7 @@ export function useFolderProperties({ itemParent }: UseFolderPropertiesProps) {
             preserveScroll: true,
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Folder properties updated successfully.",
                     color: "green",
                 });
@@ -37,6 +38,7 @@ export function useFolderProperties({ itemParent }: UseFolderPropertiesProps) {
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Failed to update folder properties.",
                     color: "red",
                 });

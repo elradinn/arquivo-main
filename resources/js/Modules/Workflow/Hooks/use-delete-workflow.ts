@@ -6,12 +6,16 @@ interface UseDeleteWorkflowProps {
     onDeleteSuccess: () => void;
 }
 
-export function useDeleteWorkflow({ workflowId, onDeleteSuccess }: UseDeleteWorkflowProps) {
+export function useDeleteWorkflow({
+    workflowId,
+    onDeleteSuccess,
+}: UseDeleteWorkflowProps) {
     const { delete: destroy, processing } = useForm();
 
     const handleDeleteWorkflow = () => {
         if (!workflowId) {
             notifications.show({
+                position: "top-center",
                 message: "Workflow ID is missing.",
                 color: "red",
             });
@@ -22,6 +26,7 @@ export function useDeleteWorkflow({ workflowId, onDeleteSuccess }: UseDeleteWork
             preserveScroll: true,
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Workflow deleted successfully.",
                     color: "green",
                 });
@@ -33,6 +38,7 @@ export function useDeleteWorkflow({ workflowId, onDeleteSuccess }: UseDeleteWork
                     message = errors[Object.keys(errors)[0]] as string;
                 }
                 notifications.show({
+                    position: "top-center",
                     message,
                     color: "red",
                 });

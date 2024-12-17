@@ -22,15 +22,19 @@ interface WorkflowUser {
 export function useCreateWorkflow({ itemParentId }: IProps) {
     const [workflowType, setWorkflowType] = useState("reviewal");
     const { closeModal, modals } = useModalStore();
-    const fetchedUsers: UserOption[] = useFetchUsersApprovalRole(workflowType, modals["createWorkflow"]);
+    const fetchedUsers: UserOption[] = useFetchUsersApprovalRole(
+        workflowType,
+        modals["createWorkflow"]
+    );
 
-    const { data, setData, post, processing, errors, reset } = useForm<CreateWorkflowData>({
-        folder_item_id: "",
-        resolution: "",
-        destination: "",
-        type: "reviewal",
-        users: [],
-    });
+    const { data, setData, post, processing, errors, reset } =
+        useForm<CreateWorkflowData>({
+            folder_item_id: "",
+            resolution: "",
+            destination: "",
+            type: "reviewal",
+            users: [],
+        });
 
     const [users, setUsers] = useState<WorkflowUser[]>([]);
     const maxUsers = fetchedUsers.length;
@@ -52,22 +56,26 @@ export function useCreateWorkflow({ itemParentId }: IProps) {
     const createApprovalSubmit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        const selectedUserIds = users.map(user => parseInt(user.selectedUser)).filter(id => !isNaN(id));
+        const selectedUserIds = users
+            .map((user) => parseInt(user.selectedUser))
+            .filter((id) => !isNaN(id));
 
         data.folder_item_id = itemParentId ?? "";
-        data.users = selectedUserIds.map(id => ({ user_id: id }));
+        data.users = selectedUserIds.map((id) => ({ user_id: id }));
 
         post(route("workflows.store"), {
             preserveScroll: true,
             onSuccess: () => {
                 closeModal("createWorkflow");
                 notifications.show({
+                    position: "top-center",
                     message: "Approval process created",
                     color: "green",
                 });
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Something went wrong",
                     color: "red",
                 });
@@ -88,15 +96,14 @@ export function useCreateWorkflow({ itemParentId }: IProps) {
     };
 
     const addAllUsers = () => {
-        const selectedUserIds = users.map(user => user.selectedUser);
-        const availableUsers = fetchedUsers.filter(u => !selectedUserIds.includes(u.id.toString()));
-        const newUsers = availableUsers.map(u => ({
+        const selectedUserIds = users.map((user) => user.selectedUser);
+        const availableUsers = fetchedUsers.filter(
+            (u) => !selectedUserIds.includes(u.id.toString())
+        );
+        const newUsers = availableUsers.map((u) => ({
             selectedUser: u.id.toString(),
         }));
-        setUsers([
-            ...users,
-            ...newUsers,
-        ]);
+        setUsers([...users, ...newUsers]);
     };
 
     const removeUser = (index: number) => {
@@ -112,7 +119,9 @@ export function useCreateWorkflow({ itemParentId }: IProps) {
     };
 
     // Compute selected user IDs to exclude them from other Select options
-    const selectedUserIds = users.map(user => user.selectedUser).filter(id => id !== "");
+    const selectedUserIds = users
+        .map((user) => user.selectedUser)
+        .filter((id) => id !== "");
 
     return {
         data,

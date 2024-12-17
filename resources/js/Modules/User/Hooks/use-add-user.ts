@@ -17,6 +17,7 @@ export function useAddUser() {
         post(route("users.register"), {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message:
                         "New user added successfully. An email has been sent.",
                     color: "green",
@@ -25,6 +26,7 @@ export function useAddUser() {
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Failed to add user.",
                     color: "red",
                 });

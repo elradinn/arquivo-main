@@ -17,6 +17,7 @@ export function useDeleteUser({ user, close }: IProps) {
         destroy(route("users.delete", user?.id), {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "User deleted successfully",
                     color: "red",
                 });
@@ -25,6 +26,7 @@ export function useDeleteUser({ user, close }: IProps) {
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Failed to delete user",
                     color: "red",
                 });

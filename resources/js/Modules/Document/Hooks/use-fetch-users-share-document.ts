@@ -9,8 +9,13 @@ interface UseFetchUsersShareDocumentProps {
     isOpen: boolean;
 }
 
-export function useFetchUsersShareDocument({ documentId, isOpen }: UseFetchUsersShareDocumentProps) {
-    const [sharedUsers, setSharedUsers] = useState<ShareDocumentUserResource[]>([]);
+export function useFetchUsersShareDocument({
+    documentId,
+    isOpen,
+}: UseFetchUsersShareDocumentProps) {
+    const [sharedUsers, setSharedUsers] = useState<ShareDocumentUserResource[]>(
+        []
+    );
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -18,13 +23,16 @@ export function useFetchUsersShareDocument({ documentId, isOpen }: UseFetchUsers
         const fetchSharedUsers = async () => {
             setLoading(true);
             try {
-                const response = await axios.get<ShareDocumentUserResource[]>(route("document.fetchSharedUsers", { document: documentId }));
+                const response = await axios.get<ShareDocumentUserResource[]>(
+                    route("document.fetchSharedUsers", { document: documentId })
+                );
                 setSharedUsers(response.data);
                 setError(null);
             } catch (err) {
                 console.error(err);
                 setError("Failed to fetch shared users.");
                 notifications.show({
+                    position: "top-center",
                     title: "Error",
                     message: "Unable to fetch shared users.",
                     color: "red",

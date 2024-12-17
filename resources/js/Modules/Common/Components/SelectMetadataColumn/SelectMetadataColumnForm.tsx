@@ -93,6 +93,7 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({
             onSuccess: () => {
                 closeModal("selectMetadataColumns");
                 notifications.show({
+                    position: "top-center",
                     title: "Success",
                     message: "Metadata columns selected successfully",
                     color: "green",
@@ -101,6 +102,7 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     title: "Error",
                     message: "Failed to select metadata columns",
                     color: "red",

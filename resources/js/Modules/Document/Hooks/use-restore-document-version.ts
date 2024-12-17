@@ -8,12 +8,14 @@ export default function useRestoreDocumentVersion() {
         post(route("document.restore_version", { version: versionId }), {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Document version restored successfully.",
                     color: "green",
                 });
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Failed to restore document version.",
                     color: "red",
                 });

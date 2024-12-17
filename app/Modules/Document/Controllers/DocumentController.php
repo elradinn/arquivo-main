@@ -107,6 +107,9 @@ class DocumentController extends Controller
 
         $itemAncestors = $item->ancestorsWithSelf()->get()->load('workspace', 'folder');
 
+
+        // dd(DocumentResourceData::fromModel($document));
+
         return Inertia::render('DocumentEdit', [
             'itemAncestors' => ItemAncestorsResourceData::collect($itemAncestors, DataCollection::class),
             'document' => DocumentResourceData::fromModel($document),

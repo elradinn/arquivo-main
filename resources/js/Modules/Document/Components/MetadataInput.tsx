@@ -105,14 +105,11 @@ const MetadataInput: React.FC<MetadataInputProps> = ({
             {/* Display warnings for missing required metadata */}
             {missingRequiredMetadata.length > 0 && (
                 <Stack gap="xs">
-                    <Text c="red" size="sm">
-                        Missing Required Metadata:
-                    </Text>
                     {missingRequiredMetadata.map((required) => (
                         <Alert
                             icon={<IconAlertCircle size={16} />}
                             title={`${required.name} is missing`}
-                            color="red"
+                            color="orange"
                             variant="light"
                             key={required.metadata_id}
                         />

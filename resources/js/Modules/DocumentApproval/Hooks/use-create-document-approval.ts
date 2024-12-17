@@ -63,12 +63,14 @@ export function useCreateDocumentApproval({ documentId, isOpen }: IProps) {
             onSuccess: () => {
                 closeModal("createDocumentApproval");
                 notifications.show({
+                    position: "top-center",
                     message: "Document approval process created",
                     color: "green",
                 });
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Something went wrong",
                     color: "red",
                 });

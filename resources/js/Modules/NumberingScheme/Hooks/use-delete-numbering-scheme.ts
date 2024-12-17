@@ -7,12 +7,16 @@ interface UseDeleteNumberingSchemeProps {
     onDeleteSuccess: () => void;
 }
 
-export function useDeleteNumberingScheme({ numberingSchemeId, onDeleteSuccess }: UseDeleteNumberingSchemeProps) {
+export function useDeleteNumberingScheme({
+    numberingSchemeId,
+    onDeleteSuccess,
+}: UseDeleteNumberingSchemeProps) {
     const { delete: destroy, processing } = useForm();
 
     const handleDeleteNumberingScheme = () => {
         if (!numberingSchemeId) {
             notifications.show({
+                position: "top-center",
                 message: "Numbering Scheme ID is missing.",
                 color: "red",
             });
@@ -22,6 +26,7 @@ export function useDeleteNumberingScheme({ numberingSchemeId, onDeleteSuccess }:
         destroy(route("numbering-scheme.destroy", numberingSchemeId), {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Numbering Scheme deleted successfully.",
                     color: "green",
                 });
@@ -33,6 +38,7 @@ export function useDeleteNumberingScheme({ numberingSchemeId, onDeleteSuccess }:
                     message = errors[Object.keys(errors)[0]] as string;
                 }
                 notifications.show({
+                    position: "top-center",
                     message,
                     color: "red",
                 });
@@ -41,4 +47,4 @@ export function useDeleteNumberingScheme({ numberingSchemeId, onDeleteSuccess }:
     };
 
     return { handleDeleteNumberingScheme, processing };
-} 
+}

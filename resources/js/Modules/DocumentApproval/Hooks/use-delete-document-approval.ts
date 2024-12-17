@@ -7,12 +7,16 @@ interface UseDeleteDocumentApprovalProps {
     onDeleteSuccess: () => void;
 }
 
-export function useDeleteDocumentApproval({ documentApprovalId, onDeleteSuccess }: UseDeleteDocumentApprovalProps) {
+export function useDeleteDocumentApproval({
+    documentApprovalId,
+    onDeleteSuccess,
+}: UseDeleteDocumentApprovalProps) {
     const { delete: destroy, processing } = useForm();
 
     const handleDeleteDocumentApproval = () => {
         if (!documentApprovalId) {
             notifications.show({
+                position: "top-center",
                 message: "Document Approval ID is missing.",
                 color: "red",
             });
@@ -22,6 +26,7 @@ export function useDeleteDocumentApproval({ documentApprovalId, onDeleteSuccess 
         destroy(route("document_approvals.cancel", documentApprovalId), {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Document Approval deleted successfully.",
                     color: "green",
                 });
@@ -33,6 +38,7 @@ export function useDeleteDocumentApproval({ documentApprovalId, onDeleteSuccess 
                     message = errors[Object.keys(errors)[0]] as string;
                 }
                 notifications.show({
+                    position: "top-center",
                     message,
                     color: "red",
                 });
@@ -41,4 +47,4 @@ export function useDeleteDocumentApproval({ documentApprovalId, onDeleteSuccess 
     };
 
     return { handleDeleteDocumentApproval, processing };
-} 
+}

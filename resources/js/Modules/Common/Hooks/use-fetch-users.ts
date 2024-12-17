@@ -12,13 +12,16 @@ export function useFetchUsers() {
         const fetchUsers = async () => {
             setLoading(true);
             try {
-                const response = await axios.get<UserResourceData[]>(route("users.get-users"));
+                const response = await axios.get<UserResourceData[]>(
+                    route("users.get-users")
+                );
                 setUsers(response.data);
                 setError(null);
             } catch (err) {
                 console.error(err);
                 setError("Failed to fetch users.");
                 notifications.show({
+                    position: "top-center",
                     title: "Error",
                     message: "Unable to fetch users.",
                     color: "red",

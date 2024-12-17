@@ -63,12 +63,14 @@ export function useCreateDocumentReviewal({ documentId, isOpen }: IProps) {
             onSuccess: () => {
                 closeModal("createDocumentReview");
                 notifications.show({
+                    position: "top-center",
                     message: "Document review process created",
                     color: "green",
                 });
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Something went wrong",
                     color: "red",
                 });

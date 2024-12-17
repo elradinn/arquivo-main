@@ -4,9 +4,10 @@ import { notifications } from "@mantine/notifications";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 
 export function useAddWorkspace() {
-    const { data, setData, post, processing, errors, reset, clearErrors } = useForm<CreateWorkspaceFormData>({
-        name: "",
-    });
+    const { data, setData, post, processing, errors, reset, clearErrors } =
+        useForm<CreateWorkspaceFormData>({
+            name: "",
+        });
 
     const { closeModal } = useModalStore();
 
@@ -22,6 +23,7 @@ export function useAddWorkspace() {
             onSuccess: () => {
                 handleClose();
                 notifications.show({
+                    position: "top-center",
                     message: "New workspace added successfully",
                     color: "green",
                 });

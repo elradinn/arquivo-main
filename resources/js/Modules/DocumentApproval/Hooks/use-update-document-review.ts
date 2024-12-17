@@ -87,12 +87,14 @@ export function useUpdateDocumentReview({
             onSuccess: () => {
                 handleClose();
                 notifications.show({
+                    position: "top-center",
                     message: "Document approval updated successfully",
                     color: "green",
                 });
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Something went wrong",
                     color: "red",
                 });

@@ -1,4 +1,12 @@
-import { Button, Flex, Modal, Select, Stack, Text, TextInput } from "@mantine/core";
+import {
+    Button,
+    Flex,
+    Modal,
+    Select,
+    Stack,
+    Text,
+    TextInput,
+} from "@mantine/core";
 import { useCreateMetadata } from "../Hooks/use-create-metadata";
 
 interface IProps {
@@ -7,13 +15,20 @@ interface IProps {
 }
 
 const CreateMetadataForm: React.FC<IProps> = ({ isOpened, close }) => {
-    const { data, setData, handleCreateMetadata, processing, errors, handleClose } = useCreateMetadata({ close });
+    const {
+        data,
+        setData,
+        handleCreateMetadata,
+        processing,
+        errors,
+        handleClose,
+    } = useCreateMetadata({ close });
 
     return (
         <Modal
             opened={isOpened}
             onClose={close}
-            title={<Text size="lg">Create Metadata</Text>}
+            title={<Text size="lg">Create New Tag</Text>}
             size={550}
         >
             <form onSubmit={handleCreateMetadata}>
@@ -32,14 +47,16 @@ const CreateMetadataForm: React.FC<IProps> = ({ isOpened, close }) => {
                         label="Type"
                         placeholder="Choose Type"
                         value={data.type}
-                        onChange={(_value, option) => setData("type", option.value)}
+                        onChange={(_value, option) =>
+                            setData("type", option.value)
+                        }
                         error={errors.type}
-                        data={["String", "Boolean", "Datetime"]}
+                        data={["Text", "Number", "Yes/No"]}
                     />
                 </Stack>
 
                 <Flex align="center" justify="end" mt={16}>
-                    <Button variant="outline" onClick={handleClose}>
+                    <Button variant="light" onClick={handleClose}>
                         Cancel
                     </Button>
 

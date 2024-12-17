@@ -38,12 +38,14 @@ export function useUpdateDocument({
         put(route("document.save", document.item_id), {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     message: "Document updated successfully",
                     color: "green",
                 });
             },
             onError: (errors) => {
                 notifications.show({
+                    position: "top-center",
                     message: "Failed to update document",
                     color: "red",
                 });

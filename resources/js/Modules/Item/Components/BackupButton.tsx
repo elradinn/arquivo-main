@@ -14,6 +14,7 @@ const BackupButton = () => {
             const { url, message } = response.data;
 
             notifications.show({
+                position: "top-center",
                 message: message,
                 color: "green",
             });
@@ -27,6 +28,7 @@ const BackupButton = () => {
             document.body.removeChild(link);
         } catch (error: any) {
             notifications.show({
+                position: "top-center",
                 message: error.response?.data?.error || "Backup failed.",
                 color: "red",
             });

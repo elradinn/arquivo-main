@@ -9,8 +9,13 @@ interface UseFetchUsersShareFolderProps {
     isOpen: boolean;
 }
 
-export function useFetchUsersShareFolder({ folderId, isOpen }: UseFetchUsersShareFolderProps) {
-    const [sharedUsers, setSharedUsers] = useState<ShareFolderUserResource[]>([]);
+export function useFetchUsersShareFolder({
+    folderId,
+    isOpen,
+}: UseFetchUsersShareFolderProps) {
+    const [sharedUsers, setSharedUsers] = useState<ShareFolderUserResource[]>(
+        []
+    );
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -18,13 +23,16 @@ export function useFetchUsersShareFolder({ folderId, isOpen }: UseFetchUsersShar
         const fetchSharedUsers = async () => {
             setLoading(true);
             try {
-                const response = await axios.get<ShareFolderUserResource[]>(route("folder.fetchSharedUsers", { folder: folderId }));
+                const response = await axios.get<ShareFolderUserResource[]>(
+                    route("folder.fetchSharedUsers", { folder: folderId })
+                );
                 setSharedUsers(response.data);
                 setError(null);
             } catch (err) {
                 console.error(err);
                 setError("Failed to fetch shared users.");
                 notifications.show({
+                    position: "top-center",
                     title: "Error",
                     message: "Unable to fetch shared users.",
                     color: "red",

@@ -17,6 +17,7 @@ export function useDeleteMetadata({ metadata, close }: IProps) {
             onSuccess: () => {
                 close();
                 notifications.show({
+                    position: "top-center",
                     message: "Metadata deleted successfully",
                     color: "red",
                 });
@@ -24,6 +25,7 @@ export function useDeleteMetadata({ metadata, close }: IProps) {
             onError: () => {
                 close();
                 notifications.show({
+                    position: "top-center",
                     message: "Something went wrong",
                     color: "red",
                 });

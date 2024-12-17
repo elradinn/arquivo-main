@@ -7,10 +7,11 @@ interface IProps {
 }
 
 export function useCreateMetadata({ close }: IProps) {
-    const { data, setData, post, processing, errors, reset, clearErrors } = useForm<CreateMetadataData>({
-        name: "",
-        type: "",
-    });
+    const { data, setData, post, processing, errors, reset, clearErrors } =
+        useForm<CreateMetadataData>({
+            name: "",
+            type: "",
+        });
 
     const handleClose = () => {
         close();
@@ -25,6 +26,7 @@ export function useCreateMetadata({ close }: IProps) {
             onSuccess: () => {
                 handleClose();
                 notifications.show({
+                    position: "top-center",
                     message: "New metadata added successfully",
                     color: "green",
                 });
@@ -33,5 +35,12 @@ export function useCreateMetadata({ close }: IProps) {
         });
     };
 
-    return { data, setData, handleCreateMetadata, processing, errors, handleClose };
+    return {
+        data,
+        setData,
+        handleCreateMetadata,
+        processing,
+        errors,
+        handleClose,
+    };
 }

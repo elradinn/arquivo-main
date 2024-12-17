@@ -18,6 +18,7 @@ export function useDashboardMetadata({
         post(route("dashboard.selectMetadataColumn"), {
             onSuccess: () => {
                 notifications.show({
+                    position: "top-center",
                     title: "Success",
                     message: "Metadata columns updated successfully",
                     color: "green",
@@ -27,6 +28,7 @@ export function useDashboardMetadata({
             },
             onError: () => {
                 notifications.show({
+                    position: "top-center",
                     title: "Error",
                     message: "Failed to update metadata columns",
                     color: "red",

@@ -11,25 +11,33 @@ interface SelectMetadataColumnFormProps {
     folderId: string;
 }
 
-const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({ folderId }) => {
+const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({
+    folderId,
+}) => {
     const { modals, closeModal } = useModalStore();
     const isOpen = modals["selectMetadataColumns"];
     const { metadataList } = useFetchMetadata();
-    const { existingMetadataColumns, loading, error } = useFetchExistingMetadataColumn({ folderId, isOpen });
+    const { existingMetadataColumns, loading, error } =
+        useFetchExistingMetadataColumn({ folderId, isOpen });
 
     const { data, setData, post, processing, errors } = useForm({
         metadata_ids: [] as number[],
     });
 
     useEffect(() => {
-        const existingIds = existingMetadataColumns.map((meta) => meta.metadata_id);
+        const existingIds = existingMetadataColumns.map(
+            (meta) => meta.metadata_id
+        );
         setData("metadata_ids", existingIds);
     }, [isOpen, existingMetadataColumns]);
 
     const handleCheckboxChange = (metadataId: number) => {
         const current = data.metadata_ids;
         if (current.includes(metadataId)) {
-            setData("metadata_ids", current.filter((id) => id !== metadataId));
+            setData(
+                "metadata_ids",
+                current.filter((id) => id !== metadataId)
+            );
         } else {
             setData("metadata_ids", [...current, metadataId]);
         }
@@ -40,6 +48,7 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({ fol
             onSuccess: () => {
                 closeModal("selectMetadataColumns");
                 notifications.show({
+                    position: "top-center",
                     title: "Success",
                     message: "Metadata columns selected successfully",
                 });
@@ -47,6 +56,7 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({ fol
             onError: (error) => {
                 console.error(error);
                 notifications.show({
+                    position: "top-center",
                     title: "Error",
                     message: "Failed to select metadata columns",
                 });
@@ -75,8 +85,12 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({ fol
                             <Checkbox
                                 key={meta.metadata_id}
                                 label={meta.name}
-                                checked={data.metadata_ids.includes(meta.metadata_id)}
-                                onChange={() => handleCheckboxChange(meta.metadata_id)}
+                                checked={data.metadata_ids.includes(
+                                    meta.metadata_id
+                                )}
+                                onChange={() =>
+                                    handleCheckboxChange(meta.metadata_id)
+                                }
                             />
                         ))}
                     </Group>
@@ -85,7 +99,10 @@ const SelectMetadataColumnForm: React.FC<SelectMetadataColumnFormProps> = ({ fol
                     <Text c="red">{errors.metadata_ids}</Text>
                 )}
                 <Group justify="flex-end" mt="md">
-                    <Button variant="outline" onClick={() => closeModal("selectMetadataColumns")}>
+                    <Button
+                        variant="outline"
+                        onClick={() => closeModal("selectMetadataColumns")}
+                    >
                         Cancel
                     </Button>
                     <Button onClick={handleSubmit} loading={processing}>

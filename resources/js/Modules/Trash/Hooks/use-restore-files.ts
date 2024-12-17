@@ -18,6 +18,7 @@ export function useRestoreFiles() {
             onSuccess: () => {
                 closeModal("restoreFiles");
                 notifications.show({
+                    position: "top-center",
                     message: "Files restored successfully",
                     color: "green",
                 });
@@ -28,10 +29,12 @@ export function useRestoreFiles() {
                 if (Object.keys(errors).length > 0) {
                     message = errors[Object.keys(errors)[0]];
                 } else {
-                    message = "Error during file restoration. Please try again later.";
+                    message =
+                        "Error during file restoration. Please try again later.";
                 }
 
                 notifications.show({
+                    position: "top-center",
                     message,
                     color: "red",
                 });

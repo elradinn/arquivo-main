@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Modal, Button, Stack, Group, Text, ActionIcon, Box, Divider } from "@mantine/core";
+import {
+    Modal,
+    Button,
+    Stack,
+    Group,
+    Text,
+    ActionIcon,
+    Box,
+    Divider,
+} from "@mantine/core";
 import { IconChevronLeft, IconFolder } from "@tabler/icons-react";
 import useShowItems from "../Hooks/use-show-items-for-moving";
 import useMoveDocuments from "../Hooks/use-move-document";
@@ -12,12 +21,20 @@ interface MoveModalProps {
     setSelectedRecord: (record: any[]) => void;
 }
 
-const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds, setSelectedRecord }) => {
+const MoveModal: React.FC<MoveModalProps> = ({
+    selectedDocumentIds,
+    setSelectedRecord,
+}) => {
     const { modals, closeModal } = useModalStore();
     const isOpen = modals["moveModal"];
     const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
     const { data, loading, error } = useShowItems(currentFolderId, isOpen);
-    const { data: moveData, setData, moveDocuments, processing } = useMoveDocuments({ setSelectedRecord });
+    const {
+        data: moveData,
+        setData,
+        moveDocuments,
+        processing,
+    } = useMoveDocuments({ setSelectedRecord });
 
     const handleFolderClick = (folderId: string) => {
         setCurrentFolderId(folderId);
@@ -34,6 +51,7 @@ const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds, setSelectedR
     const handleSave = () => {
         if (!currentFolderId) {
             notifications.show({
+                position: "top-center",
                 message: "Please select a destination folder.",
                 color: "red",
             });
@@ -61,8 +79,9 @@ const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds, setSelectedR
                             <IconChevronLeft size={16} />
                         </ActionIcon>
                     )}
-                    <Text c="dark.5" fw={500}>Choose Destination Folder</Text>
-
+                    <Text c="dark.5" fw={500}>
+                        Choose Destination Folder
+                    </Text>
                 </Group>
 
                 <Divider />
@@ -72,7 +91,10 @@ const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds, setSelectedR
                 ) : error ? (
                     <Text c="red">{error}</Text>
                 ) : (
-                    <Stack gap="sm" style={{ maxHeight: 400, overflowY: "auto" }}>
+                    <Stack
+                        gap="sm"
+                        style={{ maxHeight: 400, overflowY: "auto" }}
+                    >
                         {data.itemContents.map((item) => (
                             <Group
                                 key={item.item_id}
@@ -90,10 +112,17 @@ const MoveModal: React.FC<MoveModalProps> = ({ selectedDocumentIds, setSelectedR
                     </Stack>
                 )}
                 <Group justify="flex-end" mt="md">
-                    <Button variant="outline" onClick={() => closeModal("moveModal")}>
+                    <Button
+                        variant="outline"
+                        onClick={() => closeModal("moveModal")}
+                    >
                         Cancel
                     </Button>
-                    <Button onClick={handleSave} disabled={!currentFolderId || processing} loading={processing}>
+                    <Button
+                        onClick={handleSave}
+                        disabled={!currentFolderId || processing}
+                        loading={processing}
+                    >
                         Move Here
                     </Button>
                 </Group>

@@ -32,6 +32,8 @@ export default function DocumentEditPage({ document, itemAncestors }: IProps) {
     const { data, setData, handleUpdateDocument, processing, errors, reset } =
         useUpdateDocument({ document });
 
+    console.log(document);
+
     const [deletedMetadataIds, setDeletedMetadataIds] = useState<number[]>([]);
 
     const handleMetadataAdd = (metadata: DocumentMetadata) => {

@@ -31,6 +31,7 @@ export function useDeleteFiles({ setSelectedRecord }: UseDeleteFilesProps) {
                 }, 100);
 
                 notifications.show({
+                    position: "top-center",
                     message: "Files deleted",
                     color: "green",
                 });
@@ -42,6 +43,7 @@ export function useDeleteFiles({ setSelectedRecord }: UseDeleteFilesProps) {
                     message = errors[Object.keys(errors)[0]];
                 }
                 notifications.show({
+                    position: "top-center",
                     message,
                     color: "red",
                 });
