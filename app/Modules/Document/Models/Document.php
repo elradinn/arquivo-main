@@ -2,6 +2,7 @@
 
 namespace Modules\Document\Models;
 
+use Carbon\Carbon;
 use Modules\Item\Models\Item;
 use Modules\Metadata\Models\Metadata;
 use Modules\User\Models\User;
@@ -39,8 +40,32 @@ class Document extends Model
     protected $casts = [
         'review_status' => DocumentState::class,
         'approval_status' => DocumentState::class,
-        // 'due_date' => 'date',
     ];
+
+    /**
+     * Format the created_at attribute.
+     */
+    public function getCreatedAtAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('Y-m-d h:i A') : null;
+    }
+
+    /**
+     * Format the due_date attribute.
+     */
+    public function getDueDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('Y-m-d h:i A') : null;
+    }
+
+    /**
+     * Format the updated_at attribute.
+     */
+    public function getUpdatedAtAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format('Y-m-d h:i A') : null;
+    }
+
 
     /**
      * Get the document's items.

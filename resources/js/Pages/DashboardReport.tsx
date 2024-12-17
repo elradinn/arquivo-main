@@ -97,9 +97,9 @@ export default function DashboardReportPage({
         const query: any = {
             document_status: documentStatus,
             start_date: startDate
-                ? startDate.toISOString().split("T")[0]
+                ? startDate.toLocaleDateString("en-CA")
                 : null,
-            end_date: endDate ? endDate.toISOString().split("T")[0] : null,
+            end_date: endDate ? endDate.toLocaleDateString("en-CA") : null,
             uploader: uploader || undefined,
             due_in: dueIn || undefined,
             page: page || undefined,
@@ -128,7 +128,7 @@ export default function DashboardReportPage({
     const handleStartDateChange = (date: Date | null) => {
         setStartDate(date);
         handleFilter({
-            start_date: date ? date.toISOString().split("T")[0] : null,
+            start_date: date ? date.toLocaleDateString("en-CA") : null,
             page: 1, // Reset to first page on filter change
         });
     };
@@ -136,7 +136,7 @@ export default function DashboardReportPage({
     const handleEndDateChange = (date: Date | null) => {
         setEndDate(date);
         handleFilter({
-            end_date: date ? date.toISOString().split("T")[0] : null,
+            end_date: date ? date.toLocaleDateString("en-CA") : null,
             page: 1, // Reset to first page on filter change
         });
     };
@@ -160,9 +160,9 @@ export default function DashboardReportPage({
         const payload = {
             document_status: documentStatus,
             start_date: startDate
-                ? startDate.toISOString().split("T")[0]
+                ? startDate.toLocaleDateString("en-CA")
                 : null,
-            end_date: endDate ? endDate.toISOString().split("T")[0] : null,
+            end_date: endDate ? endDate.toLocaleDateString("en-CA") : null,
             uploader: uploader,
             due_in: dueIn,
             metadata_ids: existingMetadataIds,

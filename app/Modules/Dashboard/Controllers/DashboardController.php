@@ -114,7 +114,7 @@ class DashboardController extends Controller
                     name: $doc->name,
                     review_status: $doc->review_status ? $doc->review_status->label() : null,
                     approval_status: $doc->approval_status ? $doc->approval_status->label() : null,
-                    date_uploaded: $doc->updated_at->format('Y-m-d H:i:s'),
+                    date_uploaded: $doc->updated_at,
                     mime: $doc->mime
                 );
             })

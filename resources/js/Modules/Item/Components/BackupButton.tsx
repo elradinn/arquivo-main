@@ -1,4 +1,4 @@
-import { Card, Group, Text, Loader } from "@mantine/core";
+import { Card, Group, Text, Loader, ThemeIcon } from "@mantine/core";
 import { IconFileZip } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import axios from "axios";
@@ -42,8 +42,8 @@ const BackupButton = () => {
             shadow="xs"
             radius="sm"
             withBorder
-            py={24}
-            px={20}
+            py={30}
+            px={28}
             style={{ cursor: "pointer", position: "relative" }}
             onClick={handleBackup}
         >
@@ -60,7 +60,9 @@ const BackupButton = () => {
                 />
             )}
             <Group gap={24} opacity={isLoading ? 0.5 : 1}>
-                <IconFileZip size={24} />
+                <ThemeIcon variant="light" size="xl" radius={40}>
+                    <IconFileZip size={24} />
+                </ThemeIcon>
                 <div>
                     <Text size="md" fw="bold">
                         Download All Files
