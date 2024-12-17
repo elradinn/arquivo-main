@@ -17,7 +17,7 @@ import {
     IconTable,
     IconFilter,
 } from "@tabler/icons-react";
-import { DataTable, DataTableColumn } from "mantine-datatable";
+import { DataTable } from "mantine-datatable";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import { useSearchDataTable } from "@/Modules/Common/Hooks/use-search-datatable";
 import { usePaginateDataTable } from "@/Modules/Common/Hooks/use-paginate-datatable";
@@ -26,6 +26,7 @@ import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { PaginationData } from "@/Modules/Common/Types/CommonPageTypes";
 import { MetadataResourceData } from "@/Modules/Metadata/Types/MetadataResourceData";
 import SelectDashboardMetadataColumnForm from "@/Modules/Dashboard/Components/SelectDashboardMetadataColumnForm";
+import MetadataFilterModal from "@/Modules/Dashboard/Components/MetadataFilterModal";
 import { DashboardMetadataResourceData } from "@/Modules/Dashboard/Types/DashboardMetadataResourceData";
 import { ItemContentsResourceData } from "@/Modules/Item/Types/ItemContentsResourceData";
 import { DatePickerInput } from "@mantine/dates";
@@ -33,12 +34,19 @@ import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
 import { useDocumentProperties } from "@/Modules/Item/Hooks/use-document-properties";
 
+interface MetadataFilter {
+    field: string;
+    operator: string;
+    value: string;
+}
+
 interface DashboardReportProps {
     documents: PaginationData<ItemContentsResourceData>;
     filters: {
         document_status: string | null;
         start_date: string | null;
         end_date: string | null;
+        metadata_filters: MetadataFilter[];
     };
     selectedMetadata: MetadataResourceData[];
     availableMetadata: DashboardMetadataResourceData[];
@@ -46,14 +54,14 @@ interface DashboardReportProps {
     users: { id: number; name: string }[];
 }
 
-export default function DashboardReportPage({
+const DashboardReportPage: React.FC<DashboardReportProps> = ({
     documents,
     filters,
     selectedMetadata,
     availableMetadata,
     existingMetadataIds,
     users,
-}: DashboardReportProps) {
+}) => {
     const [documentStatus, setDocumentStatus] = useState<string | null>(
         filters.document_status
     );
@@ -65,6 +73,9 @@ export default function DashboardReportPage({
     );
     const [uploader, setUploader] = useState<string | null>(null);
     const [dueIn, setDueIn] = useState<string | null>(null);
+    const [metadataFilters, setMetadataFilters] = useState<MetadataFilter[]>(
+        filters.metadata_filters || []
+    );
 
     const { openDocument } = useDocumentProperties();
 
@@ -80,6 +91,8 @@ export default function DashboardReportPage({
 
     const { openModal } = useModalStore();
 
+    console.log(metadataFilters);
+
     /**
      * Consolidated handleFilter function that merges all active filters.
      */
@@ -90,25 +103,67 @@ export default function DashboardReportPage({
             end_date: string | null;
             uploader: string | null;
             due_in: string | null;
+            metadata_filters: {
+                field: string;
+                operator: string;
+                value: string;
+            }[];
             search: string;
             page: number;
         }>
     ) => {
         const query: any = {
-            document_status: documentStatus,
-            start_date: startDate
-                ? startDate.toLocaleDateString("en-CA")
-                : null,
-            end_date: endDate ? endDate.toLocaleDateString("en-CA") : null,
-            uploader: uploader || undefined,
-            due_in: dueIn || undefined,
-            page: page || undefined,
-            ...updatedFilters, // Override with any updated filters
+            document_status:
+                updatedFilters.document_status !== undefined
+                    ? updatedFilters.document_status
+                    : documentStatus,
+            start_date:
+                updatedFilters.start_date !== undefined
+                    ? updatedFilters.start_date
+                        ? new Date(
+                              updatedFilters.start_date
+                          ).toLocaleDateString("en-CA")
+                        : null
+                    : startDate
+                    ? startDate.toLocaleDateString("en-CA")
+                    : null,
+            end_date:
+                updatedFilters.end_date !== undefined
+                    ? updatedFilters.end_date
+                        ? new Date(updatedFilters.end_date).toLocaleDateString(
+                              "en-CA"
+                          )
+                        : null
+                    : endDate
+                    ? endDate.toLocaleDateString("en-CA")
+                    : null,
+            uploader:
+                updatedFilters.uploader !== undefined
+                    ? updatedFilters.uploader
+                    : uploader,
+            due_in:
+                updatedFilters.due_in !== undefined
+                    ? updatedFilters.due_in
+                    : dueIn,
+            page:
+                updatedFilters.page !== undefined ? updatedFilters.page : page,
+            metadata_filters:
+                updatedFilters.metadata_filters !== undefined
+                    ? updatedFilters.metadata_filters.length > 0
+                        ? updatedFilters.metadata_filters
+                        : undefined
+                    : metadataFilters.length > 0
+                    ? metadataFilters
+                    : undefined,
         };
 
         // Remove null or undefined query parameters
         Object.keys(query).forEach((key) => {
-            if (query[key] === null || query[key] === undefined) {
+            if (
+                query[key] === null ||
+                query[key] === undefined ||
+                (Array.isArray(query[key]) && query[key].length === 0)
+            ) {
                 delete query[key];
             }
         });
@@ -166,6 +221,7 @@ export default function DashboardReportPage({
             uploader: uploader,
             due_in: dueIn,
             metadata_ids: existingMetadataIds,
+            metadata_filters: metadataFilters,
         };
 
         generateDashboardReport(payload);
@@ -181,79 +237,40 @@ export default function DashboardReportPage({
         setUploader(null);
         setDueIn(null);
         setSearch("");
+        setMetadataFilters([]);
         handleFilter({
             document_status: null,
             start_date: null,
             end_date: null,
             uploader: null,
             due_in: null,
+            metadata_filters: [],
+            search: "",
         });
     };
 
-    /**
-     * Function to render dynamic columns with special handling for 'status' and 'due_in'.
-     */
-    const renderDynamicColumns =
-        (): DataTableColumn<ItemContentsResourceData>[] => {
-            return selectedMetadata.map((meta) => {
-                // Check if the metadata corresponds to 'review status'
-                if (meta.name.toLowerCase() === "review status") {
-                    return {
-                        accessor: `review_status`,
-                        title: "Review Status",
-                        render: ({ review_status }) => (
-                            <StateBadge state={review_status} />
-                        ),
-                    };
-                }
+    const renderDynamicColumns = (): any[] => {
+        return selectedMetadata.map((meta) => {
+            // Conditionally render based on metadata type or other properties if needed
+            return {
+                accessor: `metadata_${meta.metadata_id}`,
+                title: meta.name,
+                render: (record: ItemContentsResourceData) => {
+                    const metaValue = record.metadata?.find(
+                        (m) => m.metadata_id === meta.metadata_id
+                    );
+                    return metaValue ? metaValue.value : "N/A";
+                },
+            };
+        });
+    };
 
-                // Check if the metadata corresponds to 'approval status'
-                if (meta.name.toLowerCase() === "approval status") {
-                    return {
-                        accessor: `approval_status`,
-                        title: "Approval Status",
-                        render: ({ approval_status }) => (
-                            <StateBadge state={approval_status} />
-                        ),
-                    };
-                }
-
-                // Check if the metadata corresponds to 'due_in'
-                if (meta.name.toLowerCase() === "due_in") {
-                    return {
-                        accessor: `due_in`,
-                        title: "Due in",
-                        render: ({ due_in }) => {
-                            return due_in !== undefined && due_in !== null ? (
-                                due_in < 0 ? (
-                                    <Text color="red" size="sm">
-                                        {Math.abs(due_in)} days overdue
-                                    </Text>
-                                ) : (
-                                    <Text size="sm">{`${due_in} day${
-                                        due_in !== 1 ? "s" : ""
-                                    } remaining`}</Text>
-                                )
-                            ) : (
-                                "Deadline not set"
-                            );
-                        },
-                    };
-                }
-
-                // Default rendering for other metadata columns
-                return {
-                    accessor: `metadata_${meta.metadata_id}`,
-                    title: meta.name,
-                    render: (record: ItemContentsResourceData) => {
-                        const metaValue = record.metadata?.find(
-                            (m) => m.metadata_id === meta.metadata_id
-                        );
-                        return metaValue ? metaValue.value : "N/A";
-                    },
-                };
-            });
-        };
+    const handleApplyMetadataFilters = (
+        filters: Omit<MetadataFilter, "id">[]
+    ) => {
+        setMetadataFilters(filters);
+        handleFilter({ metadata_filters: filters, page: 1 });
+    };
 
     return (
         <Authenticated>
@@ -357,6 +374,15 @@ export default function DashboardReportPage({
                             >
                                 Columns
                             </Button>
+
+                            <Button
+                                onClick={() => openModal("metadataFilterModal")}
+                                leftSection={<IconFilter size={16} />}
+                                variant="subtle"
+                                color="gray.5"
+                            >
+                                Metadata Filters
+                            </Button>
                         </Flex>
 
                         <Flex gap="sm">
@@ -388,6 +414,12 @@ export default function DashboardReportPage({
                         existingMetadataIds={existingMetadataIds}
                     />
 
+                    {/* Metadata Filter Modal */}
+                    <MetadataFilterModal
+                        availableMetadata={availableMetadata}
+                        onApplyFilters={handleApplyMetadataFilters}
+                    />
+
                     {/* Documents Table */}
                     <DataTable
                         columns={[
@@ -412,7 +444,7 @@ export default function DashboardReportPage({
                                 ),
                             },
                             { accessor: "updated_at", title: "Last Modified" },
-                            // Dynamic columns including 'status' and 'due_in'
+                            // Dynamic columns including metadata fields
                             ...renderDynamicColumns(),
                         ]}
                         records={documents.data}
@@ -435,4 +467,6 @@ export default function DashboardReportPage({
             </Stack>
         </Authenticated>
     );
-}
+};
+
+export default DashboardReportPage;

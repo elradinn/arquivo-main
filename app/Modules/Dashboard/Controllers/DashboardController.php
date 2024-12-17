@@ -170,6 +170,15 @@ class DashboardController extends Controller
         $endDate = $request->query('end_date');
         $uploader = $request->query('uploader');
         $dueIn = $request->query('due_in');
+        $metadataFilters = $request->query('metadata_filters', []); // Retrieve metadata_filters
+
+        // Reconstruct metadataFilters if they are in a flat structure
+        if ($this->isFlatMetadataFilters($metadataFilters)) {
+            $metadataFilters = $this->groupMetadataFilters($metadataFilters);
+        }
+
+        // Logging for debugging
+        // dd($metadataFilters);
 
         // Get selected metadata columns from the dashboard_report_metadata_columns table
         $selectedMetadataIds = DB::table('dashboard_report_metadata_columns')->pluck('metadata_id')->toArray();
@@ -183,8 +192,8 @@ class DashboardController extends Controller
             ? User::select('id', 'name')->get()
             : collect([]);
 
-        // Query documents based on filters, ensuring associated Items are not soft-deleted and user has access
-        $documentsQuery = Item::with('document')
+        // Initialize the query for documents
+        $documentsQuery = Item::with('document.metadata') // Ensure metadata is loaded
             ->whereHas('document', function ($query) use ($user) {
                 if (!$user->hasRole('admin') && !$user->hasRole('viewer')) {
                     $query->where(function ($q) use ($user) {
@@ -265,6 +274,41 @@ class DashboardController extends Controller
             });
         }
 
+        // Apply metadata filters
+        if (!empty($metadataFilters)) {
+            foreach ($metadataFilters as $filter) {
+                $field = $filter['field'] ?? null;
+                $operator = $filter['operator'] ?? null;
+                $value = $filter['value'] ?? null;
+
+                if ($field && $operator && $value) {
+                    $documentsQuery->whereHas('document.metadata', function ($query) use ($field, $operator, $value) {
+                        switch ($operator) {
+                            case 'includes':
+                                $query->where('name', $field)
+                                    ->where('value', 'LIKE', "%{$value}%");
+                                break;
+                            case 'excludes':
+                                $query->where('name', $field)
+                                    ->where('value', 'NOT LIKE', "%{$value}%");
+                                break;
+                            case 'is':
+                                $query->where('name', $field)
+                                    ->where('value', $value);
+                                break;
+                            case 'is_not':
+                                $query->where('name', $field)
+                                    ->where('value', '!=', $value);
+                                break;
+                            default:
+                                // Handle unknown operator if necessary
+                                break;
+                        }
+                    });
+                }
+            }
+        }
+
         // Paginate results
         $documents = $documentsQuery->paginate(15)->withQueryString();
 
@@ -277,6 +321,7 @@ class DashboardController extends Controller
                 'end_date' => $endDate,
                 'uploader' => $uploader,
                 'due_in' => $dueIn,
+                'metadata_filters' => $metadataFilters, // Include metadata_filters
             ],
             'selectedMetadata' => DashboardMetadataResourceData::collect($selectedMetadata),
             'availableMetadata' => DashboardMetadataResourceData::collect($availableMetadata),
@@ -290,5 +335,47 @@ class DashboardController extends Controller
         $this->selectDashboardReportMetadataColumnAction->execute($data);
 
         return redirect()->back();
+    }
+
+    /**
+     * Check if metadataFilters array is flat (i.e., each filter attribute is a separate array)
+     *
+     * @param array $metadataFilters
+     * @return bool
+     */
+    private function isFlatMetadataFilters(array $metadataFilters): bool
+    {
+        return array_reduce($metadataFilters, function ($carry, $item) {
+            return $carry && is_array($item) && count($item) === 1;
+        }, true);
+    }
+
+    /**
+     * Group flat metadataFilters into an array of filter objects.
+     *
+     * @param array $flatFilters
+     * @return array
+     */
+    private function groupMetadataFilters(array $flatFilters): array
+    {
+        $groupedFilters = [];
+        $currentFilter = [];
+
+        foreach ($flatFilters as $item) {
+            foreach ($item as $key => $value) {
+                $currentFilter[$key] = $value;
+                if (count($currentFilter) === 3) {
+                    $groupedFilters[] = $currentFilter;
+                    $currentFilter = [];
+                }
+            }
+        }
+
+        // Handle any incomplete filters if necessary
+        if (!empty($currentFilter)) {
+            // Optionally log or handle incomplete filters
+        }
+
+        return $groupedFilters;
     }
 }
