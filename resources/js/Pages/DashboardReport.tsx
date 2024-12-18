@@ -442,6 +442,7 @@ const DashboardReportPage: React.FC<DashboardReportProps> = ({
                                 ),
                             },
                             { accessor: "updated_at", title: "Last Modified" },
+                            { accessor: "due_in", title: "Due In" },
                             // Dynamic columns including metadata fields
                             ...renderDynamicColumns(),
                         ]}
