@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
+use App\Events\TestPusherEvent;
 
 Route::get('/', function () {
     return;
@@ -19,4 +20,13 @@ Route::get('/send-test-email', function () {
     });
 
     return 'Test email sent!';
+});
+
+Route::get('/test-pusher', function () {
+    event(new TestPusherEvent('Hello, Pusher!'));
+    return 'Pusher event has been sent!';
+});
+
+Route::get('/test-pusher-page', function () {
+    return Inertia::render('TestPusher');
 });
