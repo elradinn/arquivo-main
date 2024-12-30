@@ -15,7 +15,7 @@ class UpdateMetadataData extends Data
         #[Sometimes, Required, StringType]
         public ?string $name = null,
 
-        #[Sometimes, Required, StringType, In(['String', 'Integer', 'Float', 'Boolean', 'Date', 'DateTime'])]
+        #[Sometimes, Required, StringType, In(['Text', 'Yes/No', 'Number'])]
         public ?string $type = null,
 
         public ?array $predefined_values = [],

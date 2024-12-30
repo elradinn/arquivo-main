@@ -79,7 +79,7 @@ const UpdateMetadataForm: React.FC<IProps> = ({
                             setData("type", option.value)
                         }
                         error={errors.type}
-                        data={["String", "Boolean", "Datetime"]}
+                        data={["Text", "Yes/No", "Number"]}
                     />
 
                     {/* Predefined Values Section */}
