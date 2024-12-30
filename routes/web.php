@@ -45,3 +45,5 @@ require __DIR__ . '/generate_report.php';
 require __DIR__ . '/global_search.php';
 
 require __DIR__ . '/notification.php';
+
+require __DIR__ . '/archive.php';
