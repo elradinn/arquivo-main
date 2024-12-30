@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Item\Data\ItemContentsResourceData;
 use Modules\Item\Models\Item;
 use Modules\Folder\Models\Folder;
+use Modules\User\Models\User;
 use Spatie\LaravelData\DataCollection;
+use Modules\Archive\Data\ArchiveAncestorsResourceData;
 
 class GetArchiveDataAction
 {
@@ -25,22 +27,39 @@ class GetArchiveDataAction
                 ->with(['folder', 'document'])
                 ->get();
         } else {
-            // Retrieve all archived root items
-            // $archivedItems = Item::whereNull('parent_id')
-            //     ->where('is_archived', true)
-            //     ->with(['folder', 'document'])
-            //     ->get();
-
+            // Retrieve all archived items
             $archivedItems = Item::with(['folder', 'document'])
                 ->where('is_archived', true)
                 ->get();
         }
 
+        // Filter out items that have an archived parent and reindex the collection
+        $filteredItems = $archivedItems->filter(function ($item) use ($archivedItems) {
+            return !$archivedItems->contains('id', $item->parent_id);
+        })->values(); // Reset the keys to be consecutive integers
+
+        // Retrieve all ancestors including self
+        $allAncestors = $folder ? $folder->item->ancestorsWithSelf()->get() : collect();
+
+        // Filter ancestors to include only those of type 'archive'
+        $archiveAncestors = $allAncestors->filter(function ($ancestor) {
+            return $this->getType($ancestor) === 'archive';
+        });
+
+        // Prepend the 'Archive' root ancestor
+        $archiveRoot = new ArchiveAncestorsResourceData(
+            id: 'archive-root',
+            depth: 0,
+            name: 'Archive',
+            url: '/archive'
+        );
+        $archiveAncestors = $archiveAncestors->prepend($archiveRoot);
+
         // Prepare the data for the frontend
         return [
             'itemParent' => $folder ? \Modules\Item\Data\ItemParentResourceData::fromModel($folder->item) : null,
-            'itemAncestors' => $folder ? \Modules\Item\Data\ItemAncestorsResourceData::collect($folder->item->ancestorsWithSelf()->get(), DataCollection::class) : [],
-            'itemContents' => ItemContentsResourceData::collect($archivedItems, DataCollection::class),
+            'itemAncestors' => $folder ? \Modules\Archive\Data\ArchiveAncestorsResourceData::collect($archiveAncestors, DataCollection::class) : [],
+            'itemContents' => ItemContentsResourceData::collect($filteredItems, DataCollection::class),
             'folderUserRole' => $folder ? $this->determineUserRole($folder) : null,
         ];
     }
@@ -54,6 +73,7 @@ class GetArchiveDataAction
     protected function determineUserRole(Folder $folder): ?string
     {
         $user = Auth::user();
+        $user = User::find($user->id);
         if (!$user) {
             return null;
         }
@@ -71,5 +91,26 @@ class GetArchiveDataAction
         }
 
         return null;
+    }
+
+    /**
+     * Determine the type of the item.
+     *
+     * @param Item $item
+     * @return string
+     */
+    private function getType(Item $item): string
+    {
+        if ($item->is_archived) {
+            return 'archive';
+        } elseif ($item->workspace) {
+            return 'workspace';
+        } elseif ($item->folder) {
+            return 'folder';
+        } elseif ($item->document) {
+            return 'document';
+        }
+
+        return 'unknown';
     }
 }

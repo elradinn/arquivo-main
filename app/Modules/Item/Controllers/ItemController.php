@@ -12,13 +12,19 @@ use Modules\Item\Actions\GetItemDataAction;
 use Modules\Item\Actions\ShowMoveItemsAction;
 use Modules\Item\Data\DeleteItemsData;
 use Modules\Item\Data\DownloadItemsData;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Modules\Item\Actions\ArchiveItemsAction;
+use Modules\Item\Data\ArchiveItemsData;
 
 class ItemController extends Controller
 {
     public function __construct(
         private DownloadItemsAction $downloadItemsAction,
         private DeleteItemsAction $deleteItemsAction,
-        private ShowMoveItemsAction $showMoveItemsAction
+        private ShowMoveItemsAction $showMoveItemsAction,
+        private ArchiveItemsAction $archiveItemsAction
     ) {}
 
     public function index(): JsonResponse
@@ -47,5 +53,14 @@ class ItemController extends Controller
 
         // Redirect to the determined URL
         return redirect($redirectUrl);
+    }
+
+    public function archive(ArchiveItemsData $data): RedirectResponse
+    {
+        // Execute the archive action and get the redirect URL
+        $redirectUrl = $this->archiveItemsAction->execute($data);
+
+        // Redirect to the determined URL
+        return redirect()->to($redirectUrl);
     }
 }
