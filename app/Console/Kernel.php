@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
     {
         // You can also schedule the command here using Laravel's scheduler
         // For simplicity, we'll set up a system cron job instead
-        $schedule->command('test:command')->everyTwoSeconds();
+        $schedule->command('test:command');
     }
 
     /**

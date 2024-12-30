@@ -22,6 +22,14 @@ class TestCommand extends Command
     protected $description = 'A simple test command that logs a message';
 
     /**
+     * Create a new command instance.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
      * Execute the console command.
      */
     public function handle(): int
