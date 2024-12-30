@@ -17,9 +17,11 @@
         "axios": "^1.6.4",
         "clsx": "^2.1.1",
         "dayjs": "^1.11.13",
+        "laravel-echo": "^1.17.1",
         "lodash": "^4.17.21",
         "mantine-contextmenu": "^7.12.2",
         "mantine-datatable": "^7.12.4",
+        "pusher-js": "^8.4.0-rc2",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "zustand": "^5.0.0-rc.2"
