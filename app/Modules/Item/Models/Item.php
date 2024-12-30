@@ -21,6 +21,8 @@ class Item extends Entity
      */
     protected $table = 'items';
 
+    public $timestamps = true;
+
     /**
      * ClosureTable model instance.
      *
@@ -36,6 +38,11 @@ class Item extends Entity
     protected $fillable = [
         'parent_id',
         'position',
+        'is_archived',
+    ];
+
+    protected $casts = [
+        'is_archived' => 'boolean',
     ];
 
     public function workspace(): HasOne

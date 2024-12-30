@@ -13,6 +13,8 @@ return new class extends Migration
             $table->uuid('parent_id')->nullable();
             $table->integer('position', false, true);
             $table->softDeletes();
+            $table->timestamps();
+            $table->boolean('is_archived')->default(false);
 
             $table->foreign('parent_id')
                 ->references('id')

@@ -41,11 +41,13 @@ class HandleInertiaRequests extends Middleware
         if ($user && ($user->hasRole('admin') || $user->hasRole('viewer'))) {
             // If the user is an admin or viewer, retrieve all root items with their folders
             $workspaces = Item::whereNull('parent_id')
+                ->where('is_archived', false)
                 ->with('folder')
                 ->get();
         } elseif ($user) {
             // If the user is authenticated but not an admin/viewer, retrieve only root items where the folder is shared with the user
             $workspaces = Item::whereNull('parent_id')
+                ->where('is_archived', false)
                 ->whereHas('folder.userAccess', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })

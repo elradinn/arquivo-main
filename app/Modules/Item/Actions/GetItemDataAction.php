@@ -18,11 +18,12 @@ class GetItemDataAction
         $user = User::find($user->id);
 
         if ($user && ($user->hasRole('admin') || $user->hasRole('viewer'))) {
-            // If the user is an admin or viewer, retrieve all children with their folder and document relationships
-            $itemContentsQuery = $item->children()->with(['folder', 'document']);
+            // If the user is an admin or viewer, retrieve all children with their folder and document relationships, excluding archived items
+            $itemContentsQuery = $item->children()->where('is_archived', false)->with(['folder', 'document']);
         } elseif ($user) {
-            // If the user is authenticated but not an admin/viewer, retrieve only children shared with the user
+            // If the user is authenticated but not an admin/viewer, retrieve only children shared with the user, excluding archived items
             $itemContentsQuery = $item->children()
+                ->where('is_archived', false)
                 ->where(function ($query) use ($user) {
                     $query->whereHas('folder.userAccess', function ($q) use ($user) {
                         $q->where('user_id', $user->id);
