@@ -34,9 +34,6 @@ class TestCommand extends Command
      */
     public function handle(): int
     {
-        // Log a test message
-        Log::info('TestCommand executed successfully.');
-
         // Optionally, output to the console
         $this->info('TestCommand has been executed.');
 

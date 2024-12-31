@@ -87,11 +87,9 @@ class HandleInertiaRequests extends Middleware
                 // Handle the case where the folder is not found
                 // You can choose to set a default workspace or handle it as per your application's requirement
                 // Optionally, log the incident for debugging
-                Log::warning("HandleInertiaRequests: Folder with ID {$currentFolderId} not found.");
             }
         } else {
             // If the path doesn't have the expected structure, handle accordingly
-            Log::warning("HandleInertiaRequests: Unexpected path structure '{$currentPath}'.");
         }
 
         $notifications = $this->retrieveNotificationAction->execute();

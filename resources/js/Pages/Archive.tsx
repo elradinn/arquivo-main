@@ -53,8 +53,6 @@ export default function ArchivePage({
     });
     const [records, setRecords] = useState(sortBy(itemContents, "name"));
 
-    console.log(itemContents);
-
     useEffect(() => {
         const data = sortBy(
             itemContents,
