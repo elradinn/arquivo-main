@@ -24,8 +24,7 @@ import { useOpenArchiveFolder } from "@/Modules/Archive/Hooks/use-open-archive-f
 import { ItemAncestorsResourceData } from "@/Modules/Item/Types/ItemAncestorsResourceData";
 import { ItemContentsResourceData } from "@/Modules/Item/Types/ItemContentsResourceData";
 import { ItemParentResourceData } from "@/Modules/Item/Types/ItemParentResourceData";
-import SelectMetadataColumnForm from "@/Modules/Common/Components/SelectMetadataColumn/SelectMetadataColumnForm";
-import StateBadge from "@/Modules/Common/Components/StateBadge/StateBadge";
+import ArchiveSelectedToolbar from "@/Modules/Archive/Components/ArchiveSelectedToolbar";
 
 interface ItemPageProps {
     itemParent: ItemParentResourceData | null;
@@ -101,23 +100,11 @@ export default function ArchivePage({
             <Head title="Archive" />
 
             <Authenticated
-            // toolbar={
-            //     selectedRecord.length > 0 ? (
-            //         <SelectedItemToolbar
-            //             setSelectedRecord={setSelectedRecord}
-            //             selectedIds={ids}
-            //             parentId={itemParent.item_id}
-            //         />
-            //     ) : (
-            //         <ItemToolbar
-            //             itemParent={{
-            //                 ...itemParent,
-            //             }}
-            //             folderUserRole={folderUserRole}
-            //             uploadFileRef={openRef}
-            //         />
-            //     )
-            // }
+                toolbar={
+                    selectedRecord.length > 0 && (
+                        <ArchiveSelectedToolbar selectedIds={ids} />
+                    )
+                }
             >
                 <Stack px={8} gap={24} py={8} style={{ pointerEvents: "all" }}>
                     <Text component="h2" size="xl" fw={600} c="gray.8">
