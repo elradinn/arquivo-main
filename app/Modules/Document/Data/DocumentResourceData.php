@@ -24,7 +24,8 @@ class DocumentResourceData extends Resource
         public array $required_folder_metadata,
         public array $versions,
         public string $created_at,
-        public string $updated_at
+        public string $updated_at,
+        public ?string $archived_at
     ) {}
 
     /**
@@ -87,7 +88,8 @@ class DocumentResourceData extends Resource
                 'approval_status' => $version->approval_status?->label(),
             ])->toArray(),
             created_at: $document->created_at,
-            updated_at: $document->updated_at
+            updated_at: $document->updated_at,
+            archived_at: $document->item->archived_at
         );
     }
 }

@@ -12,6 +12,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Testing only. Temporary route to get all items
         Route::get('/', [ItemController::class, 'index']);
 
+        Route::post('/archive', [ItemController::class, 'archive'])->name('item.archive');
+
         Route::get('/download', [ItemController::class, 'download'])->name('item.download');
 
         Route::delete('/', [ItemController::class, 'delete'])->name('item.delete');

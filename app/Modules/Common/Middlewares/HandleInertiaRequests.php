@@ -41,11 +41,13 @@ class HandleInertiaRequests extends Middleware
         if ($user && ($user->hasRole('admin') || $user->hasRole('viewer'))) {
             // If the user is an admin or viewer, retrieve all root items with their folders
             $workspaces = Item::whereNull('parent_id')
+                ->whereNull('archived_at')
                 ->with('folder')
                 ->get();
         } elseif ($user) {
             // If the user is authenticated but not an admin/viewer, retrieve only root items where the folder is shared with the user
             $workspaces = Item::whereNull('parent_id')
+                ->whereNull('archived_at')
                 ->whereHas('folder.userAccess', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
@@ -85,11 +87,9 @@ class HandleInertiaRequests extends Middleware
                 // Handle the case where the folder is not found
                 // You can choose to set a default workspace or handle it as per your application's requirement
                 // Optionally, log the incident for debugging
-                Log::warning("HandleInertiaRequests: Folder with ID {$currentFolderId} not found.");
             }
         } else {
             // If the path doesn't have the expected structure, handle accordingly
-            Log::warning("HandleInertiaRequests: Unexpected path structure '{$currentPath}'.");
         }
 
         $notifications = $this->retrieveNotificationAction->execute();

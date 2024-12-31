@@ -3,6 +3,7 @@ import { Card, Group, SimpleGrid, Stack, Text, ThemeIcon } from "@mantine/core";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import {
     IconActivity,
+    IconArchive,
     IconReportAnalytics,
     IconTag,
     IconUsersGroup,
@@ -45,6 +46,12 @@ const adminTools = [
         description: "Track all document activities",
         icon: <IconActivity />,
         href: "/activity-log",
+    },
+    {
+        title: "Archive",
+        description: "View archived documents",
+        icon: <IconArchive />,
+        href: "/archive",
     },
 ];
 

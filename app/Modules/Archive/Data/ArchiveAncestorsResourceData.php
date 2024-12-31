@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Item\Data;
+namespace Modules\Archive\Data;
 
 use Modules\Item\Models\Item;
 use Spatie\LaravelData\Resource;
 
-class ItemAncestorsResourceData extends Resource
+class ArchiveAncestorsResourceData extends Resource
 {
     public function __construct(
         public string $id,
@@ -22,7 +22,7 @@ class ItemAncestorsResourceData extends Resource
         return new self(
             id: $item->id,
             depth: $item->depth,
-            name: $item->workspace->name ?? $item->folder->name ?? $item->document->name ?? null,
+            name: $item->workspace->name ?? $item->folder->name ?? $item->document->name ?? 'Unknown',
             url: $url
         );
     }
@@ -31,12 +31,14 @@ class ItemAncestorsResourceData extends Resource
     {
         if ($item->archived_at) {
             return 'archive';
-        } else if ($item->workspace) {
+        } elseif ($item->workspace) {
             return 'workspace';
-        } else if ($item->folder) {
+        } elseif ($item->folder) {
             return 'folder';
-        } else if ($item->document) {
+        } elseif ($item->document) {
             return 'document';
         }
+
+        return 'unknown';
     }
 }

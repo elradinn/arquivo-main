@@ -1,6 +1,6 @@
 <?php
 
-use App\Console\Commands\TestCommand;
+use App\Console\Commands\ArchiveCommand;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -9,4 +9,4 @@ use Illuminate\Support\Facades\Schedule;
 //     $this->comment(Inspiring::quote());
 // })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command(TestCommand::class)->everyTwoMinutes();
+Schedule::command(ArchiveCommand::class)->everyTwoMinutes();

@@ -9,6 +9,7 @@ use Franzose\ClosureTable\Models\Entity;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Item extends Entity
 {
@@ -20,6 +21,8 @@ class Item extends Entity
      * @var string
      */
     protected $table = 'items';
+
+    public $timestamps = true;
 
     /**
      * ClosureTable model instance.
@@ -36,7 +39,26 @@ class Item extends Entity
     protected $fillable = [
         'parent_id',
         'position',
+        'archived_at',
     ];
+
+    protected $dates = [
+        'archived_at',
+    ];
+
+    protected $casts = [
+        'archived_at' => 'datetime',
+    ];
+
+    /**
+     * Determine if the item is archived.
+     *
+     * @return bool
+     */
+    public function getIsArchivedAttribute(): bool
+    {
+        return !is_null($this->archived_at);
+    }
 
     public function workspace(): HasOne
     {
