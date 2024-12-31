@@ -1,5 +1,13 @@
 import React from "react";
-import { Button, NumberInput, Stack, Modal, Text, Group } from "@mantine/core";
+import {
+    Button,
+    NumberInput,
+    Stack,
+    Modal,
+    Text,
+    Group,
+    Switch,
+} from "@mantine/core";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
 import { useUpdateArchiveFrequency } from "../Hooks/use-update-archive-frequency";
 import { useFetchArchiveFrequency } from "../Hooks/use-fetch-archive-frequency";
@@ -19,7 +27,7 @@ const ArchiveOptionsForm: React.FC = () => {
 
     React.useEffect(() => {
         if (frequency) {
-            setData("years", frequency.years);
+            setData({ years: frequency.years, enabled: frequency.enabled });
         }
     }, [frequency]);
 
@@ -46,9 +54,16 @@ const ArchiveOptionsForm: React.FC = () => {
                         placeholder="Enter number of years"
                         value={data.years}
                         onChange={(value) => setData("years", Number(value))}
-                        min={1}
                         required
                         error={errors.years}
+                        disabled={loading}
+                    />
+                    <Switch
+                        label="Enable Automatic Archiving"
+                        checked={data.enabled}
+                        onChange={(e) =>
+                            setData("enabled", e.currentTarget.checked)
+                        }
                         disabled={loading}
                     />
                     <Group justify="flex-end">

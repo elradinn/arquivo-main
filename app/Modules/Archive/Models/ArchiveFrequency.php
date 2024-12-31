@@ -9,5 +9,5 @@ class ArchiveFrequency extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['years'];
+    protected $fillable = ['years', 'enabled'];
 }

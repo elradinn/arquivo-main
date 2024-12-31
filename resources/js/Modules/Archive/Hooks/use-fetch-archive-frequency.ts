@@ -4,6 +4,7 @@ import { notifications } from "@mantine/notifications";
 
 interface ArchiveFrequency {
     years: number;
+    enabled: boolean;
 }
 
 export function useFetchArchiveFrequency(isOpen: boolean) {

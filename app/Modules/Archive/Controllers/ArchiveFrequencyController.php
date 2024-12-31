@@ -11,7 +11,7 @@ use Modules\Common\Controllers\Controller;
 class ArchiveFrequencyController extends Controller
 {
     /**
-     * Retrieve the current archive frequency.
+     * Retrieve the current archive frequency and status.
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -21,11 +21,14 @@ class ArchiveFrequencyController extends Controller
 
         return response()->json([
             'years' => $frequency ? $frequency->years : null,
+            'enabled' => $frequency ? $frequency->enabled : false,
         ]);
+
+        dd($frequency);
     }
 
     /**
-     * Update the archive frequency.
+     * Update the archive frequency and status.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -34,18 +37,20 @@ class ArchiveFrequencyController extends Controller
     {
         $request->validate([
             'years' => 'required|integer|min:1',
+            'enabled' => 'required|boolean',
         ]);
 
         $years = $request->input('years');
+        $enabled = $request->input('enabled');
 
         $frequency = ArchiveFrequency::first();
 
         if ($frequency) {
-            $frequency->update(['years' => $years]);
+            $frequency->update(['years' => $years, 'enabled' => $enabled]);
         } else {
-            ArchiveFrequency::create(['years' => $years]);
+            ArchiveFrequency::create(['years' => $years, 'enabled' => $enabled]);
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Archive options updated successfully.');
     }
 }

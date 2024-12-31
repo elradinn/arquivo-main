@@ -3,6 +3,7 @@ import { notifications } from "@mantine/notifications";
 
 interface UpdateArchiveFrequencyData {
     years: number;
+    enabled: boolean;
 }
 
 interface UseUpdateArchiveFrequencyProps {
@@ -15,6 +16,7 @@ export function useUpdateArchiveFrequency({
     const { data, setData, put, processing, errors, reset } =
         useForm<UpdateArchiveFrequencyData>({
             years: 1,
+            enabled: true,
         });
 
     const updateArchiveFrequency = () => {

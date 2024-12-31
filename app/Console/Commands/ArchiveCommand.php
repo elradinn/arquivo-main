@@ -25,6 +25,12 @@ class ArchiveCommand extends Command
             return;
         }
 
+        // Check if automatic archiving is enabled
+        if (!$frequencyModel->enabled) {
+            $this->info('Automatic archiving is disabled.');
+            return;
+        }
+
         $years = $frequencyModel->years;
 
         $thresholdDate = Carbon::now()->subYears($years);

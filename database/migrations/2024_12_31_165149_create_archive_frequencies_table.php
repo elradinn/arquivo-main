@@ -15,11 +15,13 @@ return new class extends Migration
         Schema::create('archive_frequencies', function (Blueprint $table) {
             $table->id();
             $table->integer('years')->default(5);
+            $table->boolean('enabled')->default(true);
             $table->timestamps();
         });
 
         DB::table('archive_frequencies')->insert([
             'years' => 5,
+            'enabled' => true,
         ]);
     }
 
