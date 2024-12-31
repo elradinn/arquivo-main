@@ -1,6 +1,7 @@
 import { Button, Group } from "@mantine/core";
 import { IconSettings } from "@tabler/icons-react";
 import useModalStore from "@/Modules/Common/Hooks/use-modal-store";
+import ArchiveOptionsForm from "./ArchiveOptionsForm";
 
 const ArchiveToolbar: React.FC = () => {
     const { openModal } = useModalStore();
@@ -16,7 +17,7 @@ const ArchiveToolbar: React.FC = () => {
                 Archive Options
             </Button>
 
-            {/* <ArchiveOptionsForm /> */}
+            <ArchiveOptionsForm />
         </Group>
     );
 };

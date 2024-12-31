@@ -89,8 +89,8 @@ export default function ArchivePage({
             ellipsis: true,
         },
         {
-            accessor: "updated_at",
-            title: "Last Modified",
+            accessor: "archived_at",
+            title: "Archived At",
             sortable: true,
             ellipsis: true,
         },

@@ -25,6 +25,7 @@ class ItemContentsResourceData extends Resource
         public ?string $file_path,
         public ?bool $missing_required_metadata = false, // TODO: make logic to check if the document is missing required metadata
         public ?array $metadata = null,
+        public ?string $archived_at = null,
     ) {}
 
     public static function fromModel(Item $item): self
@@ -48,6 +49,7 @@ class ItemContentsResourceData extends Resource
                 'name' => $metadata->name,
                 'value' => $metadata->pivot->value,
             ])->toArray() : null,
+            archived_at: $item->archived_at ? Carbon::parse($item->archived_at)->format('Y-m-d') : null,
         );
     }
 }

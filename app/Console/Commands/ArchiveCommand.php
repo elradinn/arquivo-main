@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Modules\Item\Models\Item;
 use Carbon\Carbon;
+use App\Modules\Archive\Models\ArchiveFrequency;
 
 class ArchiveCommand extends Command
 {
@@ -17,38 +18,51 @@ class ArchiveCommand extends Command
     {
         $this->info('Archiving process started.');
 
-        // Define archiving frequencies in years
-        $frequencies = [
-            1,
-            2,
-            3,
-            4,
-            5,
-        ];
+        // Retrieve the archive frequency
+        $frequencyModel = ArchiveFrequency::first();
+        if (!$frequencyModel) {
+            $this->error('Archive frequency not set. Please configure it in Archive Options.');
+            return;
+        }
+
+        $years = $frequencyModel->years;
+
+        $thresholdDate = Carbon::now()->subYears($years);
+        $itemsToArchive = Item::whereNull('archived_at')
+            ->whereDate('created_at', '<=', $thresholdDate)
+            ->get();
 
         $totalArchived = 0;
 
-        foreach ($frequencies as $years) {
-            $thresholdDate = Carbon::now()->subYears($years);
-            $itemsToArchive = Item::whereNull('archived_at')
-                ->whereDate('created_at', '<=', $thresholdDate)
-                ->get();
-
-            foreach ($itemsToArchive as $item) {
-                $item->archived_at = Carbon::now();
-                $item->save();
-
-                Log::info("Item archived: ID {$item->id}, Name: {$item->name}, Archived At: {$item->archived_at}");
-                $totalArchived++;
-            }
-
-            $this->info("Archived items older than {$years} year(s).");
+        foreach ($itemsToArchive as $item) {
+            $this->archiveWithChildren($item);
+            $totalArchived++;
         }
 
-        if ($totalArchived === 0) {
-            Log::info("No items were archived during this run");
+        if ($totalArchived > 0) {
+            $this->info("Archived {$totalArchived} items older than {$years} year(s).");
+        } else {
+            Log::info("No items were archived during this run.");
+            $this->info("No items were archived.");
         }
 
         $this->info('Archiving process completed.');
+    }
+
+    private function archiveWithChildren(Item $item): void
+    {
+        // Fetch child items
+        $children = Item::where('parent_id', $item->id)->get();
+
+        // Recursively archive each child
+        foreach ($children as $child) {
+            $this->archiveWithChildren($child);
+        }
+
+        // Mark the item as archived by setting archived_at timestamp
+        $item->archived_at = Carbon::now();
+        $item->save();
+
+        Log::info("Item archived: ID {$item->id}, Name: {$item->name}, Archived At: {$item->archived_at}, Uploaded At: {$item->created_at}");
     }
 }
