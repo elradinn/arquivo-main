@@ -26,4 +26,5 @@ export type DocumentResourceData = {
     versions: DocumentVersionResourceData[];
     created_at: string;
     updated_at: string;
+    archived_at: string;
 };

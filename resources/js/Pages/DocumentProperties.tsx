@@ -11,6 +11,7 @@ import {
     Paper,
     Stack,
     Text,
+    Alert,
 } from "@mantine/core";
 import { Authenticated } from "@/Modules/Common/Layouts/AuthenticatedLayout/Authenticated";
 import {
@@ -22,6 +23,7 @@ import {
     IconPencil,
     IconShare,
     IconUpload,
+    IconAlertCircle,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
@@ -84,6 +86,11 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
         })),
     ];
 
+    // Determine if the document is archived
+    const isArchived = !!document.archived_at;
+
+    console.log(document);
+
     return (
         <Authenticated>
             <Head title="Document Properties" />
@@ -102,6 +109,16 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                             />
                             <Text fw={500}>{document.name}</Text>
                         </Group>
+
+                        {isArchived && (
+                            <Alert
+                                icon={<IconAlertCircle size={16} />}
+                                title="Archived Document"
+                                color="yellow"
+                            >
+                                This document is archived and is read-only.
+                            </Alert>
+                        )}
 
                         {/* Combined Metadata */}
                         <Stack gap={12} mt={24}>
@@ -124,14 +141,14 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                                     ))}
                                 </Grid>
                             ) : (
-                                <Text size="sm" c="dimmed">
+                                <Text size="sm" color="dimmed">
                                     No metadata available.
                                 </Text>
                             )}
                         </Stack>
 
                         <Stack gap={12}>
-                            {document.versions.length > 0 && (
+                            {!isArchived && document.versions.length > 0 && (
                                 <>
                                     <Text size="sm" fw="bold">
                                         Document Versions
@@ -157,7 +174,6 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                                     },
                                 ]}
                                 records={activityLog}
-                                highlightOnHover
                                 verticalSpacing="lg"
                                 horizontalSpacing="xl"
                                 withTableBorder
@@ -167,81 +183,88 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                 </Grid.Col>
                 <Grid.Col span={3} offset={1}>
                     <Paper withBorder p={20}>
-                        <Text c="dimmed" fw={500}>
+                        <Text color="dimmed" fw={500}>
                             Options
                         </Text>
 
-                        {(userRole === "editor" || userRole === "admin") && (
-                            <Button
-                                variant="subtle"
-                                color="blue.5"
-                                leftSection={<IconPencil size={18} />}
-                                fullWidth
-                                justify="left"
-                                component={Link}
-                                href={route("document.edit", {
-                                    document: document.item_id,
-                                })}
-                            >
-                                Edit Document
-                            </Button>
-                        )}
+                        {!isArchived &&
+                            (userRole === "editor" || userRole === "admin") && (
+                                <Button
+                                    variant="subtle"
+                                    color="blue.5"
+                                    leftSection={<IconPencil size={18} />}
+                                    fullWidth
+                                    justify="left"
+                                    component={Link}
+                                    href={route("document.edit", {
+                                        document: document.item_id,
+                                    })}
+                                >
+                                    Edit Document
+                                </Button>
+                            )}
 
-                        {(userRole === "editor" || userRole === "admin") && (
-                            <FileButton onChange={handleFileUpload}>
-                                {(props) => (
-                                    <Button
-                                        {...props}
-                                        variant="subtle"
-                                        color="blue.5"
-                                        fullWidth
-                                        justify="left"
-                                        leftSection={<IconUpload size={18} />}
-                                    >
-                                        Upload New Version
-                                    </Button>
-                                )}
-                            </FileButton>
-                        )}
+                        {!isArchived &&
+                            (userRole === "editor" || userRole === "admin") && (
+                                <FileButton onChange={handleFileUpload}>
+                                    {(props) => (
+                                        <Button
+                                            {...props}
+                                            variant="subtle"
+                                            color="blue.5"
+                                            fullWidth
+                                            justify="left"
+                                            leftSection={
+                                                <IconUpload size={18} />
+                                            }
+                                        >
+                                            Upload New Version
+                                        </Button>
+                                    )}
+                                </FileButton>
+                            )}
 
-                        {(userRole === "editor" || userRole === "admin") && (
-                            <Button
-                                variant="subtle"
-                                color="blue.5"
-                                leftSection={<IconGitBranch size={18} />}
-                                fullWidth
-                                justify="left"
-                                onClick={() => {
-                                    openModal(
-                                        hasReviewal
-                                            ? "viewDocumentReview"
-                                            : "createDocumentReview"
-                                    );
-                                }}
-                            >
-                                {hasReviewal ? "View" : "Start"} Review Process
-                            </Button>
-                        )}
+                        {!isArchived &&
+                            (userRole === "editor" || userRole === "admin") && (
+                                <Button
+                                    variant="subtle"
+                                    color="blue.5"
+                                    leftSection={<IconGitBranch size={18} />}
+                                    fullWidth
+                                    justify="left"
+                                    onClick={() => {
+                                        openModal(
+                                            hasReviewal
+                                                ? "viewDocumentReview"
+                                                : "createDocumentReview"
+                                        );
+                                    }}
+                                >
+                                    {hasReviewal ? "View" : "Start"} Review
+                                    Process
+                                </Button>
+                            )}
 
-                        {(userRole === "editor" || userRole === "admin") && (
-                            <Button
-                                variant="subtle"
-                                color="blue.5"
-                                leftSection={<IconGitBranch size={18} />}
-                                fullWidth
-                                justify="left"
-                                onClick={() => {
-                                    openModal(
-                                        hasApproval
-                                            ? "viewDocumentApproval"
-                                            : "createDocumentApproval"
-                                    );
-                                }}
-                            >
-                                {hasApproval ? "View" : "Start"} Approval
-                                Process
-                            </Button>
-                        )}
+                        {!isArchived &&
+                            (userRole === "editor" || userRole === "admin") && (
+                                <Button
+                                    variant="subtle"
+                                    color="blue.5"
+                                    leftSection={<IconGitBranch size={18} />}
+                                    fullWidth
+                                    justify="left"
+                                    onClick={() => {
+                                        openModal(
+                                            hasApproval
+                                                ? "viewDocumentApproval"
+                                                : "createDocumentApproval"
+                                        );
+                                    }}
+                                >
+                                    {hasApproval ? "View" : "Start"} Approval
+                                    Process
+                                </Button>
+                            )}
 
                         <Button
                             variant="subtle"
@@ -258,18 +281,19 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                             View Document
                         </Button>
 
-                        {(userRole === "editor" || userRole === "admin") && (
-                            <Button
-                                variant="subtle"
-                                color="blue.5"
-                                leftSection={<IconShare size={18} />}
-                                fullWidth
-                                justify="left"
-                                onClick={() => openModal("shareDocument")}
-                            >
-                                Share Document
-                            </Button>
-                        )}
+                        {!isArchived &&
+                            (userRole === "editor" || userRole === "admin") && (
+                                <Button
+                                    variant="subtle"
+                                    color="blue.5"
+                                    leftSection={<IconShare size={18} />}
+                                    fullWidth
+                                    justify="left"
+                                    onClick={() => openModal("shareDocument")}
+                                >
+                                    Share Document
+                                </Button>
+                            )}
                     </Paper>
                 </Grid.Col>
             </Grid>

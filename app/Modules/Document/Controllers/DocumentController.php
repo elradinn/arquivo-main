@@ -82,8 +82,6 @@ class DocumentController extends Controller
 
         $activityLogs = $document->activityLogs()->latest()->get();
 
-        // dd(DocumentResourceData::fromModel($document));
-
         return Inertia::render('DocumentProperties', [
             'activityLog' => ActivityLogResourceData::collect($activityLogs),
             'itemAncestors' => ItemAncestorsResourceData::collect($itemAncestors, DataCollection::class),
