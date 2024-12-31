@@ -25,6 +25,7 @@ import { ItemAncestorsResourceData } from "@/Modules/Item/Types/ItemAncestorsRes
 import { ItemContentsResourceData } from "@/Modules/Item/Types/ItemContentsResourceData";
 import { ItemParentResourceData } from "@/Modules/Item/Types/ItemParentResourceData";
 import ArchiveSelectedToolbar from "@/Modules/Archive/Components/ArchiveSelectedToolbar";
+import ArchiveToolbar from "@/Modules/Archive/Components/ArchiveToolbar";
 
 interface ItemPageProps {
     itemParent: ItemParentResourceData | null;
@@ -101,8 +102,10 @@ export default function ArchivePage({
 
             <Authenticated
                 toolbar={
-                    selectedRecord.length > 0 && (
+                    selectedRecord.length > 0 ? (
                         <ArchiveSelectedToolbar selectedIds={ids} />
+                    ) : (
+                        <ArchiveToolbar />
                     )
                 }
             >
