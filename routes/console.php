@@ -9,4 +9,4 @@ use Illuminate\Support\Facades\Schedule;
 //     $this->comment(Inspiring::quote());
 // })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command(ArchiveCommand::class)->everyTwoMinutes();
+Schedule::command(ArchiveCommand::class)->dailyAt('00:00');
