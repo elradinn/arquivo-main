@@ -24,6 +24,7 @@ import {
     IconShare,
     IconUpload,
     IconAlertCircle,
+    IconArchiveOff,
 } from "@tabler/icons-react";
 import { DataTable } from "mantine-datatable";
 import { DocumentResourceData } from "@/Modules/Document/Types/DocumentResourceData";
@@ -40,6 +41,7 @@ import ShareDocumentModalForm from "@/Modules/Document/Components/ShareDocumentM
 import { ItemIcon } from "@/Modules/Common/Components/ItemIcon/ItemIcon";
 import ViewDocumentReviewForm from "@/Modules/DocumentApproval/Components/ViewDocumentReviewForm";
 import CreateDocumentReviewForm from "@/Modules/DocumentApproval/Components/CreateDocumentReviewForm";
+import UnarchiveFilesForm from "@/Modules/Archive/Forms/UnarchiveFilesForm";
 
 interface IProps {
     document: DocumentResourceData;
@@ -294,6 +296,20 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
                                     Share Document
                                 </Button>
                             )}
+
+                        {isArchived &&
+                            (userRole === "editor" || userRole === "admin") && (
+                                <Button
+                                    variant="subtle"
+                                    color="green.5"
+                                    leftSection={<IconArchiveOff size={18} />}
+                                    fullWidth
+                                    justify="left"
+                                    onClick={() => openModal("unarchiveFiles")}
+                                >
+                                    Unarchive
+                                </Button>
+                            )}
                     </Paper>
                 </Grid.Col>
             </Grid>
@@ -303,6 +319,7 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
             <ViewDocumentApprovalForm document={document} />
             <ViewDocumentReviewForm document={document} />
             <ShareDocumentModalForm documentId={document.item_id} />
+            <UnarchiveFilesForm restoreIds={[document.item_id]} />
         </Authenticated>
     );
 };
