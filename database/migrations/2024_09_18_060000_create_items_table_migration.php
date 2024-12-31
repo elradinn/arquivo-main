@@ -14,7 +14,7 @@ return new class extends Migration
             $table->integer('position', false, true);
             $table->softDeletes();
             $table->timestamps();
-            $table->boolean('is_archived')->default(false);
+            $table->timestamp('archived_at')->nullable()->default(null);
 
             $table->foreign('parent_id')
                 ->references('id')

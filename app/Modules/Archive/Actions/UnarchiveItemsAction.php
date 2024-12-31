@@ -39,8 +39,8 @@ class UnarchiveItemsAction
      */
     private function unarchiveWithChildren(Item $item): void
     {
-        // Unarchive the current item
-        $item->is_archived = false;
+        // Unarchive the current item by setting archived_at to null
+        $item->archived_at = null;
         $item->save();
 
         // Fetch child items

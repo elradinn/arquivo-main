@@ -29,7 +29,7 @@ class ItemAncestorsResourceData extends Resource
 
     private static function getType(Item $item): string
     {
-        if ($item->is_archived) {
+        if ($item->archived_at) {
             return 'archive';
         } else if ($item->workspace) {
             return 'workspace';

@@ -23,13 +23,13 @@ class GetArchiveDataAction
         if ($folder) {
             // Retrieve archived items within the specified folder
             $archivedItems = $folder->item->children()
-                ->where('is_archived', true)
+                ->whereNotNull('archived_at')
                 ->with(['folder', 'document'])
                 ->get();
         } else {
             // Retrieve all archived items
             $archivedItems = Item::with(['folder', 'document'])
-                ->where('is_archived', true)
+                ->whereNotNull('archived_at')
                 ->get();
         }
 
@@ -101,7 +101,7 @@ class GetArchiveDataAction
      */
     private function getType(Item $item): string
     {
-        if ($item->is_archived) {
+        if ($item->archived_at) {
             return 'archive';
         } elseif ($item->workspace) {
             return 'workspace';

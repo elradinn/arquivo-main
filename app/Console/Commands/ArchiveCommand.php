@@ -30,15 +30,15 @@ class ArchiveCommand extends Command
 
         foreach ($frequencies as $years) {
             $thresholdDate = Carbon::now()->subYears($years);
-            $itemsToArchive = Item::where('is_archived', false)
+            $itemsToArchive = Item::whereNull('archived_at')
                 ->whereDate('created_at', '<=', $thresholdDate)
                 ->get();
 
             foreach ($itemsToArchive as $item) {
-                $item->is_archived = true;
+                $item->archived_at = Carbon::now();
                 $item->save();
 
-                Log::info("Item archived: ID {$item->id}, Name: {$item->name}");
+                Log::info("Item archived: ID {$item->id}, Name: {$item->name}, Archived At: {$item->archived_at}");
                 $totalArchived++;
             }
 

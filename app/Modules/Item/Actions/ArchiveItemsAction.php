@@ -9,23 +9,23 @@ class ArchiveItemsAction
 {
     public function execute(ArchiveItemsData $data): string
     {
-        // Fetch the items to be archived
-        $items = Item::whereIn('id', $data->ids)->get();
-
         // Determine the redirect URL before archiving
         $redirectUrl = route('dashboard'); // Default redirect to dashboard
 
-        if ($items->isNotEmpty()) {
-            $firstItem = $items->first();
-            if ($firstItem->parent_id) {
+        if ($data->ids) {
+            $firstItem = Item::find($data->ids[0]);
+            if ($firstItem && $firstItem->parent_id) {
                 // Assuming there's a named route 'folder.show' that displays a folder
                 $redirectUrl = route('folder.show', ['folder' => $firstItem->parent_id]);
             }
         }
 
         // Iterate over each item and archive its children
-        foreach ($items as $item) {
-            $this->archiveWithChildren($item);
+        foreach ($data->ids as $id) {
+            $item = Item::find($id);
+            if ($item) {
+                $this->archiveWithChildren($item);
+            }
         }
 
         return $redirectUrl;
@@ -41,8 +41,8 @@ class ArchiveItemsAction
             $this->archiveWithChildren($child);
         }
 
-        // Mark the item as archived
-        $item->is_archived = true;
+        // Mark the item as archived by setting archived_at timestamp
+        $item->archived_at = now();
         $item->save();
     }
 }
