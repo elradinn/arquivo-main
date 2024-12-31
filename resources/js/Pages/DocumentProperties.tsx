@@ -72,7 +72,6 @@ const DocumentPropertiesPage: React.FC<IProps> = ({
 
     // Combine default metadata with custom metadata
     const defaultMetadata = [
-        { name: "Document ID", value: document.item_id },
         { name: "Date", value: document.created_at },
         { name: "Document Number", value: document.document_number },
     ];
